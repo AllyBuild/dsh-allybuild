@@ -53,13 +53,22 @@ PY
 # longer matches the upstream lock), and the re-resolution pulls
 # micromark-util-types 2.0.3 next to the lock's 2.0.2 — the two versions'
 # TokenTypeMap disagree and upstream's parse.ts fails typecheck. The pnpm
-# override pins every resolution to the lock's version.
+# override (workspace yaml — pnpm 11 ignores package.json overrides) pins
+# every resolution to the lock's version.
 RUN corepack enable \
   && cd /src \
   && pnpm config set registry https://registry.npmmirror.com \
   && pnpm config set fetch-timeout 600000 \
   && pnpm config set fetch-retries 5 \
-  && node -e "const fs=require('fs');const p='package.json';const j=JSON.parse(fs.readFileSync(p));j.pnpm=j.pnpm||{};j.pnpm.overrides={...(j.pnpm.overrides||{}),'micromark-util-types':'2.0.2'};fs.writeFileSync(p,JSON.stringify(j,null,2))" \
+  && python3 - <<'PY'
+path = "/src/pnpm-workspace.yaml"
+lines = open(path).read().splitlines(keepends=True)
+needle = "overrides:\n"
+assert needle in lines, "pnpm-workspace.yaml overrides anchor missing (upstream shape changed?)"
+if not any("micromark-util-types" in line for line in lines):
+    lines.insert(lines.index(needle) + 1, "  'micromark-util-types': '2.0.2'\n")
+open(path, "w").writelines(lines)
+PY
   && pnpm install --no-frozen-lockfile \
   && pnpm run build
 
