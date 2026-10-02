@@ -49,11 +49,17 @@ for entry in entries:
 open(path, "w").write(text)
 PY
 
+# --no-frozen-lockfile is forced by the overlay merge (workspace shape no
+# longer matches the upstream lock), and the re-resolution pulls
+# micromark-util-types 2.0.3 next to the lock's 2.0.2 — the two versions'
+# TokenTypeMap disagree and upstream's parse.ts fails typecheck. The pnpm
+# override pins every resolution to the lock's version.
 RUN corepack enable \
   && cd /src \
   && pnpm config set registry https://registry.npmmirror.com \
   && pnpm config set fetch-timeout 600000 \
   && pnpm config set fetch-retries 5 \
+  && node -e "const fs=require('fs');const p='package.json';const j=JSON.parse(fs.readFileSync(p));j.pnpm=j.pnpm||{};j.pnpm.overrides={...(j.pnpm.overrides||{}),'micromark-util-types':'2.0.2'};fs.writeFileSync(p,JSON.stringify(j,null,2))" \
   && pnpm install --no-frozen-lockfile \
   && pnpm run build
 

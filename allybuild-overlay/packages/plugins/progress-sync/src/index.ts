@@ -187,7 +187,9 @@ export class AllybuildProgressSync extends Service {
         }
         if (event.type === 'tool/result') {
           const callId = event.data?.message?.toolCallId
-          const name = typeof callId === 'string' ? callNames.get(callId) : undefined
+          // 上游 rc.2 起 toolCallId 是 unknown：先收窄，Map 键类型才成立
+          if (typeof callId !== 'string') return
+          const name = callNames.get(callId)
           if (name === undefined) return
           callNames.delete(callId)
           if (name === ASK_USER_TOOL) {
