@@ -1,0 +1,5 @@
+{
+ "name": "@deepseek-ai/dsh-host-plugin-inventory",
+ "private": true,
+ "vendorOf": "/Users/yaohao/work/team-agent/vendor/dsh/packages/host/plugin-inventory"
+}

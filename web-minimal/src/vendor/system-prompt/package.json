@@ -1,0 +1,5 @@
+{
+ "name": "@deepseek-ai/dsh-system-prompt",
+ "private": true,
+ "vendorOf": "/Users/yaohao/work/team-agent/vendor/dsh/packages/core/system-prompt"
+}

@@ -1,0 +1,11 @@
+# The image builds dsh from the pinned upstream source; the repository content
+# entering the build is what the Dockerfile COPYs: allybuild-overlay/,
+# dsh-entrypoint.sh, docker-overlay.yml, and merge-overlay.py.
+.git
+home
+web-minimal/node_modules
+Dockerfile
+.dockerignore
+README.md
+.github
+example

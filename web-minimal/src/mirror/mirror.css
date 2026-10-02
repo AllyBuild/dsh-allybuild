@@ -1,0 +1,5 @@
+/* 只读镜像面：隐藏 composer（上游以稳定的 data-composer-card 属性标记，
+   与 AllyBuild 前端 data-hide-composer 选择器同语义，不依赖哈希类名）。 */
+[data-dsh-mirror] :has(> [data-composer-card]) {
+  display: none;
+}

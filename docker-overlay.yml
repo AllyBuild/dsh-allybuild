@@ -1,0 +1,55 @@
+# Container composition overlays: the webserver bind rows plus the AllyBuild
+# integration rows, injected together by the entrypoint for the web profile.
+#
+# The webserver rows switch the bind to the all-interfaces literal — docker -p
+# cannot reach a loopback bind and the web profile refuses 0.0.0.0 as a flag —
+# and restate every webserver config key, keeping the --port flag wiring from
+# the web startup provider (a patch replaces the targeted row's whole config).
+#
+# The AllyBuild rows are three private Service plugins that push session
+# metadata / task progress to the AllyBuild platform and answer ask_user
+# questions from its task drawer. Inert until the ALLYBUILD_* environment
+# configures them — every constructor returns early on an empty url. The
+# values arrive at patch-eval time from the process environment; a deployment
+# baking static values would write them here verbatim instead.
+
+# packages/client/connection is additionally overlay-replaced at build time
+# (authored under packages/plugins/connection, stamped onto the upstream
+# package path by the Dockerfile): the Host/Origin fence stays, the per-process
+# browser auth is removed — the deployment sits behind the sandbox-level
+# Daytona auth.
+- id: webserver
+  config:
+    host: '0.0.0.0'
+    port: !!js ctx.webStartup.port ?? 3080
+    compression: gzip
+    compressionLevel: 1
+    compressionThresholdBytes: 1024
+
+# 首用工作区目录：容器无桌面 Documents 面，xdg-user-dir 回退 $HOME 被
+# 上游判 unavailable——显式指到镜像内预建、node 可写的平台工作区根下。
+- id: workspace-controller
+  config:
+    documentsDirectory: !!js process.env.DSH_DOCUMENTS_DIR ?? '/workspace/Documents'
+
+- insert:
+    - id: allybuild-session-sync
+      name: '@deepseek-ai/dsh-allybuild-session-sync'
+      config:
+        url: !!js process.env.ALLYBUILD_SESSION_URL ?? ''
+        token: !!js process.env.ALLYBUILD_TOKEN ?? ''
+        agentId: !!js process.env.ALLYBUILD_AGENT_ID ?? ''
+
+    - id: allybuild-progress-sync
+      name: '@deepseek-ai/dsh-allybuild-progress-sync'
+      config:
+        url: !!js process.env.ALLYBUILD_PROGRESS_URL ?? ''
+        token: !!js process.env.ALLYBUILD_TOKEN ?? ''
+        agentId: !!js process.env.ALLYBUILD_AGENT_ID ?? ''
+
+    - id: allybuild-answerer
+      name: '@deepseek-ai/dsh-allybuild-answerer'
+      config:
+        url: !!js process.env.ALLYBUILD_ANSWER_URL ?? ''
+        token: !!js process.env.ALLYBUILD_TOKEN ?? ''
+        agentId: !!js process.env.ALLYBUILD_AGENT_ID ?? ''

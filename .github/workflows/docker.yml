@@ -1,0 +1,76 @@
+name: docker
+
+on:
+  push:
+    branches: [main]
+    tags: ['v*']
+  workflow_dispatch:
+    inputs:
+      tag_suffix:
+        description: 'Suffix appended to the version tag (e.g. -tf1)'
+        required: false
+        default: ''
+
+permissions:
+  contents: read
+  packages: write
+
+jobs:
+  build-push:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Resolve lowercase image reference
+        id: image
+        run: echo "ref=ghcr.io/${GITHUB_REPOSITORY,,}" >> "$GITHUB_OUTPUT"
+
+      - name: Resolve the dsh version this build pins
+        id: dsh-version
+        # 从 Dockerfile 钉定的 DSH_SOURCE_REF 取版本：npm latest 可能领先于
+        # 钉定版本（tag 与镜像内 dsh 版本必须严格一致，README 契约）
+        run: echo "version=$(sed -n 's/^ARG DSH_SOURCE_REF=dsh-v//p' Dockerfile)" >> "$GITHUB_OUTPUT"
+
+      - uses: docker/setup-buildx-action@v3
+
+      - uses: docker/metadata-action@v5
+        id: meta
+        with:
+          images: ${{ steps.image.outputs.ref }}
+          # The dispatch suffix rides the semver route: {{version}} is not a
+          # raw-value expression in metadata-action, and an empty suffix dedupes
+          # into the plain {{version}} tag above, so push builds keep their tags.
+          tags: |
+            type=raw,value=${{ steps.dsh-version.outputs.version }}
+            type=raw,value=latest,enable={{is_default_branch}}
+            type=ref,event=branch
+            type=semver,pattern={{version}}
+            type=semver,pattern={{major}}.{{minor}}
+            type=semver,pattern={{version}},suffix=${{ inputs.tag_suffix || github.event.inputs.tag_suffix || '' }}
+
+      - uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - uses: docker/build-push-action@v6
+        with:
+          context: .
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+      - name: Language-face smoke
+        run: |
+          docker run --rm --entrypoint sh ${{ steps.image.outputs.ref }}:${{ steps.dsh-version.outputs.version }} -c '
+            set -e
+            python3 --version && tsx --version
+            mkdir -p /tmp/fake-slot && cd /tmp/fake-slot
+            printf "import { AllyBuildClient } from \"@allybuild/sdk\"\nconsole.log(\"ts-sdk-ok\", typeof AllyBuildClient)\n" > smoke.ts
+            tsx smoke.ts
+            tsx -e '"'"'import("@allybuild/sdk").then(m => console.log("ts-sdk-ok", Object.keys(m).length))'"'"'
+            python3 -c "import allybuild_sdk; print(\"py-sdk-ok\")"
+          '

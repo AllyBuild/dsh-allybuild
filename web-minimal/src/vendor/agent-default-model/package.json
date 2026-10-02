@@ -1,0 +1,5 @@
+{
+ "name": "@deepseek-ai/dsh-agent-default-model",
+ "private": true,
+ "vendorOf": "/Users/yaohao/work/team-agent/vendor/dsh/packages/core/agent-default-model"
+}

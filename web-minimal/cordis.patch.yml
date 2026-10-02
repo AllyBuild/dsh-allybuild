@@ -1,0 +1,359 @@
+# The dsh-web-minimal bundle patch: a reduced browser surface over dsh-base.
+# Conversation and trajectory are the only product UI; the session, its
+# workspace, and every setting arrive from outside — URL parameters drive the
+# session selection (the ui-minimal-entry row), and deployment settings stay
+# in the profile's cordis.yml because no settings UI is registered.
+#
+# Rows restate web-app's layer where reused; a patch replaces a targeted row's
+# whole config, so each restated row carries every key it owns. All plugin
+# names except dsh-web-minimal resolve from the running dsh installation.
+
+# ── base-row restatements ───────────────────────────────────────────────────
+
+- id: system-prompt
+  config:
+    personaSuffix: Your working directory is {{cwd}}.
+    personaPrefix: >-
+      You are a coding agent powered by the {{model}} model.
+
+# ── AllyBuild deployment rows ────────────────────────────────────────────────
+# The platform controls these via the process environment (per-agent exec env):
+# persona/model/LLM route/skills. A truthy-env row wins over upstream config;
+# everything degrades to inert when the env is absent.
+
+- id: system-prompt
+  config:
+    persona: !!js process.env.DSH_SYSTEM_PROMPT ?? ''
+
+# The LLM plane routes through the platform gateway (OpenAI chat-completions
+# wire format; dsh >=0.1.7's deepseek-official adapter speaks the Messages
+# protocol and does not match). baseURL/key/model arrive per-agent via env;
+# unknown model ids fall back to the gateway's default-model row.
+- id: llm-pi-ai
+  config:
+    providers:
+      allybuild-gateway:
+        displayName: AllyBuild Gateway
+        apiKeyEnv: DEEPSEEK_API_KEY
+        api: openai-completions
+        baseURL: !!js process.env.DEEPSEEK_BASE_URL ?? ''
+        compat:
+          thinkingFormat: deepseek
+        models: !!js '[{ id: process.env.DSH_MODEL || "", name: process.env.DSH_MODEL || "AllyBuild Model", contextWindow: 1000000 }].filter(function (m) { return m.id })'
+
+- id: agent-default-model
+  config:
+    provider: allybuild-gateway
+    model: !!js process.env.DSH_MODEL ?? ''
+
+# ── host glue, transport, and the reduced browser roster ────────────────────
+
+- insert:
+    # AllyBuild: ask_user_question 支撑任务待反馈链路——progress-sync 把该
+    # 工具调用即时映射为任务 pending_approval，答案经对话 UI 或 answerer
+    # 长轮询回流后同轮继续。（upstream 行在 web-app 预设的 agent 层，本
+    # profile 的 bundle 链不含该预设，须显式注册。）
+    - id: tool-ask-user
+      name: '@deepseek-ai/dsh-tool-ask-user'
+
+    # Ordinary provider for the parsed web flags (`--host`, `--port`,
+    # `--no-open`, `--trusted-host`); owned by the in-box web-app package.
+    - id: web-startup
+      name: '@deepseek-ai/dsh-web-app/startup'
+
+    - id: webserver
+      name: '@deepseek-ai/dsh-host-webserver'
+      inject: [webStartup]
+      config:
+        host: !!js ctx.webStartup.host ?? '127.0.0.1'
+        port: !!js ctx.webStartup.port ?? 3080
+        compression: gzip
+        compressionLevel: 1
+        compressionThresholdBytes: 1024
+
+    # Web glue: resolves the in-box frontend dist, mounts the static fallback
+    # owner, registers the web-surface prompt section and DSH_WEB_URL, prints
+    # the URL line, and opens the browser after the Loader tree settles.
+    - id: web-runtime
+      name: '@deepseek-ai/dsh-web-app'
+      inject: [webStartup]
+      config:
+        openBrowser: !!js ctx.webStartup.openBrowser
+        printUrl: true
+        surfaceContext: true
+        trustedHosts: !!js ctx.webStartup.trustedHosts
+
+    # Workspace service plus its browser Remote: the URL contract resolves
+    # `?workspace=` through the workspace-controller client.
+    - id: workspace
+      name: '@deepseek-ai/dsh-workspace'
+
+    - id: workspace-controller
+      name: '@deepseek-ai/dsh-api-workspace-controller'
+
+    # Session commands, cold reads, and live control over Typert Remote.
+    - id: session-controller
+      name: '@deepseek-ai/dsh-api-session-controller'
+
+    # Host owner of ctx.fileReferences: session-controller's fileReferences
+    # Remote (the @ candidate source) injects it — without this row the
+    # namespace never comes up and @ degrades to an empty list.
+    - id: file-reference-local
+      name: '@deepseek-ai/dsh-file-reference-local'
+
+    # Configuration-surface reads and writes; ui-settings' configForms service
+    # persists through this Remote.
+    - id: settings-controller
+      name: '@deepseek-ai/dsh-api-settings-controller'
+
+    # Adaptive directory-picker seam: the conversation workspace flows use it.
+    - id: directory-picker
+      name: '@deepseek-ai/dsh-host-directory-picker-auto'
+
+    # In-conversation chat facts: whole-log turn/step counts and the turn rail.
+    - id: session-stats
+      name: '@deepseek-ai/dsh-session-stats'
+
+    - id: session-turn-outline
+      name: '@deepseek-ai/dsh-session-turn-outline'
+
+    # ── transport ─────────────────────────────────────────────────────────────
+
+    # Dual-face: the node half scans this tree into window.__DSH_BOOT__ and
+    # serves /plugins/<id>/client.js; the browser half is the module table.
+    - id: modules
+      name: '@deepseek-ai/dsh-client-modules'
+
+    # Owns both ends of the web transport: node half binds the gateway to the
+    # webserver under /api; browser half is the fetch/SSE client.
+    - id: connection
+      name: '@deepseek-ai/dsh-client-connection'
+      inject: [webRuntime]
+      config:
+        trustedHosts: !!js ctx.webRuntime.trustedHosts
+
+    - id: api-remotes
+      name: '@deepseek-ai/dsh-api-remotes'
+
+    # ── browser roster: conversation + trajectory and their hard injections ───
+
+    - id: locale
+      name: '@deepseek-ai/dsh-client-locale'
+
+    # The browser command service. ui-layout injects it since 0.1.7, so the
+    # layout shell — and every row pending on `layout` — waits for this row.
+    - id: shortcuts
+      name: '@deepseek-ai/dsh-client-shortcuts'
+
+    - id: ui-theme
+      name: '@deepseek-ai/dsh-client-ui-theme'
+
+    - id: ui-layout
+      name: '@deepseek-ai/dsh-client-ui-layout'
+
+    - id: ui-renderer
+      name: '@deepseek-ai/dsh-client-ui-renderer'
+
+    - id: ui-session
+      name: '@deepseek-ai/dsh-client-ui-session'
+
+    - id: resources
+      name: '@deepseek-ai/dsh-client-resources'
+
+    - id: file-upload
+      name: '@deepseek-ai/dsh-client-file-upload'
+
+    - id: ui-conversation
+      name: '@deepseek-ai/dsh-client-ui-conversation'
+
+    - id: ui-chat
+      name: '@deepseek-ai/dsh-client-ui-chat'
+
+    # The '/' | '@' trigger pipeline and its command / reference sources —
+    # same rows web-app ships; ui-skill stays out (remote.skills namespace is
+    # not mounted by this assembly's api-remotes).
+    - id: ui-input-trigger
+      name: '@deepseek-ai/dsh-client-ui-input-trigger'
+
+    - id: ui-commands
+      name: '@deepseek-ai/dsh-client-ui-commands'
+
+    - id: ui-reference
+      name: '@deepseek-ai/dsh-client-ui-reference'
+
+    # Tool call tree, generic fallback, and keyed business Tool views.
+    - id: ui-tool
+      name: '@deepseek-ai/dsh-client-ui-tool'
+
+    - id: ui-trajectory
+      name: '@deepseek-ai/dsh-client-ui-trajectory'
+
+    # Required by the agent loop: permission approval and ask_user takeovers.
+    - id: ui-approval
+      name: '@deepseek-ai/dsh-client-ui-approval'
+
+    - id: ui-user-questions
+      name: '@deepseek-ai/dsh-client-ui-user-questions'
+
+    # ui-conversation and ui-chat inject the uiWorkspace service; its browser
+    # rows render into the omitted left sidebar, so no workspace panel shows.
+    - id: ui-workspace
+      name: '@deepseek-ai/dsh-client-ui-workspace'
+
+    # Provides configForms for theme/locale/conversation/chat; its page
+    # renders into the omitted settings navigation, so no settings UI shows.
+    - id: ui-settings
+      name: '@deepseek-ai/dsh-client-ui-settings'
+
+    # ui-chat injects the sidebarRight service for in-conversation resources.
+    - id: ui-sidebar-right
+      name: '@deepseek-ai/dsh-client-ui-sidebar-right'
+
+    # This package: reads ?session= / ?workspace= and drives the selection.
+    - id: ui-minimal-entry
+      name: 'dsh-web-minimal'
+
+    # ── the agent plane moves behind agent presets ────────────────────────────
+
+    - id: agent-preset-registry
+      name: '@deepseek-ai/dsh-agent-preset-registry'
+      config:
+        default: minimal
+
+    # The minimal agent: a complete persona plus one persistent shell, the
+    # same declaration web-app ships as its minimal preset.
+    - id: preset-minimal
+      name: '@deepseek-ai/dsh-agent-preset'
+      config:
+        id: minimal
+        order: 3
+        plugins:
+          - id: persona
+            name: '@deepseek-ai/dsh-persona'
+            config:
+              prefix: You are a helpful software engineer assistant.
+              complete: true
+              includeRuntimeContext: false
+          - id: persistent-shell
+            name: cordis:group
+            group: true
+            isolate:
+              terminals: true
+            config:
+              - id: pty
+                name: '@deepseek-ai/dsh-terminal'
+              - id: terminal-bash
+                name: '@deepseek-ai/dsh-terminal-bash'
+                disabled: !!js process.platform === 'win32'
+                config:
+                  timeoutMs: 300000
+              - id: persistent-bash
+                name: '@deepseek-ai/dsh-tool-bash-persistent'
+                disabled: !!js process.platform === 'win32'
+                config:
+                  timeoutMs: 300000
+                  description: |-
+                    Run commands in a bash shell
+                    * When invoking this tool, the contents of the "command" parameter does NOT need to be XML-escaped.
+                    * Network access depends on the task environment. Prefer configured mirrors/proxies when they are available.
+                    * State is persistent across command calls and discussions with the user.
+                    * To inspect a particular line range of a file, e.g. lines 10-25, try 'sed -n 10,25p /path/to/the/file'.
+                    * Please avoid commands that may produce a very large amount of output.
+                    * Please run long lived commands in the background, e.g. 'sleep 10 &' or start a server in the background.
+              - id: terminal-pwsh
+                name: '@deepseek-ai/dsh-terminal-bash'
+                disabled: !!js process.platform !== 'win32'
+                config:
+                  shellDialect: pwsh
+                  timeoutMs: 300000
+              - id: persistent-pwsh
+                name: '@deepseek-ai/dsh-tool-pwsh-persistent'
+                disabled: !!js process.platform !== 'win32'
+                config:
+                  timeoutMs: 300000
+                  description: |-
+                    Run commands in a PowerShell shell
+                    * When invoking this tool, the contents of the "command" parameter does NOT need to be XML-escaped.
+                    * You don't have access to the internet via this tool.
+                    * State is persistent across command calls and discussions with the user.
+                    * Use native Windows paths (C:\...) and $env:NAME variables; this is PowerShell, not bash.
+                    * Please avoid commands that may produce a very large amount of output.
+                    * Please run long lived commands in the background, e.g. 'Start-Job' or start a server with Start-Process.
+
+# ── agent-plane rows stay out of the host plane (same list as web-app) ──────
+
+- id: tool-plugin-manager
+  disabled: true
+
+- id: tool-bash
+  disabled: true
+
+- id: tool-pwsh
+  disabled: true
+
+- id: tool-jobs
+  disabled: true
+
+- id: tool-fs
+  disabled: true
+
+- id: tool-fs-search
+  disabled: true
+
+# AllyBuild: skills ride the platform volume; re-enabled (upstream disables
+# it for the minimal surface) and pointed at the platform-provided dirs.
+- id: skill-filesystem
+  disabled: false
+  config:
+    customSkillDirs: !!js (process.env.DSH_SKILL_DIRS ?? '').split(',').filter(Boolean)
+
+- id: tool-skill
+  disabled: true
+
+- id: command-goal
+  disabled: true
+
+- id: tool-goal
+  disabled: true
+
+- id: plan-mode
+  disabled: true
+
+- id: compaction-basic
+  disabled: true
+
+- id: command-compact
+  disabled: true
+
+- id: tool-result-pruner
+  disabled: true
+
+- id: tool-subagent-control
+  disabled: true
+
+- id: tool-subagent-list-agents
+  disabled: true
+
+- id: tool-subagent
+  disabled: true
+
+- id: tool-subagent-fork
+  disabled: true
+
+- id: workflow-ptc
+  disabled: true
+
+- id: tool-workflow
+  disabled: true
+
+- id: tool-ralph
+  disabled: true
+
+- id: agent-instructions
+  disabled: true
+
+- id: tool-todo
+  disabled: true
+
+- id: tool-web
+  disabled: true

@@ -1,0 +1,44 @@
+# Per-agent overlay, merged over /usr/local/share/dsh/docker-overlay.yml by
+# the entrypoint when DSH_AGENT_OVERLAY_PATH points at a copy of this file.
+# Patch rows override the base composition rows with the same id; values
+# arrive at patch-eval time from the process environment and stay inert when
+# the env is empty (the platform controls presence by setting or omitting the
+# env per agent process).
+#
+# LLM 面（dsh ≥0.1.7）：deepseek-official 适配器走 DeepSeek Messages 协议
+# （POST /v1/messages），平台网关只讲 OpenAI chat-completions——因此默认
+# 模型路由经 llm-pi-ai 的手工声明 OpenAI-compatible 路由指回平台网关：
+# baseURL/key 取自进程 env（沙箱 LLM 面恒为网关，凭据 = 属主 task JWT），
+# 模型 id = DSH_MODEL（driver 注入的解析后模型名，网关侧未知模型名落
+# is_default 行）。thinkingFormat=deepseek：网关忠实透传上游
+# reasoning_content 增量。DEEPSEEK_BASE_URL / DEEPSEEK_API_KEY 不在此文件：
+# 路由鉴权经 apiKeyEnv 读进程 env，无凭据插件挂载。
+- id: system-prompt
+  config:
+    persona: !!js process.env.DSH_SYSTEM_PROMPT ?? ''
+
+- id: skill-filesystem
+  disabled: false
+  config:
+    customSkillDirs: !!js (process.env.DSH_SKILL_DIRS ?? '').split(',').filter(Boolean)
+
+- id: llm-pi-ai
+  config:
+    providers:
+      allybuild-gateway:
+        displayName: AllyBuild Gateway
+        apiKeyEnv: DEEPSEEK_API_KEY
+        api: openai-completions
+        baseURL: !!js process.env.DEEPSEEK_BASE_URL ?? ''
+        compat:
+          thinkingFormat: deepseek
+        models: !!js '[{ id: process.env.DSH_MODEL || "", name: process.env.DSH_MODEL || "AllyBuild Model", contextWindow: 1000000 }].filter(function (m) { return m.id })'
+
+- id: agent-default-model
+  config:
+    provider: allybuild-gateway
+    model: !!js process.env.DSH_MODEL ?? ''
+
+- id: llm-deepseek
+  config:
+    maxTokens: 32768

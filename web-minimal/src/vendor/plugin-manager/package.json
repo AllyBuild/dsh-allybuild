@@ -1,0 +1,5 @@
+{
+ "name": "@deepseek-ai/dsh-plugin-manager",
+ "private": true,
+ "vendorOf": "/Users/yaohao/work/team-agent/vendor/dsh/packages/boot/plugin-manager"
+}

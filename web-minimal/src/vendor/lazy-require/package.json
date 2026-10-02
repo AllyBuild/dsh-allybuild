@@ -1,0 +1,5 @@
+{
+ "name": "@deepseek-ai/dsh-lazy-require",
+ "private": true,
+ "vendorOf": "/Users/yaohao/work/team-agent/vendor/dsh/packages/util/lazy-require"
+}
