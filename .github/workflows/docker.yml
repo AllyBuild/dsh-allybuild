@@ -74,3 +74,22 @@ jobs:
             tsx -e '"'"'import("@allybuild/sdk").then(m => console.log("ts-sdk-ok", Object.keys(m).length))'"'"'
             python3 -c "import allybuild_sdk; print(\"py-sdk-ok\")"
           '
+
+      # 离线分发通道：ghcr 包 ACL 不含 Daytona 的拉取凭据时，用 artifact
+      # 运镜像到本地再 `daytona snapshot push`（仅手动触发时导出）。
+      - name: Export image artifact
+        if: github.event_name == 'workflow_dispatch'
+        run: |
+          docker buildx build \
+            --output type=docker,dest=image.tar \
+            --cache-from type=gha \
+            -t ${{ steps.image.outputs.ref }}:${{ steps.dsh-version.outputs.version }} \
+            .
+          zstd -T0 -19 image.tar -o image.tar.zst
+
+      - uses: actions/upload-artifact@v4
+        if: github.event_name == 'workflow_dispatch'
+        with:
+          name: dsh-image-${{ steps.dsh-version.outputs.version }}
+          path: image.tar.zst
+          retention-days: 7
