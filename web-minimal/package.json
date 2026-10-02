@@ -28,6 +28,15 @@
     },
     "./live.css": "./lib/live.css",
     "./mirror.css": "./lib/mirror.css",
+    "./vendor-alias": {
+      "types": "./src/vendor-alias.ts",
+      "default": "./src/vendor-alias.ts"
+    },
+    "./fe-bridge/node-module-stub": {
+      "types": "./src/fe-bridge/node-module-stub.ts",
+      "default": "./src/fe-bridge/node-module-stub.ts"
+    },
+    "./fe-bridge/theme-bridge.css": "./src/fe-bridge/theme-bridge.css",
     "./cordis.patch.yml": "./cordis.patch.yml",
     "./package.json": "./package.json"
   },

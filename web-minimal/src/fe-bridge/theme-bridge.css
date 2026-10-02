@@ -1,0 +1,174 @@
+/**
+ * dsh 壳的主题桥：把上游 ui-* 组件消费的 --dsw-alias-* 语义层重绑到
+ * AllyBuild 主站 token（src/styles/tokens.css）。上游 design-platform.css
+ * 定义在 body 上，容器级覆盖优先于它，vendor 组件全部落在容器内。
+ *
+ * 暗色跟随主站的触发方式（prefers-color-scheme），与上游自己的
+ * data-ds-dark-theme 属性无关——主站亮时壳必须亮。
+ */
+
+.dsh-embedded {
+  /* ── 文本 ─────────────────────────────────────────── */
+  --dsw-alias-label-primary: var(--t1);
+  --dsw-alias-label-primary-dimmed: var(--t1);
+  --dsw-alias-label-primary-foreground: var(--surface);
+  --dsw-alias-label-primary-inverted: var(--on-accent);
+  --dsw-alias-label-primary-bluish: var(--accent);
+  --dsw-alias-label-secondary: var(--t2);
+  --dsw-alias-label-tertiary: var(--t3);
+  --dsw-alias-label-caption: var(--t3);
+  --dsw-alias-label-dimmed: var(--border);
+  --dsw-alias-link: var(--accent);
+
+  /* ── 背景 ─────────────────────────────────────────── */
+  /* 壳只出现在 Drawer/嵌入面（任务详情、员工对话抽屉）里，宿主是
+     --surface 纯白——bg-base 绑 --surface 让对话流与宿主同底；
+     绑 --bg（米白）会出现截图里对话区与 tab 栏两截色的割裂。 */
+  --dsw-alias-bg-base: var(--surface);
+  --dsw-alias-bg-layer-1: var(--surface);
+  --dsw-alias-bg-layer-2: var(--surface-alt);
+  --dsw-alias-bg-layer-3: var(--surface-alt);
+  --dsw-alias-bg-module-platform: var(--surface-alt);
+  --dsw-alias-bg-multi-select: var(--surface);
+  --dsw-alias-bg-overlay: var(--surface);
+  --dsw-alias-bg-skeleton: var(--border-subtle);
+  --dsw-alias-bg-mask-1: rgba(28, 25, 23, 0.32);
+  --dsw-alias-bg-mask-2: rgba(28, 25, 23, 0.45);
+  --dsw-alias-bg-mask-3: rgba(28, 25, 23, 0.6);
+  --dsw-alias-bg-mask-drop: rgba(28, 25, 23, 0.08);
+  --dsw-alias-bg-mask-photo: rgba(28, 25, 23, 0.72);
+
+  /* ── 边框 ─────────────────────────────────────────── */
+  --dsw-alias-border-l1: var(--border-subtle);
+  --dsw-alias-border-l2: var(--border);
+  --dsw-alias-border-l3: var(--border);
+  --dsw-alias-border-l4: var(--t3);
+  --dsw-alias-border-inverted: var(--surface);
+  --dsw-alias-border-inverted2: var(--surface-alt);
+
+  /* ── 品牌与交互 ───────────────────────────────────── */
+  --dsw-alias-brand-primary: var(--accent);
+  --dsw-alias-brand-primary-invert: var(--on-accent);
+  --dsw-alias-brand-text: var(--accent);
+  --dsw-alias-state-business-primary: var(--accent);
+  --dsw-alias-state-business-tertiary: var(--accent-bg);
+  --dsw-alias-interactive-bg-hover: rgba(28, 25, 23, 0.05);
+  --dsw-alias-interactive-bg-active: rgba(28, 25, 23, 0.09);
+  --dsw-alias-interactive-bg-hover-accent: var(--accent-bg);
+  --dsw-alias-interactive-bg-hover-danger: var(--error-bg);
+  --dsw-alias-interactive-bg-hover-solid: var(--surface-alt);
+  --dsw-alias-button-primary-fill: var(--accent);
+  --dsw-alias-button-primary-hover: var(--accent-dark);
+  --dsw-alias-button-primary-dimmed: var(--accent-border);
+  --dsw-alias-button-contrast-fill: var(--surface);
+  --dsw-alias-button-elevated-fill: var(--surface);
+  --dsw-alias-button-floating-fill: var(--surface);
+  --dsw-alias-button-floating-hover: var(--surface-alt);
+  --dsw-alias-button-ghost-active-border: var(--accent-border);
+  --dsw-alias-button-ghost-active-fill: var(--accent-bg);
+  --dsw-alias-button-ghost-active-hover: var(--accent-border);
+  --dsw-alias-button-info-fill: var(--accent);
+  --dsw-alias-button-info-hover: var(--accent-dark);
+  --dsw-alias-button-tool-bar-fill: rgba(28, 25, 23, 0.06);
+  --dsw-alias-button-tool-bar-fill-invisible: transparent;
+  --dsw-alias-button-tool-bar-hover: rgba(28, 25, 23, 0.1);
+
+  /* ── 语义状态 ─────────────────────────────────────── */
+  --dsw-alias-state-error-primary: var(--error);
+  --dsw-alias-state-error-secondary: var(--error-bg);
+  --dsw-alias-state-success-primary: var(--success);
+  --dsw-alias-state-success-secondary: var(--success-bg);
+  --dsw-alias-state-success-tertiary: var(--success-bg);
+  --dsw-alias-state-warn-primary: var(--warn);
+  --dsw-alias-state-warn-secondary: var(--warn-bg);
+  --dsw-alias-state-warn-tertiary: var(--warn-bg);
+  --dsw-alias-state-warn-label: var(--warn);
+
+  /* ── Markdown / 代码 ──────────────────────────────────────────────── */
+  /* 亮色主题：块面改浅色——上游代码文字继承环境前景（深色），常暗背景
+     会变成黑底黑字；浅色面下环境文字直接可读。暗色主题维持常暗块。 */
+  --dsw-alias-markdown-code-block: var(--surface-alt);
+  --dsw-alias-markdown-code-block-banner: var(--border-subtle);
+  --dsw-alias-markdown-inline-code: var(--surface-alt);
+  --dsw-alias-markdown-code-segment-selected: var(--accent-bg);
+  --dsw-alias-markdown-code-segment-unselected: transparent;
+  --dsw-alias-markdown-citation: var(--t2);
+  --dsw-alias-markdown-placeholder: var(--t3);
+  --dsw-alias-markdown-tag: var(--t2);
+
+  /* ── 浮层与滚动条 ─────────────────────────────────── */
+  --dsw-alias-tooltip-bg: var(--t1);
+  --dsw-alias-toast-bg: var(--surface);
+  --dsw-alias-scrollbar-bg-l1: transparent;
+  --dsw-alias-scrollbar-bg-l2: var(--border-subtle);
+  --dsw-alias-scrollbar-hover-l1: var(--border);
+  --dsw-alias-scrollbar-hover-l2: var(--t3);
+
+  /* ── 场景专用（sidebar/气泡/菜单/输入） ───────────── */
+  --dsw-specific-sidebar-fill: var(--nav-bg);
+  --dsw-specific-sidebar-nav-item-hover: rgba(28, 25, 23, 0.05);
+  --dsw-specific-sidebar-nav-item-active: var(--surface);
+  --dsw-specific-sidebar-nav-item-active-accent: var(--accent-bg);
+  --dsw-specific-bubble: var(--surface);
+  --dsw-specific-bubble-highlight: var(--accent-bg);
+  --dsw-specific-input-major: var(--surface);
+  --dsw-specific-login-input: var(--surface);
+  --dsw-specific-menu: var(--surface);
+  --dsw-specific-selector: var(--border-subtle);
+  --dsw-specific-tip: var(--border-subtle);
+
+  color: var(--t1);
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC',
+    'Hiragino Sans GB', 'Microsoft YaHei', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+}
+
+/* ── 暗色：与主站 tokens.css 的暗色块同源 ────────────── */
+@media (prefers-color-scheme: dark) {
+  .dsh-embedded {
+    --dsw-alias-interactive-bg-hover: rgba(255, 255, 255, 0.06);
+    --dsw-alias-interactive-bg-active: rgba(255, 255, 255, 0.1);
+    --dsw-alias-interactive-bg-hover-solid: var(--surface-alt);
+    --dsw-alias-button-tool-bar-fill: rgba(255, 255, 255, 0.08);
+    --dsw-alias-button-tool-bar-hover: rgba(255, 255, 255, 0.14);
+    --dsw-alias-bg-mask-1: rgba(0, 0, 0, 0.4);
+    --dsw-alias-bg-mask-2: rgba(0, 0, 0, 0.55);
+    --dsw-alias-bg-mask-3: rgba(0, 0, 0, 0.7);
+    --dsw-alias-bg-mask-drop: rgba(0, 0, 0, 0.2);
+    --dsw-alias-bg-mask-photo: rgba(0, 0, 0, 0.8);
+    --dsw-alias-tooltip-bg: var(--surface-alt);
+    --dsw-alias-label-dimmed: var(--t3);
+    --dsw-alias-border-l4: var(--t2);
+    /* 暗色主题：代码块维持常暗（环境前景为浅色，本来可读） */
+    --dsw-alias-markdown-code-block: var(--code-bg);
+    --dsw-alias-markdown-code-block-banner: var(--code-chrome-bg);
+    --dsw-alias-markdown-inline-code: rgba(255, 255, 255, 0.08);
+    --dsw-specific-sidebar-fill: var(--surface);
+    --dsw-specific-sidebar-nav-item-hover: rgba(255, 255, 255, 0.06);
+    --dsw-specific-sidebar-nav-item-active: var(--surface-alt);
+    --dsw-specific-sidebar-nav-item-active-accent: rgba(139, 92, 246, 0.18);
+  }
+}
+
+/* ── 嵌入裁剪：会话头 ───────────────────────────────── */
+/* 会话头（标题 + 对话/轨迹视图 tab + 底部发丝线 + 外层容器）在 AllyBuild
+   嵌入里无导航价值：任务轨迹走任务详情抽屉自己的「轨迹」tab，员工对话
+   抽屉不需要视图切换，整块（含 slot 容器）摘除。vendor 目录会被
+   scripts/vendor-dsh.mjs 整体重拷，故裁剪落在本文件而非上游组件；
+   data-slot 是 slot 渲染层的稳定锚点，不误伤其他 <header>。 */
+.dsh-embedded [data-slot='conversation.session.header'] {
+  display: none;
+}
+
+/* 常驻导航头（cwd/workspace 标签 + 侧栏切换等 leading 控件）在嵌入里
+   同样无导航价值，整条摘除；锚点是 ConversationHeader 独有的
+   data-conversation-header-leading 子元素，不误伤其他 <header>。 */
+.dsh-embedded header:has(> [data-conversation-header-leading]) {
+  display: none;
+}
+
+/* 会话内容顶部贴齐容器顶（tab 条/抽屉头）：对话滚动区自带 16px 上内边距，
+   嵌入场景整块去掉；直接父节点即滚动区（data-chat-flow 的唯一宿主），
+   左右边距保留——转写列与输入卡的同轴对齐依赖它。 */
+.dsh-embedded :has(> [data-chat-flow]) {
+  padding-top: 0;
+}
