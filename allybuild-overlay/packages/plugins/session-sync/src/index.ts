@@ -497,8 +497,8 @@ export class AllybuildSessionSync extends Service {
               if (rows.length > 0 || !meta.blank) {
                 const ok = await post(false, [meta], rows)
                 if (ok) {
-                  const maxSeq = rows.length ? rows[rows.length - 1].seq : -1
-                  watermark.set(header.id, Math.max(watermark.get(header.id) ?? -1, maxSeq))
+                  const last = rows[rows.length - 1]
+                  watermark.set(header.id, Math.max(watermark.get(header.id) ?? -1, last?.seq ?? -1))
                 }
               }
             }
