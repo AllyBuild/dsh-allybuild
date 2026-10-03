@@ -461,14 +461,14 @@ export class AllybuildSessionSync extends Service {
         // 重复行无害。元数据行一并补（老会话列表不再缺行）。
         void (async () => {
           try {
-            const headers = await hostCtx.sessionQuery.listSessions()
-            for (const header of headers) {
+            const wrappedHeaders = await hostCtx.sessionQuery.listSessions()
+            for (const wrapped of wrappedHeaders) {
+              // listSessions 行是 { header: … } 包络：真正的会话头在 .header
+              const header = wrapped.header
               const { session, events } = await hostCtx.sessionQuery.readSession(header.id)
               const rows: JournalRow[] = []
-              let hasPrompt = false
               let usageState = initialTurnUsage()
               for (const event of events) {
-                if (event.type === 'user/message') hasPrompt = true
                 const seq = typeof event.seq === 'number' ? event.seq : undefined
                 if (seq === undefined) continue
                 const data: Record<string, unknown> = { ...(event.data ?? {}) }
