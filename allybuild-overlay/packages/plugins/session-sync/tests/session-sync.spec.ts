@@ -275,8 +275,8 @@ describe('AllybuildSessionSync journal rows', () => {
     expect(bf.rows.map(r => r.seq)).toEqual([0, 1, 2, 3])
     const turnEnd = bf.rows.find(r => r.type === 'turn/end')
     expect(turnEnd!.data.usage).toEqual({ inputTokens: 5, outputTokens: 2, cacheReadTokens: 1 })
-    expect(bf.sessions[0].blank).toBe(false)
-    expect(bf.sessions[0].displayTitle).toBe('早窗消息')
+    expect(bf.sessions[0]!.blank).toBe(false)
+    expect(bf.sessions[0]!.displayTitle).toBe('早窗消息')
   })
 
   it('sends the v2 payload shape', async () => {
