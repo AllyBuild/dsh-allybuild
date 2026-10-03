@@ -28,8 +28,14 @@ jobs:
       - name: Resolve the dsh version this build pins
         id: dsh-version
         # 从 Dockerfile 钉定的 DSH_SOURCE_REF 取版本：npm latest 可能领先于
-        # 钉定版本（tag 与镜像内 dsh 版本必须严格一致，README 契约）
-        run: echo "version=$(sed -n 's/^ARG DSH_SOURCE_REF=dsh-v//p' Dockerfile)" >> "$GITHUB_OUTPUT"
+        # 钉定版本（tag 与镜像内 dsh 版本必须严格一致，README 契约）。
+        # 追加短 commitid 区分同版本 overlay 变更的重构建（前端 .env 按
+        # 此 tag 精确拉取，避免旧 tag 缓存/覆盖歧义）。
+        run: |
+          VERSION=$(sed -n 's/^ARG DSH_SOURCE_REF=dsh-v//p' Dockerfile)
+          SHA=${GITHUB_SHA::7}
+          echo "version=${VERSION}" >> "$GITHUB_OUTPUT"
+          echo "version_sha=${VERSION}-${SHA}" >> "$GITHUB_OUTPUT"
 
       - uses: docker/setup-buildx-action@v3
 
@@ -41,7 +47,7 @@ jobs:
           # raw-value expression in metadata-action, and an empty suffix dedupes
           # into the plain {{version}} tag above, so push builds keep their tags.
           tags: |
-            type=raw,value=${{ steps.dsh-version.outputs.version }}
+            type=raw,value=${{ steps.dsh-version.outputs.version_sha }}
             type=raw,value=latest,enable={{is_default_branch}}
             type=ref,event=branch
             type=semver,pattern={{version}}
@@ -65,7 +71,7 @@ jobs:
 
       - name: Language-face smoke
         run: |
-          docker run --rm --entrypoint sh ${{ steps.image.outputs.ref }}:${{ steps.dsh-version.outputs.version }} -c '
+          docker run --rm --entrypoint sh ${{ steps.image.outputs.ref }}:${{ steps.dsh-version.outputs.version_sha }} -c '
             set -e
             python3 --version && tsx --version
             mkdir -p /tmp/fake-slot && cd /tmp/fake-slot
