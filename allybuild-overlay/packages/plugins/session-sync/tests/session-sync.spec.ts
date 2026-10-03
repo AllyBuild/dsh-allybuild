@@ -265,22 +265,6 @@ describe('AllybuildSessionSync journal rows', () => {
         events: persistedEvents,
       }),
     }
-    const persistedEvents: Array<EventFixture> = [
-      { type: 'turn/start', seq: 0, time: 1, data: { turn: 1 } },
-      { type: 'user/message', seq: 1, time: 2, data: { content: [{ type: 'text', text: '早窗消息' }] } },
-      {
-        type: 'assistant/message', seq: 2, time: 3,
-        data: { usage: { inputTokens: 5, outputTokens: 2, cacheReadTokens: 1 } },
-      },
-      { type: 'turn/end', seq: 3, time: 4, data: { turn: 1 } },
-    ]
-    const sq = {
-      listSessions: async () => [{ id: 's-old', createdAt: 1, cwd: '/workspace/snake' }],
-      readSession: async (id: string) => ({
-        session: { id, createdAt: 1, cwd: '/workspace/snake' },
-        events: persistedEvents,
-      }),
-    }
     stubFetch(['ok'])
     startSync(sq)
     await vi.advanceTimersByTimeAsync(8000)
@@ -288,8 +272,7 @@ describe('AllybuildSessionSync journal rows', () => {
     const backfill = fetchCalls.find(c => c.body.rows.length > 0)
     expect(backfill).toBeDefined()
     expect(backfill!.body.rows.map(r => r.seq)).toEqual([0, 1, 2, 3])
-    // turn/end 行带聚合 usage；元数据行 non-blank
-    const turnEnd = backfill.body.rows.find(r => r.type === 'turn/end')
+    const turnEnd = backfill!.body.rows.find(r => r.type === 'turn/end')
     expect(turnEnd!.data.usage).toEqual({ inputTokens: 5, outputTokens: 2, cacheReadTokens: 1 })
     expect(backfill!.body.sessions[0].blank).toBe(false)
     expect(backfill!.body.sessions[0].displayTitle).toBe('早窗消息')
