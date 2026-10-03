@@ -454,6 +454,58 @@ export class AllybuildSessionSync extends Service {
           if (event !== undefined && collectRow(session, event)) flush()
         })
         hostCtx.sessionProjections.onChanged(session => markDirty(session))
+        // 启动回填：监听只覆盖注册之后的事件——8s 窗口、插件重启（水位
+        // 清零）、进程死亡丢 pending 都会造成镜像缺口。readSession 直接读
+        // 持久化 journal（不依赖事件时点）全量补推；缺口可能位于水位之下
+        // （早窗丢失），因此不过滤——接收端按 (sessionId, seq) 幂等去重，
+        // 重复行无害。元数据行一并补（老会话列表不再缺行）。
+        void (async () => {
+          try {
+            const headers = await hostCtx.sessionQuery.listSessions()
+            for (const header of headers) {
+              const { session, events } = await hostCtx.sessionQuery.readSession(header.id)
+              const rows: JournalRow[] = []
+              let hasPrompt = false
+              let usageState = initialTurnUsage()
+              for (const event of events) {
+                if (event.type === 'user/message') hasPrompt = true
+                const seq = typeof event.seq === 'number' ? event.seq : undefined
+                if (seq === undefined) continue
+                const data: Record<string, unknown> = { ...(event.data ?? {}) }
+                if (event.type === 'turn/start') {
+                  usageState = initialTurnUsage()
+                } else if (event.type === 'assistant/message') {
+                  const sample = usageSampleOf(data.usage)
+                  if (sample !== undefined) {
+                    usageState = addUsageSample(usageState, sample)
+                  }
+                } else if (event.type === 'turn/end') {
+                  const usage = finalizeTurnUsage(usageState)
+                  if (usage !== undefined) data.usage = usage
+                  usageState = initialTurnUsage()
+                }
+                rows.push({
+                  sessionId: header.id,
+                  seq,
+                  type: event.type ?? 'unknown',
+                  data,
+                })
+              }
+              const meta = buildRowFromEvents(
+                session, events, hostCtx.agents.get(session.id)?.status,
+              )
+              if (rows.length > 0 || !meta.blank) {
+                const ok = await post(false, [meta], rows)
+                if (ok) {
+                  const maxSeq = rows.length ? rows[rows.length - 1].seq : -1
+                  watermark.set(header.id, Math.max(watermark.get(header.id) ?? -1, maxSeq))
+                }
+              }
+            }
+          } catch (error) {
+            console.warn('[allybuild-session-sync] boot backfill failed:', error)
+          }
+        })()
       }, LISTEN_DELAY_MS)
       hostCtx.effect(() => () => clearTimeout(listenTimer), 'allybuild-session-sync: listen delay')
     })
