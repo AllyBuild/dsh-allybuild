@@ -271,11 +271,12 @@ describe('AllybuildSessionSync journal rows', () => {
     await vi.runAllTimersAsync()
     const backfill = fetchCalls.find(c => c.body.rows.length > 0)
     expect(backfill).toBeDefined()
-    expect(backfill!.body.rows.map(r => r.seq)).toEqual([0, 1, 2, 3])
-    const turnEnd = backfill!.body.rows.find(r => r.type === 'turn/end')
+    const bf = backfill!.body as { rows: Array<{ seq: number; type: string; data: Record<string, unknown> }>; sessions: Array<{ blank: boolean; displayTitle: string }> }
+    expect(bf.rows.map(r => r.seq)).toEqual([0, 1, 2, 3])
+    const turnEnd = bf.rows.find(r => r.type === 'turn/end')
     expect(turnEnd!.data.usage).toEqual({ inputTokens: 5, outputTokens: 2, cacheReadTokens: 1 })
-    expect(backfill!.body.sessions[0].blank).toBe(false)
-    expect(backfill!.body.sessions[0].displayTitle).toBe('早窗消息')
+    expect(bf.sessions[0].blank).toBe(false)
+    expect(bf.sessions[0].displayTitle).toBe('早窗消息')
   })
 
   it('sends the v2 payload shape', async () => {
