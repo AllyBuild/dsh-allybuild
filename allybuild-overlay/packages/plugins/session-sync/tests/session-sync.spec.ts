@@ -265,22 +265,6 @@ describe('AllybuildSessionSync journal rows', () => {
         events: persistedEvents,
       }),
     }
-    stubFetch(['ok'])
-    startSync(sq)
-    await vi.advanceTimersByTimeAsync(8000)
-    await vi.runAllTimersAsync()
-    const backfill = fetchCalls.find(c => c.body.rows.length > 0)
-    expect(backfill).toBeDefined()
-    expect(backfill!.body.rows.map(r => r.seq)).toEqual([0, 1, 2, 3])
-    const turnEnd = backfill!.body.rows.find(r => r.type === 'turn/end')
-    expect(turnEnd!.data.usage).toEqual({ inputTokens: 5, outputTokens: 2, cacheReadTokens: 1 })
-    expect(backfill!.body.sessions[0].blank).toBe(false)
-    expect(backfill!.body.sessions[0].displayTitle).toBe('早窗消息')
-  })
-
-  it('boot backfill heals pre-listener gaps and aggregates usage', async () => {
-    // 8s 监听窗口之前发生的事件（seq 0-3）在镜像里缺失——启动回填应从
-    // 持久化 journal 全量补推（含 turn usage 聚合与元数据行）。
     const persistedEvents: Array<EventFixture> = [
       { type: 'turn/start', seq: 0, time: 1, data: { turn: 1 } },
       { type: 'user/message', seq: 1, time: 2, data: { content: [{ type: 'text', text: '早窗消息' }] } },
@@ -303,12 +287,12 @@ describe('AllybuildSessionSync journal rows', () => {
     await vi.runAllTimersAsync()
     const backfill = fetchCalls.find(c => c.body.rows.length > 0)
     expect(backfill).toBeDefined()
-    expect(backfill.body.rows.map(r => r.seq)).toEqual([0, 1, 2, 3])
+    expect(backfill!.body.rows.map(r => r.seq)).toEqual([0, 1, 2, 3])
     // turn/end 行带聚合 usage；元数据行 non-blank
     const turnEnd = backfill.body.rows.find(r => r.type === 'turn/end')
-    expect(turnEnd.data.usage).toEqual({ inputTokens: 5, outputTokens: 2, cacheReadTokens: 1 })
-    expect(backfill.body.sessions[0].blank).toBe(false)
-    expect(backfill.body.sessions[0].displayTitle).toBe('早窗消息')
+    expect(turnEnd!.data.usage).toEqual({ inputTokens: 5, outputTokens: 2, cacheReadTokens: 1 })
+    expect(backfill!.body.sessions[0].blank).toBe(false)
+    expect(backfill!.body.sessions[0].displayTitle).toBe('早窗消息')
   })
 
   it('sends the v2 payload shape', async () => {
