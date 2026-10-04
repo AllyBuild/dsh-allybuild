@@ -32,7 +32,7 @@ RUN git clone --depth 1 --branch "${DSH_SOURCE_REF}" \
 # UPSTREAM package: it is stamped onto packages/client/connection explicitly
 # and the authored copy removed — same-name twins would trip pnpm's duplicate
 # workspace-name check, and the upstream path is what every consumer resolves.
-COPY allybuild-overlay /tmp/allybuild-overlay
+COPY runtime/allybuild-overlay /tmp/allybuild-overlay
 RUN rsync -a /tmp/allybuild-overlay/ /src/ \
   && rsync --delete -a /tmp/allybuild-overlay/packages/plugins/connection/ /src/packages/client/connection/ \
   && rm -rf /src/packages/plugins/connection \
@@ -75,7 +75,7 @@ RUN corepack enable \
 # its own lockfile and workspace file govern the install. devDependencies
 # (toolchain + test rig) are pruned after the build — the runtime surface is
 # lib/ + package metadata only, exactly what the baked copy used to ship.
-COPY web-minimal /tmp/web-minimal
+COPY runtime/web-minimal /tmp/web-minimal
 RUN cd /tmp/web-minimal \
   && pnpm install --no-frozen-lockfile \
   && pnpm run build \
@@ -100,19 +100,27 @@ RUN npm install -g --registry=https://registry.npmmirror.com tsx@4 \
     && tsx --version \
     && python3 --version
 
-# TaskFlow script SDKs: baked so task slots carry only the script + workflow
-# entry + reactive libs. Versions move with the image tag, not per-task upload.
-# Resolution (verified empirically): tsx treats package.json-less slots as CJS
-# and transpiles `import` to `require`, which NODE_PATH resolves; ESM-mode
-# slots (a `"type": "module"` package.json above the slot) and dynamic
-# import() bypass NODE_PATH — Node ESM has no global search path — so the
-# baked tsconfig adds a `paths` mapping that tsx's resolver honors in every
+# TaskFlow script SDKs: baked from local source (always in sync with repo);
+# tsx handles TS natively, no pre-build needed. Resolution (verified
+# empirically): tsx treats package.json-less slots as CJS and transpiles
+# `import` to `require`, which NODE_PATH resolves; ESM-mode slots (a
+# `"type": "module"` package.json above the slot) and dynamic import()
+# bypass NODE_PATH — Node ESM has no global search path — so the baked
+# tsconfig adds a `paths` mapping that tsx's resolver honors in every
 # mode. Either mechanism alone covers only its half; both together cover all.
-# @allybuild/sdk stays on the default registry: npmmirror does not mirror the
-# private scope (404).
-RUN npm install -g @allybuild/sdk@1.1.0 \
-    && pip install --no-cache-dir --break-system-packages allybuild-sdk==1.1.0 \
-    && mkdir -p /etc/allybuild \
+# TS SDK：先构建 dist 再全局安装（npm install -g 需要 dist/）
+COPY sdk/ts/package.json sdk/ts/tsconfig.json sdk/ts/tsconfig.build.json /tmp/sdk-ts/
+COPY sdk/ts/src /tmp/sdk-ts/src
+RUN cd /tmp/sdk-ts \
+    && npm install --registry=https://registry.npmmirror.com --ignore-scripts \
+    && npx tsc -p tsconfig.build.json \
+    && npm install -g /tmp/sdk-ts \
+    && rm -rf /tmp/sdk-ts/node_modules /tmp/sdk-ts/dist
+# Python SDK：直接从源码安装（setuptools 构建即用）
+COPY sdk/python /tmp/sdk-python
+RUN pip install --no-cache-dir --break-system-packages /tmp/sdk-python \
+    && rm -rf /tmp/sdk-python
+RUN mkdir -p /etc/allybuild \
     && printf '%s\n' \
       '{' \
       '  "compilerOptions": {' \
@@ -146,8 +154,8 @@ VOLUME /data
 # /workspace/.allybuild 下，镜像预建并交给 node（镜像无 sudo，平台脚本无法自建）。
 RUN mkdir -p /workspace && chown node:node /workspace
 
-COPY --chmod=0755 dsh-entrypoint.sh /usr/local/bin/dsh-entrypoint
-COPY docker-overlay.yml merge-overlay.py mcp-overlay.py agent-overlay.yml /usr/local/share/dsh/
+COPY --chmod=0755 runtime/dsh-entrypoint.sh /usr/local/bin/dsh-entrypoint
+COPY runtime/docker-overlay.yml runtime/merge-overlay.py runtime/mcp-overlay.py runtime/agent-overlay.yml /usr/local/share/dsh/
 
 EXPOSE 3080
 
