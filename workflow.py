@@ -1,23 +1,100 @@
-"""Task slot entry point — imports SDK workflow bindings, loads task_script.
+"""Task slot entry point — workflow shell（绑定面 + 运行入口，自包含）。
 
-平台交互面在 allybuild_sdk.workflow（env 解析 + client 构建 + SDK 绑定）；
-本文件是沙箱 slot 的运行入口（与 task_script.py 同目录上传）。task_script
-的 `from workflow import X` 经 sys.modules 别名直达 allybuild_sdk.workflow。
+只依赖 allybuild_sdk 稳定 API（≥1.1.0：client/tasks/agents/memories/okf/
+mcp/status/reactive），不依赖包内 workflow 模块，任意沙箱镜像可直接跑。
+上传时与 task_script.py 同目录；task_script 的 `from workflow import X`
+经 sys.modules 别名直达本模块。
+
+模块级变量：params / reporter / TASK_ID / PROJECT_ID / TASK_JWT /
+ALLYBUILD_API_URL / project_status / project_tokens / create_task /
+wait_task / feedback / flush_tasks / list_tasks / get_task / mcp /
+mcp_call / list_agents / list_workspaces / list_task_type_memories /
+get_task_memories / okf_search / okf_lint / defineStore / action /
+getter / field / create_reactive。
 """
 import importlib.util
 import json
 import os
 import sys
 
-# 从 SDK 包导入工作流绑定面；把 SDK 模块别名到 "workflow" 让 task_script
-# 的 `from workflow import X` 直接命中。
-from allybuild_sdk import workflow as _wf
-sys.modules.setdefault("workflow", _wf)
+from allybuild_sdk import (
+    AllyBuildClient, ScriptContext, Reporter, TasksApi,
+    AgentsApi, MemoriesApi, OkfApi, McpApi, ProjectStatusProxy,
+)
+from allybuild_sdk.reactive import (
+    defineStore, action, getter, field, create_reactive, HttpBackend,
+)
 
-params = _wf.params
-reporter = _wf.reporter
-flush_tasks = _wf.flush_tasks
+# -- Injected context --
+TASK_ID             = os.environ.get("TASK_ID", "")
+PROJECT_ID          = os.environ.get("PROJECT_ID", "")
+TASK_JWT            = os.environ.get("TASK_JWT", "")
+ALLYBUILD_API_URL   = os.environ.get("ALLYBUILD_API_URL", "")
+BG_SERVICE_ID       = os.environ.get("BG_SERVICE_ID", "")
+SERVICE_WORKSPACE_ID = os.environ.get("ALLYBUILD_WORKSPACE_ID", "")
 
+try:
+    params = json.loads(os.environ.get("TASK_PARAMS", "{}"))
+except Exception:
+    params = {}
+
+try:
+    project_tokens = json.loads(os.environ.get("ALLYBUILD_PROJECT_TOKENS", "{}"))
+except Exception:
+    project_tokens = {}
+
+client = AllyBuildClient(ALLYBUILD_API_URL, TASK_JWT, PROJECT_ID)
+
+reporter = Reporter()
+
+# -- Reactive backend init（HTTP mediate；容器无 Redis URL）--
+_status_backend = None
+if ALLYBUILD_API_URL:
+    try:
+        _status_backend = HttpBackend(api_url=ALLYBUILD_API_URL, jwt=TASK_JWT, project_id=PROJECT_ID)
+        create_reactive(redis=_status_backend)
+    except Exception as _exc:
+        import logging as _log
+        _log.getLogger(__name__).warning(
+            "project_status: reactive init failed, using in-memory mode: %s", _exc)
+
+project_status = ProjectStatusProxy(client=client, backend=_status_backend)
+
+_ctx = ScriptContext(
+    task_id=TASK_ID, bg_service_id=BG_SERVICE_ID, service_workspace_id=SERVICE_WORKSPACE_ID)
+
+_tasks = TasksApi(client, _ctx)
+create_task = _tasks.create
+wait_task = _tasks.wait
+feedback = _tasks.feedback
+flush_tasks = _tasks.flush
+list_tasks = _tasks.list
+get_task = _tasks.get
+
+_mcp = McpApi(client)
+mcp = _mcp.mcp
+mcp_call = _mcp.mcp_call
+# async_mcp_call 在 SDK >1.1.0 才有；防御性绑定
+_async_mcp_call = getattr(_mcp, "async_mcp_call", None)
+if _async_mcp_call is not None:
+    async_mcp_call = _async_mcp_call
+
+_agents = AgentsApi(client)
+list_agents = _agents.list_agents
+list_workspaces = _agents.list_workspaces
+
+_memories = MemoriesApi(client)
+list_task_type_memories = _memories.list_task_type_memories
+get_task_memories = _memories.get_task_memories
+
+_okf = OkfApi(client)
+okf_search = _okf.search
+okf_lint = _okf.lint
+
+# task_script 的 `from workflow import X` 直达本模块
+sys.modules.setdefault("workflow", sys.modules["__main__"])
+
+# -- Load and run task_script --
 if __name__ == "__main__":
     _here = os.path.dirname(os.path.abspath(__file__))
     sys.path.append(_here)

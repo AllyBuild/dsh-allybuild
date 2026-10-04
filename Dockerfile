@@ -109,15 +109,15 @@ RUN npm install -g --registry=https://registry.npmmirror.com tsx@4 \
 # tsconfig adds a `paths` mapping that tsx's resolver honors in every
 # mode. Either mechanism alone covers only its half; both together cover all.
 # TS SDK：先构建 dist 再全局安装（npm install -g 需要 dist/）
-COPY runtime/sdk/ts/package.json runtime/sdk/ts/tsconfig.json runtime/sdk/ts/tsconfig.build.json /tmp/sdk-ts/
-COPY runtime/sdk/ts/src /tmp/sdk-ts/src
+COPY sdk/ts/package.json sdk/ts/tsconfig.json sdk/ts/tsconfig.build.json /tmp/sdk-ts/
+COPY sdk/ts/src /tmp/sdk-ts/src
 RUN cd /tmp/sdk-ts \
     && npm install --registry=https://registry.npmmirror.com --ignore-scripts \
     && npx tsc -p tsconfig.build.json \
     && npm install -g /tmp/sdk-ts \
     && rm -rf /tmp/sdk-ts/node_modules /tmp/sdk-ts/dist
 # Python SDK：直接从源码安装（setuptools 构建即用）
-COPY runtime/sdk/python /tmp/sdk-python
+COPY sdk/python /tmp/sdk-python
 RUN pip install --no-cache-dir --break-system-packages /tmp/sdk-python \
     && rm -rf /tmp/sdk-python
 RUN mkdir -p /etc/allybuild \
