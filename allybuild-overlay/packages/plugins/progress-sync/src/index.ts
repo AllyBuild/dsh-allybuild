@@ -9,10 +9,12 @@
  * POST 到 AllyBuild 内部端点（HMAC token，与 session-sync 同一凭据派生），
  * 后端负责 i18n 文案、current_phase/progress 落库与 SSE 广播——插件只
  * 上报结构化数据，不产文案。每会话去抖 800ms 只保留最新快照；
- * boot 恢复风暴避让同 session-sync。ask_user_question 链路是例外：
- * `tool/call` 即时直发（kind=ask_user，后端据此转待反馈）；
- * `tool/result`（经 callId 回查工具名）即时直发（kind=ask_answered，
- * 问题被浏览器直答、轮次恢复，后端据此回 running）。
+ * boot 恢复风暴避让同 session-sync。以下事件即时直发（kind=ask_user /
+ * ask_answered，后端据此翻转任务待反馈状态）：
+ * - `tool/call` name=ask_user_question → 转待反馈；
+ * - `approval/asked`（dsh-user-approval 审批门）→ 转待反馈；
+ * - `approval/decided` → 回 running；
+ * - `tool/result`（经 callId 回查为 ask_user_question）→ 回 running。
  *
  * @module @deepseek-ai/dsh-allybuild-progress-sync
  */
@@ -111,6 +113,26 @@ const TASK_PREFIX = 'task-'
 /** 交互提问工具（dsh-tool-ask-user 注册名）：调用即任务转待反馈。 */
 const ASK_USER_TOOL = 'ask_user_question'
 
+/** 行级事件 → 即时直发行（ask_user/ask_answered）；undefined = 走去抖。 */
+function immediateRowOf(sessionId: string, event: ProgressEvent): ProgressRow | undefined {
+  const seq = typeof event.seq === 'number' ? event.seq : -1
+  // ask_user_question 工具调用 → 任务转待反馈
+  if (event.type === 'tool/call' && event.data?.name === ASK_USER_TOOL) {
+    return { sessionId, seq, kind: 'ask_user' }
+  }
+  // approval/asked → dsh 审批门（tools pipeline / sandbox escalation）等待
+  // 用户决定：与 ask_user_question 同语义（任务阻塞等人工输入）。
+  if (event.type === 'approval/asked') {
+    return { sessionId, seq, kind: 'ask_user' }
+  }
+  // approval/decided → 审批已决（allowed-once/rejected/cancelled/unavailable）：
+  // 轮次恢复，任务回 running。
+  if (event.type === 'approval/decided') {
+    return { sessionId, seq, kind: 'ask_answered' }
+  }
+  return undefined
+}
+
 export class AllybuildProgressSync extends Service {
   static Config: z<Config> = z.object({
     url: z.string().default(''),
@@ -169,8 +191,13 @@ export class AllybuildProgressSync extends Service {
       const callNames = new Map<string, string>()
       ctx.on('session/event', (session, event) => {
         if (!session.id.startsWith(TASK_PREFIX)) return
-        // ask-user 即时直发，不入去抖槽：去抖按 session 只保留最新行，
-        // ask_user 行可能被后续事件覆盖掉——而它是任务转待反馈的唯一信号。
+        // 即时直发（ask_user/ask_answered/approval）不入去抖槽：去抖按
+        // session 只保留最新行，状态信号可能被后续事件覆盖掉。
+        const immediate = immediateRowOf(session.id, event)
+        if (immediate !== undefined) {
+          post([immediate])
+          return
+        }
         if (event.type === 'tool/call') {
           const callId = event.data?.callId
           if (typeof callId === 'string' && callId) {
@@ -179,10 +206,6 @@ export class AllybuildProgressSync extends Service {
               const oldest = callNames.keys().next().value
               if (oldest !== undefined) callNames.delete(oldest)
             }
-          }
-          if (event.data?.name === ASK_USER_TOOL) {
-            post([{ sessionId: session.id, seq: typeof event.seq === 'number' ? event.seq : -1, kind: 'ask_user' }])
-            return
           }
         }
         if (event.type === 'tool/result') {
