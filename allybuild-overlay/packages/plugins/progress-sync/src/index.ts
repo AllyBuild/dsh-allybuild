@@ -50,7 +50,7 @@ export interface ProgressRow {
   /** Tool name for kind === 'tool_call'. */
   name?: string
   /** ask_user 的问题文本或审批上下文（SDK onFeedback 消费）。 */
-  question?: string
+  question?: string | undefined
 }
 
 /** Durable harness event (structural subset). */
