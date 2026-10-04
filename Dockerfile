@@ -110,8 +110,8 @@ RUN npm install -g --registry=https://registry.npmmirror.com tsx@4 \
 # mode. Either mechanism alone covers only its half; both together cover all.
 # @allybuild/sdk stays on the default registry: npmmirror does not mirror the
 # private scope (404).
-RUN npm install -g @allybuild/sdk@1.0.0 \
-    && pip install --no-cache-dir --break-system-packages allybuild-sdk==1.0.0 \
+RUN npm install -g @allybuild/sdk@1.1.0 \
+    && pip install --no-cache-dir --break-system-packages allybuild-sdk==1.1.0 \
     && mkdir -p /etc/allybuild \
     && printf '%s\n' \
       '{' \
