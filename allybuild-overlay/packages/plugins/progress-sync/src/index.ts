@@ -45,10 +45,12 @@ export interface ProgressRow {
   /** `todo/write` 的整表快照；非 todo 事件缺省。 */
   todos?: TodoItem[]
   /** 粗粒度阶段：turn_start / tool_call；ask_user / ask_answered 为
-   *  提问链路专用即时行（转待反馈 / 浏览器直答后续跑）。 */
+   *  提问/审批链路专用即时行（转待反馈 / 人工已响应后续跑）。 */
   kind?: 'turn_start' | 'tool_call' | 'ask_user' | 'ask_answered'
   /** Tool name for kind === 'tool_call'. */
   name?: string
+  /** ask_user 的问题文本或审批上下文（SDK onFeedback 消费）。 */
+  question?: string
 }
 
 /** Durable harness event (structural subset). */
@@ -58,8 +60,12 @@ export interface ProgressEvent {
   data?: {
     todos?: unknown
     name?: unknown
-    /** tool/call 的调用 id，tool/result 经它回查工具名。 */
+    /** tool/call 的调用 id 与原始 arguments JSON（提问上下文提取）。 */
     callId?: unknown
+    arguments?: unknown
+    /** approval/asked 的审批上下文。 */
+    toolName?: unknown
+    reason?: unknown
     /** tool/result 的 model-facing 结果消息（携带 toolCallId）。 */
     message?: { toolCallId?: unknown }
   }
@@ -113,20 +119,49 @@ const TASK_PREFIX = 'task-'
 /** 交互提问工具（dsh-tool-ask-user 注册名）：调用即任务转待反馈。 */
 const ASK_USER_TOOL = 'ask_user_question'
 
+/** 从 ask_user_question 的 arguments JSON 提取首个问题文本。 */
+function questionTextOf(args: unknown): string | undefined {
+  if (typeof args !== 'string' || !args) return undefined
+  try {
+    const parsed = JSON.parse(args) as { questions?: Array<{ question?: unknown }> }
+    const first = parsed?.questions?.[0]
+    if (first && typeof first.question === 'string' && first.question.trim()) {
+      return first.question.trim().slice(0, 120)
+    }
+  } catch { /* malformed arguments — no context */ }
+  return undefined
+}
+
+/** 从 approval/asked 的 data 提取审批上下文（工具名 + 原因）。 */
+function approvalTextOf(data: unknown): string | undefined {
+  if (data === null || typeof data !== 'object') return undefined
+  const { toolName, reason } = data as { toolName?: unknown; reason?: unknown }
+  const parts: string[] = []
+  if (typeof toolName === 'string' && toolName) parts.push(toolName)
+  if (typeof reason === 'string' && reason.trim()) parts.push(reason.trim().slice(0, 100))
+  return parts.length > 0 ? parts.join(': ') : undefined
+}
+
 /** 行级事件 → 即时直发行（ask_user/ask_answered）；undefined = 走去抖。 */
 function immediateRowOf(sessionId: string, event: ProgressEvent): ProgressRow | undefined {
   const seq = typeof event.seq === 'number' ? event.seq : -1
-  // ask_user_question 工具调用 → 任务转待反馈
+  // ask_user_question 工具调用 → 任务转待反馈（附带问题文本供 SDK onFeedback 消费）
   if (event.type === 'tool/call' && event.data?.name === ASK_USER_TOOL) {
-    return { sessionId, seq, kind: 'ask_user' }
+    return {
+      sessionId, seq, kind: 'ask_user',
+      ...(questionTextOf(event.data?.arguments) !== undefined
+        ? { question: questionTextOf(event.data?.arguments) } : {}),
+    }
   }
-  // approval/asked → dsh 审批门（tools pipeline / sandbox escalation）等待
-  // 用户决定：与 ask_user_question 同语义（任务阻塞等人工输入）。
+  // approval/asked → dsh 审批门等待用户决定（附带工具名+原因）
   if (event.type === 'approval/asked') {
-    return { sessionId, seq, kind: 'ask_user' }
+    return {
+      sessionId, seq, kind: 'ask_user',
+      ...(approvalTextOf(event.data) !== undefined
+        ? { question: approvalTextOf(event.data) } : {}),
+    }
   }
-  // approval/decided → 审批已决（allowed-once/rejected/cancelled/unavailable）：
-  // 轮次恢复，任务回 running。
+  // approval/decided → 审批已决：轮次恢复，任务回 running。
   if (event.type === 'approval/decided') {
     return { sessionId, seq, kind: 'ask_answered' }
   }
