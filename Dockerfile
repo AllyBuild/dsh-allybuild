@@ -108,14 +108,14 @@ RUN npm install -g --registry=https://registry.npmmirror.com tsx@4 \
 # bypass NODE_PATH — Node ESM has no global search path — so the baked
 # tsconfig adds a `paths` mapping that tsx's resolver honors in every
 # mode. Either mechanism alone covers only its half; both together cover all.
-# TS SDK：先构建 dist 再全局安装（npm install -g 需要 dist/）
-COPY sdk/ts/package.json sdk/ts/tsconfig.json sdk/ts/tsconfig.build.json /tmp/sdk-ts/
-COPY sdk/ts/src /tmp/sdk-ts/src
-RUN cd /tmp/sdk-ts \
-    && npm install --registry=https://registry.npmmirror.com --ignore-scripts \
-    && npx tsc -p tsconfig.build.json \
-    && npm install -g /tmp/sdk-ts \
-    && rm -rf /tmp/sdk-ts/node_modules /tmp/sdk-ts/dist
+# TS SDK：主机侧预构建 + pack 成 tarball（sdk/ts 下 `npm run build &&
+# npm pack`），镜像只装 tarball——npm 对 folder 的全局安装行为多变
+# （files 白名单/忽略规则在不同路径下不一致），tarball 在 pack 时已定死
+# 内容。装完产物绊网：缺 dist 立即失败，绝不静默装出坏包。
+COPY sdk/ts/*.tgz /tmp/
+RUN npm install -g /tmp/allybuild-sdk-*.tgz \
+    && test -f /usr/local/lib/node_modules/@allybuild/sdk/dist/index.js \
+    && rm -f /tmp/allybuild-sdk-*.tgz
 # Python SDK：直接从源码安装（setuptools 构建即用）
 COPY sdk/python /tmp/sdk-python
 RUN pip install --no-cache-dir --break-system-packages /tmp/sdk-python \
