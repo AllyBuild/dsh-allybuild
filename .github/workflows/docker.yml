@@ -19,7 +19,28 @@ jobs:
   build-push:
     runs-on: ubuntu-latest
     steps:
+      # 主仓（sdk/ 所在地）在私有 Git 服务上，CI 拿不到——checkout 本仓到
+      # runtime/ 子目录：Dockerfile 的 COPY 路径（runtime/* + sdk/*）正好
+      # 以本 job 工作区为上下文根成立，sdk/ 由下一步从 registry 物化。
       - uses: actions/checkout@v4
+        with:
+          path: runtime
+
+      - name: Materialize the released SDKs into the build context
+        run: bash runtime/scripts/prepare-ci-sdk.sh
+
+      # 上下文根的 ignore：web-minimal 的 node_modules/tests 与仓库元数据
+      # 不进镜像（与主仓根 .dockerignore 的对应条目同义）。
+      - name: Write the context .dockerignore
+        run: |
+          printf '%s\n' \
+            'runtime/web-minimal/node_modules/' \
+            'runtime/web-minimal/tests/' \
+            'runtime/.git/' \
+            'runtime/.github/' \
+            'runtime/scripts/' \
+            'runtime/example/' \
+            > .dockerignore
 
       - name: Resolve lowercase image reference
         id: image
@@ -32,7 +53,7 @@ jobs:
         # 追加短 commitid 区分同版本 overlay 变更的重构建（前端 .env 按
         # 此 tag 精确拉取，避免旧 tag 缓存/覆盖歧义）。
         run: |
-          VERSION=$(sed -n 's/^ARG DSH_SOURCE_REF=dsh-v//p' Dockerfile)
+          VERSION=$(sed -n 's/^ARG DSH_SOURCE_REF=dsh-v//p' runtime/Dockerfile)
           SHA=${GITHUB_SHA::7}
           echo "version=${VERSION}" >> "$GITHUB_OUTPUT"
           echo "version_sha=${VERSION}-${SHA}" >> "$GITHUB_OUTPUT"
@@ -60,9 +81,13 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
+      # CI 镜像 = released SDK 通道（prepare-ci-sdk.sh 从 npm/PyPI 物化）；
+      # 本地/开发镜像 = source SDK 通道（主仓根构建）。两者 SDK 内容可能
+      # 短暂不同步，dsh 与 overlay 部分始终一致（同一 Dockerfile）。
       - uses: docker/build-push-action@v6
         with:
           context: .
+          file: runtime/Dockerfile
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
@@ -90,6 +115,7 @@ jobs:
             --output type=docker,dest=image.tar \
             --cache-from type=gha \
             -t ${{ steps.image.outputs.ref }}:${{ steps.dsh-version.outputs.version }} \
+            -f runtime/Dockerfile \
             .
           zstd -T0 -19 image.tar -o image.tar.zst
 
