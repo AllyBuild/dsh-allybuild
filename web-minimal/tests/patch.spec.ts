@@ -38,10 +38,12 @@ const DISABLED_IDS = [
 ]
 
 const BROWSER_IDS = [
-  'modules', 'connection', 'api-remotes', 'locale', 'shortcuts', 'ui-theme', 'ui-layout',
-  'ui-renderer', 'ui-session', 'resources', 'file-upload', 'ui-conversation', 'ui-chat',
-  'ui-tool', 'ui-trajectory', 'ui-approval', 'ui-user-questions', 'ui-workspace',
-  'ui-settings', 'ui-sidebar-right', 'ui-minimal-entry',
+  'modules', 'connection', 'api-remotes', 'job-controller', 'locale', 'shortcuts',
+  'ui-theme', 'ui-layout', 'ui-renderer', 'ui-session', 'resources', 'file-upload',
+  'ui-conversation', 'ui-chat', 'ui-attachment', 'ui-tool', 'ui-trajectory',
+  'ui-approval', 'ui-plan', 'ui-user-questions', 'ui-deliverables',
+  'workspace-changes', 'ui-workspace', 'ui-settings', 'ui-sidebar-right',
+  'ui-jobs', 'ui-goal', 'ui-minimal-entry',
 ]
 
 // Preset plugins nest inside `cordis:group` members via their `config` array;
@@ -104,7 +106,7 @@ describe('cordis.patch.yml', () => {
     const insert = doc.find(entry => Array.isArray(entry.insert))?.insert ?? []
     const ids = insert.map(entry => entry.id)
     for (const id of BROWSER_IDS) expect(ids, id).toContain(id)
-    for (const absent of ['ui-sidebar', 'ui-settings-general', 'ui-plugin-manager', 'ui-jobs', 'ui-plan', 'ui-goal', 'ui-attachment', 'ui-deliverables']) {
+    for (const absent of ['ui-sidebar', 'ui-settings-general', 'ui-plugin-manager']) {
       expect(ids, absent).not.toContain(absent)
     }
   })
@@ -124,5 +126,18 @@ describe('cordis.patch.yml', () => {
     for (const required of ['persona', 'persistent-shell', 'pty', 'terminal-bash', 'persistent-bash', 'terminal-pwsh', 'persistent-pwsh']) {
       expect(ids, required).toContain(required)
     }
+  })
+
+  it('feeds the restored UI surfaces from the preset (jobs/goal/plan)', () => {
+    const preset = inserted('preset-minimal')
+    const plugins = (preset.config?.['plugins'] ?? []) as PatchRow[]
+    const ids = presetPluginIds(plugins)
+    for (const required of ['tool-jobs', 'command-goal', 'tool-goal', 'planning', 'plan-mode']) {
+      expect(ids, required).toContain(required)
+    }
+    // plan-mode 需要完整的 section 策略文本（上游 cordis 预设逐字一致）
+    const planning = plugins.find(entry => entry.id === 'planning') as PatchRow
+    const planMode = (planning.config as PatchRow[]).find(entry => entry.id === 'plan-mode') as PatchRow
+    expect(String(planMode.config?.['section'])).toContain('exit_plan_mode')
   })
 })

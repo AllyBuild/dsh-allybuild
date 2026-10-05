@@ -26,21 +26,25 @@ import time
 import urllib.error
 import urllib.request
 
-DEFAULT_IMAGE_REPO = "ghcr.io/allybuild/dsh-server"
+DEFAULT_IMAGE_REPO = "ghcr.io/allybuild/dsh-allybuild"
 NPM_LATEST_URL = "https://registry.npmjs.org/@deepseek-ai%2Fdsh/latest"
 DEFAULT_SANDBOX = "dsh-server"
 DEFAULT_SNAPSHOT = "dsh-server"
 DEFAULT_PREVIEW_DOMAIN = "daytonaproxy01.net"
-DEFAULT_REPO_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+# 构建上下文 = 主仓根（Dockerfile 的 COPY 覆盖 runtime/* 与 sdk/*——SDK 已
+# 移到仓库根，从 runtime/ 内构建拿不到 sdk/）
+DEFAULT_REPO_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 DOCKERFILE_CONTEXT = [
-    "Dockerfile",
-    "dsh-entrypoint.sh",
-    "docker-overlay.yml",
-    "merge-overlay.py",
-    "mcp-overlay.py",
-    "agent-overlay.yml",
-    "allybuild-overlay",
-    "web-minimal",
+    "runtime/Dockerfile",
+    "runtime/dsh-entrypoint.sh",
+    "runtime/docker-overlay.yml",
+    "runtime/merge-overlay.py",
+    "runtime/mcp-overlay.py",
+    "runtime/agent-overlay.yml",
+    "runtime/allybuild-overlay",
+    "runtime/web-minimal",
+    "sdk/python",
+    "sdk/ts",
 ]
 
 
@@ -123,7 +127,10 @@ def create_snapshot(name: str, source: str, image: str, repo_dir: str) -> None:
         # The build context is auto-determined from the Dockerfile's COPY/ADD
         # commands; explicit -c uploads proved unreliable for directories
         # across CLI versions (dirs silently missing from the remote context).
-        args = ["snapshot", "create", name, "-f", "Dockerfile",
+        # -f 相对调用方 cwd 解析：绝对化后统一从 repo 根出发。
+        dockerfile = os.path.relpath(
+            os.path.join(repo_dir, "runtime", "Dockerfile"), os.getcwd())
+        args = ["snapshot", "create", name, "-f", dockerfile,
                 "--memory", "2", "--disk", "5", "--sandbox-class", "container"]
     try:
         cli(*args, timeout=1200)

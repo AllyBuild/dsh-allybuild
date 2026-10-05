@@ -135,6 +135,11 @@
     - id: api-remotes
       name: '@deepseek-ai/dsh-api-remotes'
 
+    # One background job's observation record streamed over Typert Remote;
+    # the roster rides the session control stream above.
+    - id: job-controller
+      name: '@deepseek-ai/dsh-api-job-controller'
+
     # ── browser roster: conversation + trajectory and their hard injections ───
 
     - id: locale
@@ -181,6 +186,11 @@
     - id: ui-reference
       name: '@deepseek-ai/dsh-client-ui-reference'
 
+    # Attachments: the composer's attachment chips and previews over the
+    # attachment host (base row attachment-local).
+    - id: ui-attachment
+      name: '@deepseek-ai/dsh-client-ui-attachment'
+
     # Tool call tree, generic fallback, and keyed business Tool views.
     - id: ui-tool
       name: '@deepseek-ai/dsh-client-ui-tool'
@@ -192,8 +202,23 @@
     - id: ui-approval
       name: '@deepseek-ai/dsh-client-ui-approval'
 
+    # Plan control: the composer plan seat over the plan projection + /plan
+    # channel; the projection arrives with the preset's planning group.
+    - id: ui-plan
+      name: '@deepseek-ai/dsh-client-ui-plan'
+
     - id: ui-user-questions
       name: '@deepseek-ai/dsh-client-ui-user-questions'
+
+    # The changed-files delivery card on each assistant message (review tab
+    # and native file actions ride the sidebar-right pane slots).
+    - id: ui-deliverables
+      name: '@deepseek-ai/dsh-client-ui-deliverables'
+
+    # Records each top-level turn's changed files from git working-tree
+    # snapshots; the changed-files card above renders its events.
+    - id: workspace-changes
+      name: '@deepseek-ai/dsh-workspace-changes'
 
     # ui-conversation and ui-chat inject the uiWorkspace service; its browser
     # rows render into the omitted left sidebar, so no workspace panel shows.
@@ -208,6 +233,17 @@
     # ui-chat injects the sidebarRight service for in-conversation resources.
     - id: ui-sidebar-right
       name: '@deepseek-ai/dsh-client-ui-sidebar-right'
+
+    # Background jobs: the session-header roster with on-demand streaming
+    # record panels over the session job-output service (Remote via
+    # job-controller; agents spawn jobs through the preset's tool-jobs).
+    - id: ui-jobs
+      name: '@deepseek-ai/dsh-client-ui-jobs'
+
+    # Goal surface: GoalBar in the input dock over the goal session projection
+    # (base row goal stays active; the agent sets goals via the preset rows).
+    - id: ui-goal
+      name: '@deepseek-ai/dsh-client-ui-goal'
 
     # This package: reads ?session= / ?workspace= and drives the selection.
     - id: ui-minimal-entry
@@ -279,6 +315,41 @@
                     * Use native Windows paths (C:\...) and $env:NAME variables; this is PowerShell, not bash.
                     * Please avoid commands that may produce a very large amount of output.
                     * Please run long lived commands in the background, e.g. 'Start-Job' or start a server with Start-Process.
+
+          # ── agent-plane rows for the restored UI surfaces ─────────────────────
+          # Same declarations web-app's cordis preset ships: jobs/goal/plan feed
+          # the ui-jobs / ui-goal / ui-plan browser surfaces their data.
+
+          - id: tool-jobs
+            name: '@deepseek-ai/dsh-tool-jobs'
+
+          - id: command-goal
+            name: '@deepseek-ai/dsh-command-goal'
+
+          - id: tool-goal
+            name: '@deepseek-ai/dsh-tool-goal'
+
+          - id: planning
+            name: cordis:group
+            group: true
+            isolate:
+              planMode: true
+            config:
+              - id: plan-mode
+                name: '@deepseek-ai/dsh-plan-mode'
+                config:
+                  section: |
+                    You are in plan mode. Stay in plan mode until exit_plan_mode succeeds or the user switches the session mode. Imperative language to implement changes means plan the implementation, not execute it. A user's conversational agreement — including an answer confirming something you asked — approves nothing and does not end plan mode; fold the confirmed decision into the plan and submit it through exit_plan_mode.
+
+                    Explore first. Use non-mutating reads, searches, static analysis, and checks to ground the plan in the actual repository. Do not edit or write files, change configuration, run formatters or code generation that rewrites tracked files, commit, or otherwise carry out the plan. Prefer existing functions and patterns over new machinery.
+
+                    The tool catalog stays the same across modes for request-cache stability. These plan-mode rules override any later tool description or guidance that suggests using mutation tools; those tools remain listed to keep the tool catalog unchanged. Do not use todo_write to track this planning phase: it tracks implementation after an approved plan, while the plan itself belongs in exit_plan_mode.
+
+                    Resolve discoverable facts by inspection. Use ask_user_question only for user-owned choices or material ambiguity that inspection cannot answer. Do not ask the user where code lives or how current behavior works when you can find out.
+
+                    Make the plan decision-complete: state the goal and success criteria; group implementation changes by subsystem; identify public API, schema, and data-flow changes; cover edge cases, failure modes, tests, acceptance criteria, and explicit assumptions. Keep it concise enough to review but detailed enough that another engineer can implement it without making design decisions.
+
+                    When ready, call exit_plan_mode with the complete plan markdown, starting with a # title. Make exit_plan_mode the only and final tool call in that assistant response: it presents the plan for approval, and implementation begins only in a later step after approval. Do not paste the final plan as a plain reply or ask "should I proceed?" through prose or ask_user_question. If review rejects it, incorporate the feedback and present again. If the review channel is unavailable or aborted, stay in plan mode and ask the user to switch modes manually; do not proceed with implementation.
 
 # ── agent-plane rows stay out of the host plane (same list as web-app) ──────
 
