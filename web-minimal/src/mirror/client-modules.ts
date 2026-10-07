@@ -28,6 +28,7 @@ import * as ClientUiSidebarRight from '@deepseek-ai/dsh-client-ui-sidebar-right/
 import * as ClientUiConversation from '@deepseek-ai/dsh-client-ui-conversation/client'
 import * as ClientUiApproval from '@deepseek-ai/dsh-client-ui-approval/client'
 import * as ClientUiChat from '@deepseek-ai/dsh-client-ui-chat/client'
+import * as ClientUiDeliverables from '@deepseek-ai/dsh-client-ui-deliverables/client'
 import * as ClientUiTool from '@deepseek-ai/dsh-client-ui-tool/client'
 import * as ClientUiTrajectory from '@deepseek-ai/dsh-client-ui-trajectory/client'
 import * as ClientUiUserQuestions from '@deepseek-ai/dsh-client-ui-user-questions/client'
@@ -57,6 +58,7 @@ registerModules([
   ['@deepseek-ai/dsh-client-ui-conversation', ClientUiConversation],
   ['@deepseek-ai/dsh-client-ui-approval', ClientUiApproval],
   ['@deepseek-ai/dsh-client-ui-chat', ClientUiChat],
+  ['@deepseek-ai/dsh-client-ui-deliverables', ClientUiDeliverables],
   ['@deepseek-ai/dsh-client-ui-tool', ClientUiTool],
   ['@deepseek-ai/dsh-client-ui-trajectory', ClientUiTrajectory],
   ['@deepseek-ai/dsh-client-ui-user-questions', ClientUiUserQuestions],

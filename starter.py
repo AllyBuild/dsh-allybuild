@@ -1,8 +1,8 @@
-"""Task slot runner — script 模式任务的执行入口。
+"""Task starter — script 模式任务的执行入口。
 
 平台交互面（env 解析 + client 构建 + SDK 绑定）在
 sdk/python/allybuild_sdk/workflow.py，worker 上传到 slot 为 workflow.py；
-本文件上传为 runner.py 作入口：`import workflow` 走自然模块解析（无需
+本文件上传为 starter.py 作入口：`import workflow` 走自然模块解析（无需
 sys.modules 别名），随后加载 task_script 并按 Convention 1（run）或
 on_change dispatch。绑定面只依赖稳定 SDK API（≥1.1.0），任意镜像可跑。
 """

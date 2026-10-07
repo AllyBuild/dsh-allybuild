@@ -27,6 +27,7 @@ export const ROSTER: ReadonlyArray<readonly [string, unknown]> = [
   ['ui-conversation', pkg('@deepseek-ai/dsh-client-ui-conversation')],
   ['ui-approval', pkg('@deepseek-ai/dsh-client-ui-approval')],
   ['ui-chat', pkg('@deepseek-ai/dsh-client-ui-chat')],
+  ['ui-deliverables', pkg('@deepseek-ai/dsh-client-ui-deliverables')],
   ['ui-tool', pkg('@deepseek-ai/dsh-client-ui-tool')],
   ['ui-trajectory', pkg('@deepseek-ai/dsh-client-ui-trajectory')],
   ['ui-user-questions', pkg('@deepseek-ai/dsh-client-ui-user-questions')],
