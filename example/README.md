@@ -56,8 +56,9 @@ ssh -N -L 3080:127.0.0.1:3080 <token>@ssh.app.daytona.io
 
 ## 已知限制
 
-- 沙盒镜像 pin 的上游(`dsh-v0.1.7-rc.1`)与 vendored web-minimal 锚定的
-  rc.2 client 之间存在版本差,混用组合层的 boot 日志会出现
-  `shortcuts` 行 import 失败告警;独立部署时以同版本 client 为准。
+- 沙盒镜像 pin 的上游与 vendored web-minimal 同源（都跟随 Dockerfile 的
+  `DSH_SOURCE_REF`，当前 `dsh-v0.2.0-rc.2`）；如手动改动任一侧版本，
+  混用组合层的 boot 日志会出现 `shortcuts` 行 import 失败告警，独立部署
+  时以同版本 client 为准。
 - Daytona 沙盒由平台管理生命周期;平台侧闲置自停后需重新拉起并重建隧道
   (`create_ssh_access()` 的 token 每次调用都刷新)。

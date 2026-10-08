@@ -1,5 +1,5 @@
 // @ts-nocheck
-/** Product-wide, versioned internal-testing notice. */
+/** Product-wide, versioned preview notice. */
 
 import { useCallback, useEffect, useRef } from 'react'
 import type { ReactNode } from 'react'

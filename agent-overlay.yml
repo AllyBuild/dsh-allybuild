@@ -13,9 +13,12 @@
 # is_default 行）。thinkingFormat=deepseek：网关忠实透传上游
 # reasoning_content 增量。DEEPSEEK_BASE_URL / DEEPSEEK_API_KEY 不在此文件：
 # 路由鉴权经 apiKeyEnv 读进程 env，无凭据插件挂载。
+# persona 经 personaPrefix 注入（system-prompt 的 Config 只有 personaPrefix/
+# personaSuffix 两键）；patch 行整体替换 config，suffix 随行重述保持上游默认。
 - id: system-prompt
   config:
-    persona: !!js process.env.DSH_SYSTEM_PROMPT ?? ''
+    personaPrefix: !!js process.env.DSH_SYSTEM_PROMPT || 'You are a coding agent powered by the {{model}} model.'
+    personaSuffix: Your working directory is {{cwd}}.
 
 - id: skill-filesystem
   disabled: false

@@ -39,17 +39,17 @@ docker logs dsh | grep -o 'token=[A-Za-z0-9_-]*'
 ### 发布
 
 `.github/workflows/docker.yml` 在 push 到 `main` 和 `v*` tag 时构建并推送
-`ghcr.io/allybuild/dsh-server`，使用内置 `GITHUB_TOKEN`，无需额外 secret；
+`ghcr.io/allybuild/dsh-allybuild`，使用内置 `GITHUB_TOKEN`，无需额外 secret；
 也可经 `workflow_dispatch` 手动触发，输入 `tag_suffix`（默认空）。
 
-每次构建先解析 npm 上 `@deepseek-ai/dsh` 的最新版本作为镜像 tag（如
-`ghcr.io/allybuild/dsh-server:0.1.5-rc.2`）；镜像内的 dsh 由 Dockerfile 内
-固定的 `DSH_SOURCE_REF` 从源码构建，随发布同步 bump，tag 与镜像内 dsh 版本
-严格一致。`main` push 另有 `latest` 与 `main` tag，`v*` tag 另有语义化版本
-tag。`workflow_dispatch` 带 `tag_suffix` 在 `v*` tag ref 上触发时，额外追加
-`{{version}}` 拼后缀的 tag（如 `tag_suffix=-tf1` 产出
-`ghcr.io/allybuild/dsh-server:0.1.5-rc.2-tf1`）；后缀为空时产出与 push
-构建一致。
+镜像 tag 从 Dockerfile 内固定的 `DSH_SOURCE_REF` 推导（去掉 `dsh-v` 前缀），
+并追加短 commitid 区分同版本 overlay 变更的重构建（如
+`ghcr.io/allybuild/dsh-allybuild:0.2.0-rc.2-1a2b3c4`）；npm latest 可能领先于
+钉定版本，tag 与镜像内 dsh 版本因此严格一致。`main` push 另有 `latest` 与
+`main` tag，`v*` tag 另有语义化版本 tag（如 `v0.2.0-rc.2` 产出
+`0.2.0-rc.2`）。`workflow_dispatch` 带 `tag_suffix` 在 `v*` tag ref 上触发
+时，额外追加 `{{version}}` 拼后缀的 tag（如 `tag_suffix=-tf1` 产出
+`0.2.0-rc.2-tf1`）；后缀为空时产出与 push 构建一致。
 
 ### 任务脚本语言面
 

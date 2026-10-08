@@ -1265,6 +1265,9 @@
       "@deepseek-ai/dsh-otel/event-log": [
         "./src/vendor/otel/src/event-log.ts"
       ],
+      "@deepseek-ai/dsh-otel/event-transport": [
+        "./src/vendor/otel/src/event-transport.ts"
+      ],
       "@deepseek-ai/dsh-otel/session-log": [
         "./src/vendor/otel/src/session-log.ts"
       ],
@@ -2021,8 +2024,17 @@
       "@deepseek-ai/dsh-user-questions": [
         "./src/vendor/user-questions/src/index.ts"
       ],
+      "@deepseek-ai/dsh-user-questions/projection": [
+        "./src/vendor/user-questions/src/projection.ts"
+      ],
+      "@deepseek-ai/dsh-user-questions/timed-wait": [
+        "./src/vendor/user-questions/src/timed-wait.ts"
+      ],
       "@deepseek-ai/dsh-user-questions/types": [
         "./src/vendor/user-questions/src/types.ts"
+      ],
+      "@deepseek-ai/dsh-user-questions/remote": [
+        "./src/vendor/user-questions/generated/remote.js"
       ],
       "@deepseek-ai/dsh-util-code-language": [
         "./src/vendor/util-code-language/src/index.ts"

@@ -301,7 +301,7 @@ export const TYPERT_REMOTE = {
         typeSymbol: '@deepseek-ai/dsh-cordis-host-runner/types#DynamicCordisClientSource',
         create: _deepseek_ai_dsh_cordis_host_runner_dynamicCordisRunner_getClientCode_result$schema,
       },
-      sourceLocation: {"file":"packages/extensions/cordis-host-runner/src/index.ts","line":389,"column":3},
+      sourceLocation: {"file":"packages/extensions/cordis-host-runner/src/index.ts","line":392,"column":3},
     },
     {
       id: '@deepseek-ai/dsh-cordis-host-runner#dynamicCordisRunner/inventory',
@@ -316,7 +316,7 @@ export const TYPERT_REMOTE = {
         typeSymbol: '@deepseek-ai/dsh-cordis-host-runner#dynamicCordisRunner/inventory:result',
         create: _deepseek_ai_dsh_cordis_host_runner_dynamicCordisRunner_inventory_result$schema,
       },
-      sourceLocation: {"file":"packages/extensions/cordis-host-runner/src/index.ts","line":530,"column":3},
+      sourceLocation: {"file":"packages/extensions/cordis-host-runner/src/index.ts","line":534,"column":3},
     },
     {
       id: '@deepseek-ai/dsh-cordis-host-runner#dynamicCordisRunner/invoke',
@@ -371,7 +371,7 @@ export const TYPERT_REMOTE = {
         typeSymbol: '@deepseek-ai/dsh-cordis-host-runner/types#DynamicCordisInvokeResult',
         create: _deepseek_ai_dsh_cordis_host_runner_dynamicCordisRunner_invoke_result$schema,
       },
-      sourceLocation: {"file":"packages/extensions/cordis-host-runner/src/index.ts","line":746,"column":9},
+      sourceLocation: {"file":"packages/extensions/cordis-host-runner/src/index.ts","line":750,"column":9},
     },
     {
       id: '@deepseek-ai/dsh-cordis-host-runner#dynamicCordisRunner/reportClientGuardFailure',
@@ -431,7 +431,7 @@ export const TYPERT_REMOTE = {
         typeSymbol: '@deepseek-ai/dsh-cordis-host-runner#dynamicCordisRunner/reportClientGuardFailure:result',
         create: _deepseek_ai_dsh_cordis_host_runner_dynamicCordisRunner_reportClientGuardFailure_result$schema,
       },
-      sourceLocation: {"file":"packages/extensions/cordis-host-runner/src/index.ts","line":723,"column":9},
+      sourceLocation: {"file":"packages/extensions/cordis-host-runner/src/index.ts","line":727,"column":9},
     },
     {
       id: '@deepseek-ai/dsh-cordis-host-runner#dynamicCordisRunner/reportRenderFailure',
@@ -491,7 +491,7 @@ export const TYPERT_REMOTE = {
         typeSymbol: '@deepseek-ai/dsh-cordis-host-runner#dynamicCordisRunner/reportRenderFailure:result',
         create: _deepseek_ai_dsh_cordis_host_runner_dynamicCordisRunner_reportRenderFailure_result$schema,
       },
-      sourceLocation: {"file":"packages/extensions/cordis-host-runner/src/index.ts","line":689,"column":9},
+      sourceLocation: {"file":"packages/extensions/cordis-host-runner/src/index.ts","line":693,"column":9},
     },
     {
       id: '@deepseek-ai/dsh-cordis-host-runner#dynamicCordisRunner/resolveInspectQuery',
@@ -541,7 +541,7 @@ export const TYPERT_REMOTE = {
         typeSymbol: '@deepseek-ai/dsh-cordis-host-runner/types#CordisInspectResolveAck',
         create: _deepseek_ai_dsh_cordis_host_runner_dynamicCordisRunner_resolveInspectQuery_result$schema,
       },
-      sourceLocation: {"file":"packages/extensions/cordis-host-runner/src/index.ts","line":516,"column":3},
+      sourceLocation: {"file":"packages/extensions/cordis-host-runner/src/index.ts","line":520,"column":3},
     },
     {
       id: '@deepseek-ai/dsh-cordis-host-runner#dynamicCordisRunner/resolveRequestRun',
@@ -576,7 +576,7 @@ export const TYPERT_REMOTE = {
         typeSymbol: '@deepseek-ai/dsh-cordis-host-runner/types#DynamicCordisResolveAck',
         create: _deepseek_ai_dsh_cordis_host_runner_dynamicCordisRunner_resolveRequestRun_result$schema,
       },
-      sourceLocation: {"file":"packages/extensions/cordis-host-runner/src/index.ts","line":418,"column":9},
+      sourceLocation: {"file":"packages/extensions/cordis-host-runner/src/index.ts","line":421,"column":9},
     },
     {
       id: '@deepseek-ai/dsh-cordis-host-runner#dynamicCordisRunner/runHostHalf',
@@ -656,7 +656,7 @@ export const TYPERT_REMOTE = {
         typeSymbol: '@deepseek-ai/dsh-cordis-host-runner/types#DynamicCordisHostHalfResult',
         create: _deepseek_ai_dsh_cordis_host_runner_dynamicCordisRunner_runHostHalf_result$schema,
       },
-      sourceLocation: {"file":"packages/extensions/cordis-host-runner/src/index.ts","line":330,"column":9},
+      sourceLocation: {"file":"packages/extensions/cordis-host-runner/src/index.ts","line":333,"column":9},
     },
     {
       id: '@deepseek-ai/dsh-cordis-host-runner#dynamicCordisRunner/settleUserRun',
@@ -706,7 +706,7 @@ export const TYPERT_REMOTE = {
         typeSymbol: '@deepseek-ai/dsh-cordis-host-runner/types#DynamicCordisRunResponse',
         create: _deepseek_ai_dsh_cordis_host_runner_dynamicCordisRunner_settleUserRun_result$schema,
       },
-      sourceLocation: {"file":"packages/extensions/cordis-host-runner/src/index.ts","line":443,"column":9},
+      sourceLocation: {"file":"packages/extensions/cordis-host-runner/src/index.ts","line":446,"column":9},
     },
     {
       id: '@deepseek-ai/dsh-cordis-host-runner#dynamicCordisRunner/stopFromPanel',
@@ -746,7 +746,7 @@ export const TYPERT_REMOTE = {
         typeSymbol: '@deepseek-ai/dsh-cordis-host-runner/types#DynamicCordisStopResponse',
         create: _deepseek_ai_dsh_cordis_host_runner_dynamicCordisRunner_stopFromPanel_result$schema,
       },
-      sourceLocation: {"file":"packages/extensions/cordis-host-runner/src/index.ts","line":485,"column":9},
+      sourceLocation: {"file":"packages/extensions/cordis-host-runner/src/index.ts","line":488,"column":9},
     },
     {
       id: '@deepseek-ai/dsh-cordis-host-runner#dynamicCordisRunner/syncInspectManifest',
@@ -771,7 +771,7 @@ export const TYPERT_REMOTE = {
         typeSymbol: '@deepseek-ai/dsh-cordis-host-runner#dynamicCordisRunner/syncInspectManifest:result',
         create: _deepseek_ai_dsh_cordis_host_runner_dynamicCordisRunner_syncInspectManifest_result$schema,
       },
-      sourceLocation: {"file":"packages/extensions/cordis-host-runner/src/index.ts","line":503,"column":3},
+      sourceLocation: {"file":"packages/extensions/cordis-host-runner/src/index.ts","line":506,"column":3},
     },
     {
       id: '@deepseek-ai/dsh-cordis-host-runner#dynamicCordisRunner/undefineFromPanel',
@@ -811,7 +811,7 @@ export const TYPERT_REMOTE = {
         typeSymbol: '@deepseek-ai/dsh-cordis-host-runner/types#DynamicCordisUndefineReceipt',
         create: _deepseek_ai_dsh_cordis_host_runner_dynamicCordisRunner_undefineFromPanel_result$schema,
       },
-      sourceLocation: {"file":"packages/extensions/cordis-host-runner/src/index.ts","line":232,"column":9},
+      sourceLocation: {"file":"packages/extensions/cordis-host-runner/src/index.ts","line":235,"column":9},
     },
   ],
 }

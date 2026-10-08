@@ -73,9 +73,8 @@ export class InputHub implements SessionInputResolver {
    * @returns the resident per-session facade.
    */
   for(actx: Context): SessionInput {
-    const sessions = this.sessions()
-    const session = sessions.sessionOf(actx)
-    const binding = session === undefined ? undefined : sessions.binding(session.sessionId)
+    const session = this.sessions()?.sessionOf(actx)
+    const binding = session === undefined ? undefined : this.sessions()?.binding(session.sessionId)
     if (binding === undefined || binding.session !== session) {
       throw new Error('conversation.input.for requires a retained Session scope')
     }
@@ -120,8 +119,10 @@ export class InputHub implements SessionInputResolver {
       steerQueue: () => { void this.steerQueue(session, shell) },
       commandAttachments: {
         serialize: async (ids) => {
-          const result = await this.conversation().serializeDraftAttachments(ids)
-          return result.attachments
+          // 会话拆卸竞态下 conversation 服务可能已卸载（release 侧注释同
+          // 源容忍）——空应答即可，附件草稿随 DOM 一起消亡。
+          const result = await this.conversation()?.serializeDraftAttachments(ids)
+          return result?.attachments ?? []
         },
         // Asymmetric with serialize on purpose: release settles AFTER the
         // submit RPC, where session teardown may already have unloaded the
@@ -168,7 +169,7 @@ export class InputHub implements SessionInputResolver {
    * @returns the shell.
    */
   shell(id: SessionId): SessionInputShell {
-    const binding = this.sessions().binding(id)
+    const binding = this.sessions()?.binding(id)
     if (binding === undefined) throw new Error(`conversation.input: session "${id}" resolved no binding`)
     return this.shellFor(binding)
   }
@@ -190,7 +191,7 @@ export class InputHub implements SessionInputResolver {
    * @returns whether its mounted composer currently accepts files.
    */
   canPickFiles(id: SessionId): boolean {
-    const binding = this.sessions().binding(id)
+    const binding = this.sessions()?.binding(id)
     return binding !== undefined && this.shells.get(binding)?.canPickFiles() === true
   }
 
@@ -199,7 +200,7 @@ export class InputHub implements SessionInputResolver {
    * @param id - target Session.
    */
   pickFiles(id: SessionId): void {
-    const binding = this.sessions().binding(id)
+    const binding = this.sessions()?.binding(id)
     if (binding !== undefined) this.shells.get(binding)?.pickFiles()
   }
 
@@ -210,7 +211,7 @@ export class InputHub implements SessionInputResolver {
    * @returns the resident controller, or undefined when no trigger provider is installed.
    */
   inputTriggers(id: SessionId): InputTriggerController | undefined {
-    const binding = this.sessions().binding(id)
+    const binding = this.sessions()?.binding(id)
     return binding === undefined ? undefined : this.controller(binding.ctx)
   }
 
@@ -228,7 +229,10 @@ export class InputHub implements SessionInputResolver {
     signal: AbortSignal,
   ): Promise<SubmitOutcome> {
     if (text === '' && attachmentIds.length === 0) return Promise.resolve({ kind: 'success' })
-    return this.conversation().sendSession(session, text, attachmentIds, mode, signal)
+    // 生命周期外（dispose 残留回调）conversation 服务已卸载：静默吞掉，
+    // dispose 后不可能再有真实提交。
+    return this.conversation()?.sendSession(session, text, attachmentIds, mode, signal)
+      ?? Promise.resolve({ kind: 'success' })
   }
 
   /**
@@ -257,26 +261,24 @@ export class InputHub implements SessionInputResolver {
   }
 
   private controller(actx: Context): InputTriggerController | undefined {
-    if (this.sessions().sessionOf(actx) === undefined) return undefined
+    if (this.sessions()?.sessionOf(actx) === undefined) return undefined
     const inputTriggers = this.rootCtx.get('inputTriggers') as InputTriggerServiceFace | undefined
     return inputTriggers?.sessionOf(actx)
   }
 
   private popup(actx: Context): PopupDismissFace | undefined {
-    if (this.sessions().sessionOf(actx) === undefined) return undefined
+    if (this.sessions()?.sessionOf(actx) === undefined) return undefined
     const command = this.rootCtx.get('commandUi') as CommandFace | undefined
     return command?.popupFor(actx)
   }
 
-  private sessions(): ISessions {
-    const sessions = this.rootCtx.get('sessions')
-    if (sessions === undefined) throw new Error('conversation.input: sessions service unavailable')
-    return sessions
+  private sessions(): ISessions | undefined {
+    // 生命周期外（dispose 后残留的编辑器 onUpdate 一拍）裸 get 返回
+    // undefined——调用点判空静默返回，不再向上抛 Uncaught。
+    return this.rootCtx.get('sessions')
   }
 
-  private conversation(): ConversationAttachmentFace {
-    const conversation = this.rootCtx.get('conversation') as ConversationAttachmentFace | undefined
-    if (conversation === undefined) throw new Error('conversation.input: conversation service unavailable')
-    return conversation
+  private conversation(): ConversationAttachmentFace | undefined {
+    return this.rootCtx.get('conversation') as ConversationAttachmentFace | undefined
   }
 }

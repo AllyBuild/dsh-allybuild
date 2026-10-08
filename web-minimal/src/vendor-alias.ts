@@ -1145,6 +1145,14 @@ export const dshVendorAlias: Array<[string, string]> = [
   "./src/vendor/token-meter/src/route-pricing.ts"
  ],
  [
+  "@deepseek-ai/dsh-user-questions/projection",
+  "./src/vendor/user-questions/src/projection.ts"
+ ],
+ [
+  "@deepseek-ai/dsh-user-questions/timed-wait",
+  "./src/vendor/user-questions/src/timed-wait.ts"
+ ],
+ [
   "@deepseek-ai/dsh-workspace-changes/capture",
   "./src/vendor/workspace-changes/src/capture.ts"
  ],
@@ -1641,6 +1649,10 @@ export const dshVendorAlias: Array<[string, string]> = [
   "./src/vendor/typert-registry/src/types.ts"
  ],
  [
+  "@deepseek-ai/dsh-user-questions/remote",
+  "./src/vendor/user-questions/generated/remote.js"
+ ],
+ [
   "@deepseek-ai/dsh-workspace-changes/git",
   "./src/vendor/workspace-changes/src/git.ts"
  ],
@@ -1695,6 +1707,10 @@ export const dshVendorAlias: Array<[string, string]> = [
  [
   "@deepseek-ai/dsh-office-to-pdf/remote",
   "./src/vendor/office-to-pdf/generated/remote.js"
+ ],
+ [
+  "@deepseek-ai/dsh-otel/event-transport",
+  "./src/vendor/otel/src/event-transport.ts"
  ],
  [
   "@deepseek-ai/dsh-plugin-manager/patch",

@@ -7,7 +7,7 @@
 # plugins: they are private, and not on any registry.
 FROM node:24-slim AS dsh-src
 
-ARG DSH_SOURCE_REF=dsh-v0.1.7-rc.2
+ARG DSH_SOURCE_REF=dsh-v0.2.0-rc.2
 
 # The harness build chain: git (source clone + the fabricated repo identity
 # scripts/build.ts reads), python3 (build scripts), and the native toolchain

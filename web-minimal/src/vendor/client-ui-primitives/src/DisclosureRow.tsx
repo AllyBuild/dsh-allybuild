@@ -5,14 +5,14 @@ import { IconChevronDownOutlineRegular, IconChevronUpOutlineRegular } from './ic
 import { TextShimmer } from './TextShimmer.tsx'
 import css from './DisclosureRow.module.css'
 
-/** Shared 24px disclosure chrome for compact flow rows. */
+/** Shared 24px process row: tertiary text and icons, secondary on hover. */
 export interface DisclosureRowProps {
   icon: ReactNode
   title: string
   open: boolean
   expandable: boolean
   onToggle: () => void
-  /** Animate the title while its owning operation is running. */
+  /** Animate the complete header while its owning operation is running. */
   running?: boolean | undefined
   /** Makes the complete title row the disclosure target. */
   expandOnRowClick?: boolean | undefined
@@ -24,6 +24,10 @@ export interface DisclosureRowProps {
   children?: ReactNode
   className?: string | undefined
   rowClassName?: string | undefined
+  /** Sizing class for the header text area, beside the leading icon. */
+  contentClassName?: string | undefined
+  /** Layout class shared by the header text and its decorative copy. */
+  contentLayoutClassName?: string | undefined
   leadingClassName?: string | undefined
   chevronClassName?: string | undefined
   titleClassName?: string | undefined
@@ -49,6 +53,8 @@ export const DisclosureRow = memo(function DisclosureRow({
   children,
   className,
   rowClassName,
+  contentClassName,
+  contentLayoutClassName,
   leadingClassName,
   chevronClassName,
   titleClassName,
@@ -91,6 +97,7 @@ export const DisclosureRow = memo(function DisclosureRow({
           <button
             type="button"
             className={clsx(css.leading, leadingClassName)}
+            aria-label={title}
             aria-expanded={open}
             onClick={toggleFromLeading}
           >
@@ -101,8 +108,10 @@ export const DisclosureRow = memo(function DisclosureRow({
             {leading}
           </span>
         )}
-        <TextShimmer className={clsx(css.title, titleClassName)} active={running}>{title}</TextShimmer>
-        {(keepContentWhenOpen || !open) && collapsedContent}
+        <TextShimmer active={running} className={contentClassName} contentClassName={contentLayoutClassName}>
+          <TextShimmer className={clsx(css.title, titleClassName)}>{title}</TextShimmer>
+          {(keepContentWhenOpen || !open) && collapsedContent}
+        </TextShimmer>
       </div>
       {open && children}
     </div>

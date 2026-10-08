@@ -9,21 +9,19 @@
 # names except dsh-web-minimal resolve from the running dsh installation.
 
 # ── base-row restatements ───────────────────────────────────────────────────
+# system-prompt 一行兼作 AllyBuild 部署行：DSH_SYSTEM_PROMPT 有值时平台
+# persona（personaPrefix）生效，缺省回退上游默认身份；patch 行整体替换
+# config，两键同行为之。
 
 - id: system-prompt
   config:
     personaSuffix: Your working directory is {{cwd}}.
-    personaPrefix: >-
-      You are a coding agent powered by the {{model}} model.
+    personaPrefix: !!js process.env.DSH_SYSTEM_PROMPT || 'You are a coding agent powered by the {{model}} model.'
 
 # ── AllyBuild deployment rows ────────────────────────────────────────────────
 # The platform controls these via the process environment (per-agent exec env):
-# persona/model/LLM route/skills. A truthy-env row wins over upstream config;
+# model/LLM route/skills. A truthy-env row wins over upstream config;
 # everything degrades to inert when the env is absent.
-
-- id: system-prompt
-  config:
-    persona: !!js process.env.DSH_SYSTEM_PROMPT ?? ''
 
 # The LLM plane routes through the platform gateway (OpenAI chat-completions
 # wire format; dsh >=0.1.7's deepseek-official adapter speaks the Messages
