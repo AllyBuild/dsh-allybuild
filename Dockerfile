@@ -1,6 +1,6 @@
 # dsh-server image: the remote server role of the split deployment.
 # Source build following the allybuild-dsh pattern: the AllyBuild-local plugin
-# packages (allybuild-overlay/) must live INSIDE the harness workspace to build
+# packages (allybuild/) must live INSIDE the harness workspace to build
 # (workspace:^ peers, shared tsconfig solution), so stage 1 clones the pinned
 # upstream, stamps the overlay over it, and builds the full workspace; stage 2
 # runs the dsh CLI from that tree. The npm-installed image cannot carry these
@@ -32,9 +32,9 @@ RUN git clone --depth 1 --branch "${DSH_SOURCE_REF}" \
 # UPSTREAM package: it is stamped onto packages/client/connection explicitly
 # and the authored copy removed — same-name twins would trip pnpm's duplicate
 # workspace-name check, and the upstream path is what every consumer resolves.
-COPY runtime/allybuild-overlay /tmp/allybuild-overlay
-RUN rsync -a /tmp/allybuild-overlay/ /src/ \
-  && rsync --delete -a /tmp/allybuild-overlay/packages/plugins/connection/ /src/packages/client/connection/ \
+COPY runtime/allybuild /tmp/allybuild
+RUN rsync -a /tmp/allybuild/ /src/ \
+  && rsync --delete -a /tmp/allybuild/packages/plugins/connection/ /src/packages/client/connection/ \
   && rm -rf /src/packages/plugins/connection \
   && python3 - <<'PY'
 path = "/src/tsconfig.host.json"

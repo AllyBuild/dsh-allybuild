@@ -2,14 +2,14 @@
 
 DeepSeek Harness 的拆分部署仓库：服务端容器镜像与 Daytona 一键部署脚本。镜像从
 上游源码构建（Daytona/CI 内自动 clone 固定 tag），并叠加
-`allybuild-overlay/` 中的 AllyBuild 集成插件（会话元数据同步、任务进度同步、
+`allybuild/` 中的 AllyBuild 集成插件（会话元数据同步、任务进度同步、
 ask_user 应答器）。上游源码见
 [deepseek-ai/deepseek-harness](https://github.com/deepseek-ai/deepseek-harness)。
 
 ## 镜像
 
 镜像内的 dsh 从上游源码构建：构建期 clone 固定的上游 tag（`DSH_SOURCE_REF`，
-如 `dsh-v0.1.7-rc.1`），叠印 `allybuild-overlay/` 后全仓编译，运行 stage 直接
+如 `dsh-v0.1.7-rc.1`），叠印 `allybuild/` 后全仓编译，运行 stage 直接
 从该源码树启动 CLI——私有插件不在任何 registry 上，npm 安装形不携带它们。
 入口命令为 `dsh --profile web --no-open`：启动 web profile（`/api` 网关 +
 浏览器 UI 静态资源），不打开浏览器，只打印带认证 token 的 URL。
@@ -118,7 +118,7 @@ daytona exec dsh-server -- cat /tmp/dsh.log      # dsh web: http://127.0.0.1:308
 
 ### AllyBuild 集成
 
-`allybuild-overlay/` 携带三个私有插件，在 web profile 中以独立 overlay 行挂载
+`allybuild/` 携带三个私有插件，在 web profile 中以独立 overlay 行挂载
 （`docker-overlay.yml` 内的 AllyBuild 行），配置经环境变量在启动时注入，全部为空时插件
 惰性不生效：
 

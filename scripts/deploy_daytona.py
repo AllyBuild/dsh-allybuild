@@ -41,7 +41,7 @@ DOCKERFILE_CONTEXT = [
     "runtime/merge-overlay.py",
     "runtime/mcp-overlay.py",
     "runtime/agent-overlay.yml",
-    "runtime/allybuild-overlay",
+    "runtime/allybuild",
     "runtime/web",
     "sdk/python",
     "sdk/ts",

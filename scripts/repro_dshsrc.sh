@@ -4,8 +4,8 @@
 set -e
 git clone -q --depth 1 --branch "${DSH_REF:-dsh-v0.1.7-rc.2}" https://github.com/deepseek-ai/deepseek-harness /tmp/src 2>/dev/null
 cd /tmp/src
-cp -a /rt/allybuild-overlay/. ./
-cp -a /rt/allybuild-overlay/packages/plugins/connection/. packages/client/connection/
+cp -a /rt/allybuild/. ./
+cp -a /rt/allybuild/packages/plugins/connection/. packages/client/connection/
 rm -rf packages/plugins/connection
 python3 /rt/scripts/repro_dshsrc_edits.py
 corepack enable
