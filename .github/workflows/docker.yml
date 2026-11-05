@@ -29,13 +29,13 @@ jobs:
       - name: Materialize the released SDKs into the build context
         run: bash runtime/scripts/prepare-ci-sdk.sh
 
-      # 上下文根的 ignore：web-minimal 的 node_modules/tests 与仓库元数据
+      # 上下文根的 ignore：web 的 node_modules/tests 与仓库元数据
       # 不进镜像（与主仓根 .dockerignore 的对应条目同义）。
       - name: Write the context .dockerignore
         run: |
           printf '%s\n' \
-            'runtime/web-minimal/node_modules/' \
-            'runtime/web-minimal/tests/' \
+            'runtime/web/node_modules/' \
+            'runtime/web/tests/' \
             'runtime/.git/' \
             'runtime/.github/' \
             'runtime/scripts/' \

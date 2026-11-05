@@ -9,8 +9,8 @@ importers:
   .:
     dependencies:
       dsh-web-minimal:
-        specifier: file:../web-minimal
-        version: file:../web-minimal(@deepseek-ai/cordis@4.0.4)(react@19.3.0)
+        specifier: file:../web
+        version: file:../web(@deepseek-ai/cordis@4.0.4)(react@19.3.0)
       react:
         specifier: ^19.3.0
         version: 19.3.0
@@ -634,8 +634,8 @@ packages:
       supports-color:
         optional: true
 
-  dsh-web-minimal@file:../web-minimal:
-    resolution: {directory: ../web-minimal, type: directory}
+  dsh-web-minimal@file:../web:
+    resolution: {directory: ../web, type: directory}
     peerDependencies:
       '@deepseek-ai/cordis': ~4.0.4
       react: '>=18'
@@ -1219,7 +1219,7 @@ snapshots:
     dependencies:
       ms: 2.1.3
 
-  dsh-web-minimal@file:../web-minimal(@deepseek-ai/cordis@4.0.4)(react@19.3.0):
+  dsh-web-minimal@file:../web(@deepseek-ai/cordis@4.0.4)(react@19.3.0):
     dependencies:
       '@deepseek-ai/cordis': 4.0.4
       react: 19.3.0

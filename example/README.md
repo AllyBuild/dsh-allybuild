@@ -8,8 +8,8 @@ web 面嵌入任意宿主页面。`<DshChat>` 是一个 iframe 封装:`host` +
 ## 运行
 
 ```sh
-# 1. 构建被引用的本地包(example 以 file:../web-minimal 引用其 lib/)
-cd ../web-minimal && pnpm install && pnpm build && cd ../example
+# 1. 构建被引用的本地包(example 以 file:../web 引用其 lib/)
+cd ../web && pnpm install && pnpm build && cd ../example
 
 # 2. 启动 dev server
 pnpm dev          # http://localhost:5173
@@ -51,12 +51,12 @@ ssh -N -L 3080:127.0.0.1:3080 <token>@ssh.app.daytona.io
 
 `sessionId`/`workspacePath` 回放最小面的 `?session=`/`?workspace=` 契约,
 仅当对端运行的 surface 解析该契约时生效。镜像默认 web profile 是完整 UI;
-最小面作为独立 profile 部署(见 `../web-minimal/README.md`):
+最小面作为独立 profile 部署(见 `../web/README.md`):
 `dsh plugin --profile minimal add /dsh/web-minimal && dsh --profile minimal`。
 
 ## 已知限制
 
-- 沙盒镜像 pin 的上游与 vendored web-minimal 同源（都跟随 Dockerfile 的
+- 沙盒镜像 pin 的上游与 vendored web 同源（都跟随 Dockerfile 的
   `DSH_SOURCE_REF`，当前 `dsh-v0.2.0-rc.2`）；如手动改动任一侧版本，
   混用组合层的 boot 日志会出现 `shortcuts` 行 import 失败告警，独立部署
   时以同版本 client 为准。

@@ -42,7 +42,7 @@ DOCKERFILE_CONTEXT = [
     "runtime/mcp-overlay.py",
     "runtime/agent-overlay.yml",
     "runtime/allybuild-overlay",
-    "runtime/web-minimal",
+    "runtime/web",
     "sdk/python",
     "sdk/ts",
 ]

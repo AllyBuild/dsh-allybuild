@@ -75,8 +75,8 @@ RUN corepack enable \
 # its own lockfile and workspace file govern the install. devDependencies
 # (toolchain + test rig) are pruned after the build — the runtime surface is
 # lib/ + package metadata only, exactly what the baked copy used to ship.
-COPY runtime/web-minimal /tmp/web-minimal
-RUN cd /tmp/web-minimal \
+COPY runtime/web /tmp/web
+RUN cd /tmp/web \
   && pnpm install --no-frozen-lockfile \
   && pnpm run build \
   && rm -rf node_modules
@@ -135,7 +135,7 @@ ENV NODE_PATH=/usr/local/lib/node_modules \
 # workspace arrive via ?session=/?workspace=), built from the vendored source
 # in the dsh-src stage above. Per-agent profiles materialize from it with
 # `dsh plugin --profile <id> add`.
-COPY --from=dsh-src --chmod=0755 /tmp/web-minimal /dsh/web-minimal
+COPY --from=dsh-src --chmod=0755 /tmp/web /dsh/web-minimal
 
 # The built workspace ships with its node_modules (pnpm symlinks stay relative
 # and keep working under the new root); the CLI runs from the built bin.

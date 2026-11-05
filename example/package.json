@@ -9,7 +9,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "dsh-web-minimal": "file:../web-minimal",
+    "dsh-web-minimal": "file:../web",
     "react": "^19.3.0",
     "react-dom": "^19.3.0"
   },
