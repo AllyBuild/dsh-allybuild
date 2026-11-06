@@ -27,11 +27,11 @@ export interface SettingsDescribeView {
 /** Mirror state every derived settings surface renders from. */
 export interface SettingsMirrorSnapshot {
   /**
-   * `unavailable` is the terminal non-loopback state; `ready` persists across
-   * later failed refreshes (the held view keeps serving); `idle` means no
-   * answer is held and no read is running, so `ensure` will start one.
+   * `ready` persists across later failed refreshes (the held view keeps serving);
+   * `idle` means no answer is held and no read is running, so `ensure` will
+   * start one.
    */
-  status: 'idle' | 'loading' | 'ready' | 'unavailable'
+  status: 'idle' | 'loading' | 'ready'
   /** The last good answer; undefined until the first success. */
   view: SettingsDescribeView | undefined
   /** The latest refresh failure message, cleared by the next success. */
@@ -53,8 +53,8 @@ export interface SettingsDescribeFace {
    */
   subscribe(listener: () => void): () => void
   /**
-   * Resolve once an answer is held (or the mirror is terminally unavailable),
-   * reading only from `idle`.
+   * Resolve once an answer is held, reading only from `idle`. A settled mirror
+   * holds either a view or the read's error.
    * @returns settlement of the current or newly started read, if any.
    */
   ensure(): Promise<void>
@@ -80,14 +80,10 @@ export class SettingsDescribeMirror implements SettingsDescribeFace {
   /**
    * @param ctx - the providing plugin's context, whose `remote.settings`
    * namespace answers the describe read.
-   * @param persistence - client-selected Host persistence; non-loopback pages may remain process-local.
    */
-  constructor(
-    private readonly ctx: ClientContext,
-    private readonly persistence: 'host' | 'memory' = 'host',
-  ) {
+  constructor(private readonly ctx: ClientContext) {
     this.store = createSnapshotStore<SettingsMirrorSnapshot>({
-      status: persistence === 'host' ? 'idle' : 'unavailable',
+      status: 'idle',
       view: undefined,
       error: null,
     })
@@ -113,7 +109,6 @@ export class SettingsDescribeMirror implements SettingsDescribeFace {
    * @returns settlement after this call's freshness is reflected.
    */
   load(): Promise<void> {
-    if (this.persistence === 'memory') return Promise.resolve()
     if (this.inFlight !== undefined) {
       this.rerun = true
       return this.inFlight
@@ -125,13 +120,10 @@ export class SettingsDescribeMirror implements SettingsDescribeFace {
   }
 
   /**
-   * Resolve once an answer is held (or the mirror is terminally unavailable),
-   * reading only from `idle`. The cheap idempotent entry for surfaces that
-   * render on first use.
+   * Resolve once an answer is held, reading only from `idle`.
    * @returns settlement of the current or newly started read, if any.
    */
   ensure(): Promise<void> {
-    if (this.persistence === 'memory') return Promise.resolve()
     if (this.inFlight !== undefined) return this.inFlight
     if (this.getSnapshot().status === 'idle') return this.load()
     return Promise.resolve()

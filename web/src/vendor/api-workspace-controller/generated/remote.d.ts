@@ -2,7 +2,8 @@
 import type {
   RemoteResult,
   RemoteStreamHandle,
-  TypertRemoteContribution,
+  TypertRemoteInfo,
+  TypertRemoteMethod,
 } from '@deepseek-ai/dsh-typert-protocol'
 import type { WorkspaceArchiveSessionRequest, WorkspaceArchiveValue, WorkspaceCreateRequest, WorkspaceCreateValue, WorkspaceDeleteRequest, WorkspaceDeleteValue, WorkspaceFollowFrame, WorkspaceInsertBeforeRequest, WorkspaceInsertSessionBeforeRequest, WorkspaceOrderValue, WorkspacePinSessionRequest, WorkspacePinValue, WorkspaceRenameRequest, WorkspaceUnarchiveSessionRequest, WorkspaceUnpinSessionRequest, WorkspaceValue } from '@deepseek-ai/dsh-api-workspace-controller/types'
 import type { DirectoryListing } from '@deepseek-ai/dsh-host-directory-picker/types'
@@ -48,6 +49,21 @@ declare module '@deepseek-ai/dsh-typert-protocol' {
   }
 }
 
-export declare const TYPERT_REMOTE: TypertRemoteContribution
+export declare const TYPERT_REMOTE: TypertRemoteInfo<{
+  readonly 'directoryPicker/createDirectory': TypertRemoteMethod<{ readonly 'path': string; readonly 'name': string }, string>
+  readonly 'directoryPicker/list': TypertRemoteMethod<{ readonly 'path'?: string | undefined }, DirectoryListing>
+  readonly 'directoryPicker/pick': TypertRemoteMethod<{  }, string | null>
+  readonly 'workspace/archiveSession': TypertRemoteMethod<{ readonly 'request': WorkspaceArchiveSessionRequest }, WorkspaceArchiveValue>
+  readonly 'workspace/create': TypertRemoteMethod<{ readonly 'request': WorkspaceCreateRequest }, WorkspaceCreateValue>
+  readonly 'workspace/delete': TypertRemoteMethod<{ readonly 'request': WorkspaceDeleteRequest }, WorkspaceDeleteValue>
+  readonly 'workspace/follow': TypertRemoteMethod<{  }, WorkspaceFollowFrame, 'stream'>
+  readonly 'workspace/initializeDefault': TypertRemoteMethod<{  }, WorkspaceValue | undefined>
+  readonly 'workspace/insertBefore': TypertRemoteMethod<{ readonly 'request': WorkspaceInsertBeforeRequest }, WorkspaceOrderValue>
+  readonly 'workspace/insertSessionBefore': TypertRemoteMethod<{ readonly 'request': WorkspaceInsertSessionBeforeRequest }, WorkspaceValue>
+  readonly 'workspace/pinSession': TypertRemoteMethod<{ readonly 'request': WorkspacePinSessionRequest }, WorkspacePinValue>
+  readonly 'workspace/rename': TypertRemoteMethod<{ readonly 'request': WorkspaceRenameRequest }, WorkspaceValue>
+  readonly 'workspace/unarchiveSession': TypertRemoteMethod<{ readonly 'request': WorkspaceUnarchiveSessionRequest }, WorkspaceArchiveValue>
+  readonly 'workspace/unpinSession': TypertRemoteMethod<{ readonly 'request': WorkspaceUnpinSessionRequest }, WorkspacePinValue>
+}>
 export default TYPERT_REMOTE
 //# sourceMappingURL=typert.remote-client.d.ts.map

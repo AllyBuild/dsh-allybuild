@@ -1,14 +1,6 @@
 // GENERATED — dsh vendor 源码的包名映射（scripts 生成，勿手改）
 export const dshVendorAlias: Array<[string, string]> = [
  [
-  "@deepseek-ai/dsh-api-session-controller/model-selection-projection",
-  "./src/vendor/api-session-controller/src/model-selection-projection.ts"
- ],
- [
-  "@deepseek-ai/dsh-client-ui-settings-plugin-inventory/css-modules.d",
-  "./src/vendor/client-ui-settings-plugin-inventory/src/css-modules.d.ts"
- ],
- [
   "@deepseek-ai/dsh-client-ui-directory-picker-browse/css-modules.d",
   "./src/vendor/client-ui-directory-picker-browse/src/css-modules.d.ts"
  ],
@@ -33,6 +25,10 @@ export const dshVendorAlias: Array<[string, string]> = [
   "./src/vendor/agent-preset-registry/src/composition-inventory.ts"
  ],
  [
+  "@deepseek-ai/dsh-client-ui-entry-customization/css-modules.d",
+  "./src/vendor/client-ui-entry-customization/src/css-modules.d.ts"
+ ],
+ [
   "@deepseek-ai/dsh-client-ui-primitives/code-file-icon-artwork",
   "./src/vendor/client-ui-primitives/src/code-file-icon-artwork.ts"
  ],
@@ -53,16 +49,16 @@ export const dshVendorAlias: Array<[string, string]> = [
   "./src/vendor/api-workspace-controller/src/default-workspace.ts"
  ],
  [
+  "@deepseek-ai/dsh-client-product-analytics/environment-query",
+  "./src/vendor/client-product-analytics/src/environment-query.ts"
+ ],
+ [
   "@deepseek-ai/dsh-client-ui-conversation/submission-settings",
   "./src/vendor/client-ui-conversation/src/submission-settings.ts"
  ],
  [
   "@deepseek-ai/dsh-client-ui-permission-presets/css-modules.d",
   "./src/vendor/client-ui-permission-presets/src/css-modules.d.ts"
- ],
- [
-  "@deepseek-ai/dsh-client-ui-settings-plugin-inventory/client",
-  "./src/vendor/client-ui-settings-plugin-inventory/src/client/index.ts"
  ],
  [
   "@deepseek-ai/dsh-session-format-catalog/message-projections",
@@ -145,6 +141,10 @@ export const dshVendorAlias: Array<[string, string]> = [
   "./src/vendor/client-ui-primitives/src/overlay-top-margin.ts"
  ],
  [
+  "@deepseek-ai/dsh-client-ui-primitives/use-clipboard-copy",
+  "./src/vendor/client-ui-primitives/src/use-clipboard-copy.ts"
+ ],
+ [
   "@deepseek-ai/dsh-client-ui-settings-models/css-modules.d",
   "./src/vendor/client-ui-settings-models/src/css-modules.d.ts"
  ],
@@ -169,8 +169,16 @@ export const dshVendorAlias: Array<[string, string]> = [
   "./src/vendor/client-ui-primitives/src/code-highlighting.ts"
  ],
  [
-  "@deepseek-ai/dsh-client-ui-primitives/use-copy-feedback",
-  "./src/vendor/client-ui-primitives/src/use-copy-feedback.ts"
+  "@deepseek-ai/dsh-client-ui-primitives/file-drag-actions",
+  "./src/vendor/client-ui-primitives/src/file-drag-actions.ts"
+ ],
+ [
+  "@deepseek-ai/dsh-client-ui-primitives/tooltip-placement",
+  "./src/vendor/client-ui-primitives/src/tooltip-placement.ts"
+ ],
+ [
+  "@deepseek-ai/dsh-client-ui-primitives/useRowDragPreview",
+  "./src/vendor/client-ui-primitives/src/useRowDragPreview.ts"
  ],
  [
   "@deepseek-ai/dsh-client-ui-user-questions/css-modules.d",
@@ -185,6 +193,10 @@ export const dshVendorAlias: Array<[string, string]> = [
   "./src/vendor/native-command/src/file-applications-linux.ts"
  ],
  [
+  "@deepseek-ai/dsh-plugin-manager/official-install-target",
+  "./src/vendor/plugin-manager/src/official-install-target.ts"
+ ],
+ [
   "@deepseek-ai/dsh-session-format-v3-to-v4/retired-syntax",
   "./src/vendor/session-format-v3-to-v4/src/retired-syntax.ts"
  ],
@@ -195,6 +207,10 @@ export const dshVendorAlias: Array<[string, string]> = [
  [
   "@deepseek-ai/dsh-client-ui-input-trigger/css-modules.d",
   "./src/vendor/client-ui-input-trigger/src/css-modules.d.ts"
+ ],
+ [
+  "@deepseek-ai/dsh-client-ui-sidebar-files/css-modules.d",
+  "./src/vendor/client-ui-sidebar-files/src/css-modules.d.ts"
  ],
  [
   "@deepseek-ai/dsh-client-ui-sidebar-right/css-modules.d",
@@ -217,6 +233,10 @@ export const dshVendorAlias: Array<[string, string]> = [
   "./src/vendor/api-session-controller/src/skill-catalog.ts"
  ],
  [
+  "@deepseek-ai/dsh-client-product-analytics/environment",
+  "./src/vendor/client-product-analytics/src/environment.ts"
+ ],
+ [
   "@deepseek-ai/dsh-client-ui-agent-preset/css-modules.d",
   "./src/vendor/client-ui-agent-preset/src/css-modules.d.ts"
  ],
@@ -227,6 +247,10 @@ export const dshVendorAlias: Array<[string, string]> = [
  [
   "@deepseek-ai/dsh-client-ui-deliverables/css-modules.d",
   "./src/vendor/client-ui-deliverables/src/css-modules.d.ts"
+ ],
+ [
+  "@deepseek-ai/dsh-client-ui-entry-customization/client",
+  "./src/vendor/client-ui-entry-customization/src/client/index.ts"
  ],
  [
   "@deepseek-ai/dsh-client-ui-primitives/code-file-types",
@@ -277,8 +301,8 @@ export const dshVendorAlias: Array<[string, string]> = [
   "./src/vendor/client-ui-primitives/src/input-modality.ts"
  ],
  [
-  "@deepseek-ai/dsh-client-ui-settings-plugin-inventory",
-  "./src/vendor/client-ui-settings-plugin-inventory/src/index.ts"
+  "@deepseek-ai/dsh-client-ui-secret-mask/css-modules.d",
+  "./src/vendor/client-ui-secret-mask/src/css-modules.d.ts"
  ],
  [
   "@deepseek-ai/dsh-compaction-image-offload/projection",
@@ -293,12 +317,20 @@ export const dshVendorAlias: Array<[string, string]> = [
   "./src/vendor/session-format-v3-to-v4/src/fork-result.ts"
  ],
  [
+  "@deepseek-ai/dsh-client-connection/connect-protocol",
+  "./src/vendor/client-connection/src/connect-protocol.ts"
+ ],
+ [
   "@deepseek-ai/dsh-client-ui-attachment/css-modules.d",
   "./src/vendor/client-ui-attachment/src/css-modules.d.ts"
  ],
  [
   "@deepseek-ai/dsh-client-ui-primitives/css-modules.d",
   "./src/vendor/client-ui-primitives/src/css-modules.d.ts"
+ ],
+ [
+  "@deepseek-ai/dsh-client-ui-primitives/document-zoom",
+  "./src/vendor/client-ui-primitives/src/document-zoom.ts"
  ],
  [
   "@deepseek-ai/dsh-client-ui-primitives/head-tail-cap",
@@ -319,6 +351,10 @@ export const dshVendorAlias: Array<[string, string]> = [
  [
   "@deepseek-ai/dsh-client-ui-trajectory/css-modules.d",
   "./src/vendor/client-ui-trajectory/src/css-modules.d.ts"
+ ],
+ [
+  "@deepseek-ai/dsh-official-bundles/catalog.generated",
+  "./src/vendor/official-bundles/src/catalog.generated.ts"
  ],
  [
   "@deepseek-ai/dsh-session-format-v0-to-v1/validation",
@@ -343,6 +379,10 @@ export const dshVendorAlias: Array<[string, string]> = [
  [
   "@deepseek-ai/dsh-session-format-v3-to-v4/validation",
   "./src/vendor/session-format-v3-to-v4/src/validation.ts"
+ ],
+ [
+  "@deepseek-ai/dsh-token-meter/measurement-projection",
+  "./src/vendor/token-meter/src/measurement-projection.ts"
  ],
  [
   "@deepseek-ai/dsh-api-terminal-controller/retention",
@@ -441,6 +481,10 @@ export const dshVendorAlias: Array<[string, string]> = [
   "./src/vendor/client-ui-model-selection/src/client/index.ts"
  ],
  [
+  "@deepseek-ai/dsh-client-ui-schedule/css-modules.d",
+  "./src/vendor/client-ui-schedule/src/css-modules.d.ts"
+ ],
+ [
   "@deepseek-ai/dsh-client-ui-settings/css-modules.d",
   "./src/vendor/client-ui-settings/src/css-modules.d.ts"
  ],
@@ -473,20 +517,12 @@ export const dshVendorAlias: Array<[string, string]> = [
   "./src/vendor/session-format-catalog/src/generated.ts"
  ],
  [
-  "@deepseek-ai/dsh-subagent/continuation-activation",
-  "./src/vendor/subagent/src/continuation-activation.ts"
- ],
- [
   "@deepseek-ai/dsh-token-meter/breakdown-projection",
   "./src/vendor/token-meter/src/breakdown-projection.ts"
  ],
  [
   "@deepseek-ai/dsh-util-workspace-path/file-address",
   "./src/vendor/util-workspace-path/src/file-address.ts"
- ],
- [
-  "@deepseek-ai/dsh-agent-preset-registry/invariant",
-  "./src/vendor/agent-preset-registry/src/invariant.ts"
  ],
  [
   "@deepseek-ai/dsh-api-session-controller/commands",
@@ -499,10 +535,6 @@ export const dshVendorAlias: Array<[string, string]> = [
  [
   "@deepseek-ai/dsh-api-workspace-controller/remote",
   "./src/vendor/api-workspace-controller/generated/remote.js"
- ],
- [
-  "@deepseek-ai/dsh-client-connection/operator-peer",
-  "./src/vendor/client-connection/src/operator-peer.ts"
  ],
  [
   "@deepseek-ai/dsh-client-product-analytics/client",
@@ -533,6 +565,10 @@ export const dshVendorAlias: Array<[string, string]> = [
   "./src/vendor/client-ui-plugin-manager/generated/remote.js"
  ],
  [
+  "@deepseek-ai/dsh-client-ui-primitives/image-drag",
+  "./src/vendor/client-ui-primitives/src/image-drag.ts"
+ ],
+ [
   "@deepseek-ai/dsh-client-ui-sidebar/css-modules.d",
   "./src/vendor/client-ui-sidebar/src/css-modules.d.ts"
  ],
@@ -543,6 +579,10 @@ export const dshVendorAlias: Array<[string, string]> = [
  [
   "@deepseek-ai/dsh-client-ui-user-questions/client",
   "./src/vendor/client-ui-user-questions/src/client/index.ts"
+ ],
+ [
+  "@deepseek-ai/dsh-official-bundles/plugin-manager",
+  "./src/vendor/official-bundles/src/plugin-manager.ts"
  ],
  [
   "@deepseek-ai/dsh-session-format-catalog/children",
@@ -567,6 +607,10 @@ export const dshVendorAlias: Array<[string, string]> = [
  [
   "@deepseek-ai/dsh-session-turn-outline/projection",
   "./src/vendor/session-turn-outline/src/projection.ts"
+ ],
+ [
+  "@deepseek-ai/dsh-tool-executor-ptc/runtime-types",
+  "./src/vendor/tool-executor-ptc/src/runtime-types.ts"
  ],
  [
   "@deepseek-ai/dsh-api-gateway/remote-error-codes",
@@ -645,6 +689,10 @@ export const dshVendorAlias: Array<[string, string]> = [
   "./src/vendor/client-ui-primitives/src/file-size.ts"
  ],
  [
+  "@deepseek-ai/dsh-client-ui-sidebar-files/client",
+  "./src/vendor/client-ui-sidebar-files/src/client/index.ts"
+ ],
+ [
   "@deepseek-ai/dsh-client-ui-sidebar-right/client",
   "./src/vendor/client-ui-sidebar-right/src/client/index.ts"
  ],
@@ -659,6 +707,10 @@ export const dshVendorAlias: Array<[string, string]> = [
  [
   "@deepseek-ai/dsh-plugin-manager/install-failure",
   "./src/vendor/plugin-manager/src/install-failure.ts"
+ ],
+ [
+  "@deepseek-ai/dsh-plugin-market/repository-cache",
+  "./src/vendor/plugin-market/src/repository-cache.ts"
  ],
  [
   "@deepseek-ai/dsh-session-format-catalog/current",
@@ -729,12 +781,24 @@ export const dshVendorAlias: Array<[string, string]> = [
   "./src/vendor/client-ui-agent-preset/src/client/index.ts"
  ],
  [
+  "@deepseek-ai/dsh-client-ui-context-menu/client",
+  "./src/vendor/client-ui-context-menu/src/client/index.ts"
+ ],
+ [
   "@deepseek-ai/dsh-client-ui-conversation/client",
   "./src/vendor/client-ui-conversation/src/client/index.ts"
  ],
  [
   "@deepseek-ai/dsh-client-ui-deliverables/client",
   "./src/vendor/client-ui-deliverables/src/client/index.ts"
+ ],
+ [
+  "@deepseek-ai/dsh-client-ui-entry-customization",
+  "./src/vendor/client-ui-entry-customization/src/index.ts"
+ ],
+ [
+  "@deepseek-ai/dsh-client-ui-file-actions/client",
+  "./src/vendor/client-ui-file-actions/src/client/index.ts"
  ],
  [
   "@deepseek-ai/dsh-client-ui-input-trigger/types",
@@ -755,10 +819,6 @@ export const dshVendorAlias: Array<[string, string]> = [
  [
   "@deepseek-ai/dsh-plugin-manager/build-approval",
   "./src/vendor/plugin-manager/src/build-approval.ts"
- ],
- [
-  "@deepseek-ai/dsh-scope/scoped-events.generated",
-  "./src/vendor/scope/src/scoped-events.generated.ts"
  ],
  [
   "@deepseek-ai/dsh-session-format-v0-to-v1/codec",
@@ -785,6 +845,10 @@ export const dshVendorAlias: Array<[string, string]> = [
   "./src/vendor/session-projection-cache/src/spec.ts"
  ],
  [
+  "@deepseek-ai/dsh-typert-protocol/remote-access",
+  "./src/vendor/typert-protocol/src/remote-access.ts"
+ ],
+ [
   "@deepseek-ai/dsh-agent-preset-registry/preset",
   "./src/vendor/agent-preset-registry/src/preset.ts"
  ],
@@ -805,6 +869,10 @@ export const dshVendorAlias: Array<[string, string]> = [
   "./src/vendor/api-session-controller/src/types.ts"
  ],
  [
+  "@deepseek-ai/dsh-app-boot/startup-diagnostics",
+  "./src/vendor/app-boot/src/startup-diagnostics.ts"
+ ],
+ [
   "@deepseek-ai/dsh-client-connection/rpc-schema",
   "./src/vendor/client-connection/src/rpc-schema.ts"
  ],
@@ -819,6 +887,10 @@ export const dshVendorAlias: Array<[string, string]> = [
  [
   "@deepseek-ai/dsh-client-ui-chat/css-modules.d",
   "./src/vendor/client-ui-chat/src/css-modules.d.ts"
+ ],
+ [
+  "@deepseek-ai/dsh-client-ui-file-actions/types",
+  "./src/vendor/client-ui-file-actions/src/types.ts"
  ],
  [
   "@deepseek-ai/dsh-client-ui-goal/css-modules.d",
@@ -837,8 +909,8 @@ export const dshVendorAlias: Array<[string, string]> = [
   "./src/vendor/client-ui-plan/src/css-modules.d.ts"
  ],
  [
-  "@deepseek-ai/dsh-client-ui-renderer/invariant",
-  "./src/vendor/client-ui-renderer/src/invariant.ts"
+  "@deepseek-ai/dsh-client-ui-secret-mask/client",
+  "./src/vendor/client-ui-secret-mask/src/client/index.ts"
  ],
  [
   "@deepseek-ai/dsh-client-ui-tool/css-modules.d",
@@ -857,8 +929,12 @@ export const dshVendorAlias: Array<[string, string]> = [
   "./src/vendor/native-command/src/desktop-entry.ts"
  ],
  [
-  "@deepseek-ai/dsh-permission-presets/invariant",
-  "./src/vendor/permission-presets/src/invariant.ts"
+  "@deepseek-ai/dsh-plugin-manager/bundle-detail",
+  "./src/vendor/plugin-manager/src/bundle-detail.ts"
+ ],
+ [
+  "@deepseek-ai/dsh-plugin-manager/git-transport",
+  "./src/vendor/plugin-manager/src/git-transport.ts"
  ],
  [
   "@deepseek-ai/dsh-session-persistence/revision",
@@ -913,6 +989,10 @@ export const dshVendorAlias: Array<[string, string]> = [
   "./src/vendor/client-ui-trajectory/src/client/index.ts"
  ],
  [
+  "@deepseek-ai/dsh-client-ui-trajectory/remote",
+  "./src/vendor/client-ui-trajectory/generated/remote.js"
+ ],
+ [
   "@deepseek-ai/dsh-cordis-client-runner/client",
   "./src/vendor/cordis-client-runner/src/client/index.ts"
  ],
@@ -945,12 +1025,24 @@ export const dshVendorAlias: Array<[string, string]> = [
   "./src/vendor/session-turn-outline/src/client.ts"
  ],
  [
+  "@deepseek-ai/dsh-tool-executor-ptc/ptc-calls",
+  "./src/vendor/tool-executor-ptc/src/ptc-calls.ts"
+ ],
+ [
   "@deepseek-ai/dsh-typert-protocol/owned-value",
   "./src/vendor/typert-protocol/src/owned-value.ts"
  ],
  [
+  "@deepseek-ai/dsh-typert-protocol/remote-info",
+  "./src/vendor/typert-protocol/src/remote-info.ts"
+ ],
+ [
   "@deepseek-ai/dsh-api-job-controller/observe",
   "./src/vendor/api-job-controller/src/observe.ts"
+ ],
+ [
+  "@deepseek-ai/dsh-api-remote-access/snapshot",
+  "./src/vendor/api-remote-access/src/snapshot.ts"
  ],
  [
   "@deepseek-ai/dsh-api-workspace-files/client",
@@ -967,6 +1059,10 @@ export const dshVendorAlias: Array<[string, string]> = [
  [
   "@deepseek-ai/dsh-client-connection/rpc-host",
   "./src/vendor/client-connection/src/rpc-host.ts"
+ ],
+ [
+  "@deepseek-ai/dsh-client-ui-file-drag/client",
+  "./src/vendor/client-ui-file-drag/src/client/index.ts"
  ],
  [
   "@deepseek-ai/dsh-client-ui-message-feedback",
@@ -993,6 +1089,10 @@ export const dshVendorAlias: Array<[string, string]> = [
   "./src/vendor/client-ui-theme/src/boot-theme.ts"
  ],
  [
+  "@deepseek-ai/dsh-client-ui-trajectory/types",
+  "./src/vendor/client-ui-trajectory/src/types.ts"
+ ],
+ [
   "@deepseek-ai/dsh-client-ui-workspace/client",
   "./src/vendor/client-ui-workspace/src/client/index.ts"
  ],
@@ -1003,6 +1103,14 @@ export const dshVendorAlias: Array<[string, string]> = [
  [
   "@deepseek-ai/dsh-native-command/path-opener",
   "./src/vendor/native-command/src/path-opener.ts"
+ ],
+ [
+  "@deepseek-ai/dsh-plugin-market/detail-files",
+  "./src/vendor/plugin-market/src/detail-files.ts"
+ ],
+ [
+  "@deepseek-ai/dsh-plugin-market/parse-thread",
+  "./src/vendor/plugin-market/src/parse-thread.ts"
  ],
  [
   "@deepseek-ai/dsh-session-persistence/errors",
@@ -1019,6 +1127,14 @@ export const dshVendorAlias: Array<[string, string]> = [
  [
   "@deepseek-ai/dsh-subagent/archive-admission",
   "./src/vendor/subagent/src/archive-admission.ts"
+ ],
+ [
+  "@deepseek-ai/dsh-tool-executor-ptc/py-types",
+  "./src/vendor/tool-executor-ptc/src/py-types.ts"
+ ],
+ [
+  "@deepseek-ai/dsh-tool-executor-ptc/ts-types",
+  "./src/vendor/tool-executor-ptc/src/ts-types.ts"
  ],
  [
   "@deepseek-ai/dsh-typert-protocol/json-value",
@@ -1085,6 +1201,10 @@ export const dshVendorAlias: Array<[string, string]> = [
   "./src/vendor/client-ui-renderer/src/client/index.ts"
  ],
  [
+  "@deepseek-ai/dsh-client-ui-schedule/client",
+  "./src/vendor/client-ui-schedule/src/client/index.ts"
+ ],
+ [
   "@deepseek-ai/dsh-client-ui-settings/client",
   "./src/vendor/client-ui-settings/src/client/index.ts"
  ],
@@ -1117,8 +1237,16 @@ export const dshVendorAlias: Array<[string, string]> = [
   "./src/vendor/permission-presets/generated/remote.js"
  ],
  [
+  "@deepseek-ai/dsh-plugin-manager/diagnostic",
+  "./src/vendor/plugin-manager/src/diagnostic.ts"
+ ],
+ [
   "@deepseek-ai/dsh-plugin-manager/operations",
   "./src/vendor/plugin-manager/src/operations.ts"
+ ],
+ [
+  "@deepseek-ai/dsh-plugin-market-index/types",
+  "./src/vendor/plugin-market-index/src/types.ts"
  ],
  [
   "@deepseek-ai/dsh-schedule/delivery-history",
@@ -1145,6 +1273,10 @@ export const dshVendorAlias: Array<[string, string]> = [
   "./src/vendor/token-meter/src/route-pricing.ts"
  ],
  [
+  "@deepseek-ai/dsh-typert-protocol/principal",
+  "./src/vendor/typert-protocol/src/principal.ts"
+ ],
+ [
   "@deepseek-ai/dsh-user-questions/projection",
   "./src/vendor/user-questions/src/projection.ts"
  ],
@@ -1169,8 +1301,20 @@ export const dshVendorAlias: Array<[string, string]> = [
   "./src/vendor/api-job-controller/src/types.ts"
  ],
  [
+  "@deepseek-ai/dsh-api-remote-access/client",
+  "./src/vendor/api-remote-access/src/client/index.ts"
+ ],
+ [
+  "@deepseek-ai/dsh-api-remote-access/remote",
+  "./src/vendor/api-remote-access/generated/remote.js"
+ ],
+ [
   "@deepseek-ai/dsh-api-workspace-controller",
   "./src/vendor/api-workspace-controller/src/index.ts"
+ ],
+ [
+  "@deepseek-ai/dsh-app-boot/bundle-platform",
+  "./src/vendor/app-boot/src/bundle-platform.ts"
  ],
  [
   "@deepseek-ai/dsh-app-boot/profile-context",
@@ -1187,10 +1331,6 @@ export const dshVendorAlias: Array<[string, string]> = [
  [
   "@deepseek-ai/dsh-client-file-upload/types",
   "./src/vendor/client-file-upload/src/types.ts"
- ],
- [
-  "@deepseek-ai/dsh-client-modules/invariant",
-  "./src/vendor/client-modules/src/invariant.ts"
  ],
  [
   "@deepseek-ai/dsh-client-product-analytics",
@@ -1237,12 +1377,12 @@ export const dshVendorAlias: Array<[string, string]> = [
   "./src/vendor/cordis-host-runner/src/types.ts"
  ],
  [
-  "@deepseek-ai/dsh-permission-presets/types",
-  "./src/vendor/permission-presets/src/types.ts"
+  "@deepseek-ai/dsh-official-bundles/bundles",
+  "./src/vendor/official-bundles/src/bundles.ts"
  ],
  [
-  "@deepseek-ai/dsh-sandbox-policy/invariant",
-  "./src/vendor/sandbox-policy/src/invariant.ts"
+  "@deepseek-ai/dsh-permission-presets/types",
+  "./src/vendor/permission-presets/src/types.ts"
  ],
  [
   "@deepseek-ai/dsh-session-projection/types",
@@ -1269,12 +1409,24 @@ export const dshVendorAlias: Array<[string, string]> = [
   "./src/vendor/session-stats/src/projection.ts"
  ],
  [
-  "@deepseek-ai/dsh-storage-domain/invariant",
-  "./src/vendor/storage-domain/src/invariant.ts"
- ],
- [
   "@deepseek-ai/dsh-token-meter/surface-fold",
   "./src/vendor/token-meter/src/surface-fold.ts"
+ ],
+ [
+  "@deepseek-ai/dsh-tool-executor-ptc/client",
+  "./src/vendor/tool-executor-ptc/src/client.ts"
+ ],
+ [
+  "@deepseek-ai/dsh-tool-executor-ptc/config",
+  "./src/vendor/tool-executor-ptc/src/config.ts"
+ ],
+ [
+  "@deepseek-ai/dsh-tool-executor-ptc/errors",
+  "./src/vendor/tool-executor-ptc/src/errors.ts"
+ ],
+ [
+  "@deepseek-ai/dsh-util-values/partial-json",
+  "./src/vendor/util-values/src/partial-json.ts"
  ],
  [
   "@deepseek-ai/dsh-agent/archive-admission",
@@ -1287,6 +1439,10 @@ export const dshVendorAlias: Array<[string, string]> = [
  [
   "@deepseek-ai/dsh-api-job-controller/wake",
   "./src/vendor/api-job-controller/src/wake.ts"
+ ],
+ [
+  "@deepseek-ai/dsh-api-remote-access/types",
+  "./src/vendor/api-remote-access/src/types.ts"
  ],
  [
   "@deepseek-ai/dsh-api-settings-controller",
@@ -1325,6 +1481,10 @@ export const dshVendorAlias: Array<[string, string]> = [
   "./src/vendor/client-ui-layout/src/client/index.ts"
  ],
  [
+  "@deepseek-ai/dsh-client-ui-sidebar-files",
+  "./src/vendor/client-ui-sidebar-files/src/index.ts"
+ ],
+ [
   "@deepseek-ai/dsh-client-ui-sidebar-right",
   "./src/vendor/client-ui-sidebar-right/src/index.ts"
  ],
@@ -1347,6 +1507,14 @@ export const dshVendorAlias: Array<[string, string]> = [
  [
   "@deepseek-ai/dsh-plugin-manager/run-tree",
   "./src/vendor/plugin-manager/src/run-tree.ts"
+ ],
+ [
+  "@deepseek-ai/dsh-plugin-manager/versions",
+  "./src/vendor/plugin-manager/src/versions.ts"
+ ],
+ [
+  "@deepseek-ai/dsh-plugin-market/index-url",
+  "./src/vendor/plugin-market/src/index-url.ts"
  ],
  [
   "@deepseek-ai/dsh-session-format/filename",
@@ -1385,10 +1553,6 @@ export const dshVendorAlias: Array<[string, string]> = [
   "./src/vendor/session-reference/src/types.ts"
  ],
  [
-  "@deepseek-ai/dsh-session-title/invariant",
-  "./src/vendor/session-title/src/invariant.ts"
- ],
- [
   "@deepseek-ai/dsh-session-title/normalize",
   "./src/vendor/session-title/src/normalize.ts"
  ],
@@ -1397,24 +1561,12 @@ export const dshVendorAlias: Array<[string, string]> = [
   "./src/vendor/subagent/src/out-of-process.ts"
  ],
  [
-  "@deepseek-ai/dsh-subagent/run-settlement",
-  "./src/vendor/subagent/src/run-settlement.ts"
- ],
- [
-  "@deepseek-ai/dsh-system-prompt/invariant",
-  "./src/vendor/system-prompt/src/invariant.ts"
- ],
- [
-  "@deepseek-ai/dsh-tool-workflow/invariant",
-  "./src/vendor/tool-workflow/src/invariant.ts"
+  "@deepseek-ai/dsh-tool-executor-ptc/types",
+  "./src/vendor/tool-executor-ptc/src/types.ts"
  ],
  [
   "@deepseek-ai/dsh-typert-registry/service",
   "./src/vendor/typert-registry/src/service.ts"
- ],
- [
-  "@deepseek-ai/dsh-user-approval/invariant",
-  "./src/vendor/user-approval/src/invariant.ts"
  ],
  [
   "@deepseek-ai/dsh-workspace-changes/paths",
@@ -1437,8 +1589,16 @@ export const dshVendorAlias: Array<[string, string]> = [
   "./src/vendor/app-boot/src/config-schema/index.ts"
  ],
  [
+  "@deepseek-ai/dsh-client-connection/peer",
+  "./src/vendor/client-connection/src/peer.ts"
+ ],
+ [
   "@deepseek-ai/dsh-client-ui-agent-preset",
   "./src/vendor/client-ui-agent-preset/src/index.ts"
+ ],
+ [
+  "@deepseek-ai/dsh-client-ui-context-menu",
+  "./src/vendor/client-ui-context-menu/src/index.ts"
  ],
  [
   "@deepseek-ai/dsh-client-ui-conversation",
@@ -1447,6 +1607,10 @@ export const dshVendorAlias: Array<[string, string]> = [
  [
   "@deepseek-ai/dsh-client-ui-deliverables",
   "./src/vendor/client-ui-deliverables/src/index.ts"
+ ],
+ [
+  "@deepseek-ai/dsh-client-ui-file-actions",
+  "./src/vendor/client-ui-file-actions/src/index.ts"
  ],
  [
   "@deepseek-ai/dsh-client-ui-skill/client",
@@ -1487,6 +1651,14 @@ export const dshVendorAlias: Array<[string, string]> = [
  [
   "@deepseek-ai/dsh-package-manifest/types",
   "./src/vendor/package-manifest/src/types.ts"
+ ],
+ [
+  "@deepseek-ai/dsh-plugin-detail/document",
+  "./src/vendor/plugin-detail/src/document.ts"
+ ],
+ [
+  "@deepseek-ai/dsh-plugin-detail/response",
+  "./src/vendor/plugin-detail/src/response.ts"
  ],
  [
   "@deepseek-ai/dsh-plugin-manager/failure",
@@ -1557,6 +1729,10 @@ export const dshVendorAlias: Array<[string, string]> = [
   "./src/vendor/client-locale/src/locales/index.ts"
  ],
  [
+  "@deepseek-ai/dsh-client-modules/assets",
+  "./src/vendor/client-modules/src/assets.ts"
+ ],
+ [
   "@deepseek-ai/dsh-client-modules/client",
   "./src/vendor/client-modules/src/client/index.ts"
  ],
@@ -1581,6 +1757,10 @@ export const dshVendorAlias: Array<[string, string]> = [
   "./src/vendor/client-ui-plan/src/client/index.ts"
  ],
  [
+  "@deepseek-ai/dsh-client-ui-secret-mask",
+  "./src/vendor/client-ui-secret-mask/src/index.ts"
+ ],
+ [
   "@deepseek-ai/dsh-client-ui-slots/store",
   "./src/vendor/client-ui-slots/src/store.ts"
  ],
@@ -1591,10 +1771,6 @@ export const dshVendorAlias: Array<[string, string]> = [
  [
   "@deepseek-ai/dsh-compaction/checkpoint",
   "./src/vendor/compaction/src/checkpoint.ts"
- ],
- [
-  "@deepseek-ai/dsh-credentials/invariant",
-  "./src/vendor/credentials/src/invariant.ts"
  ],
  [
   "@deepseek-ai/dsh-host-directory-picker",
@@ -1637,8 +1813,8 @@ export const dshVendorAlias: Array<[string, string]> = [
   "./src/vendor/storage-domain/src/events.ts"
  ],
  [
-  "@deepseek-ai/dsh-subagent/continuation",
-  "./src/vendor/subagent/src/continuation.ts"
+  "@deepseek-ai/dsh-tool-executor-ptc/ptc",
+  "./src/vendor/tool-executor-ptc/src/ptc.ts"
  ],
  [
   "@deepseek-ai/dsh-typert-protocol/types",
@@ -1677,16 +1853,16 @@ export const dshVendorAlias: Array<[string, string]> = [
   "./src/vendor/client-ui-trajectory/src/index.ts"
  ],
  [
-  "@deepseek-ai/dsh-compaction/invariant",
-  "./src/vendor/compaction/src/invariant.ts"
- ],
- [
   "@deepseek-ai/dsh-cordis-client-runner",
   "./src/vendor/cordis-client-runner/src/index.ts"
  ],
  [
   "@deepseek-ai/dsh-file-reference/types",
   "./src/vendor/file-reference/src/types.ts"
+ ],
+ [
+  "@deepseek-ai/dsh-hmr/package-manifest",
+  "./src/vendor/hmr/src/package-manifest.ts"
  ],
  [
   "@deepseek-ai/dsh-llm/assistant-stream",
@@ -1723,6 +1899,22 @@ export const dshVendorAlias: Array<[string, string]> = [
  [
   "@deepseek-ai/dsh-plugin-manager/types",
   "./src/vendor/plugin-manager/src/types.ts"
+ ],
+ [
+  "@deepseek-ai/dsh-plugin-market/detail",
+  "./src/vendor/plugin-market/src/detail.ts"
+ ],
+ [
+  "@deepseek-ai/dsh-plugin-market/search",
+  "./src/vendor/plugin-market/src/search.ts"
+ ],
+ [
+  "@deepseek-ai/dsh-plugin-market/worker",
+  "./src/vendor/plugin-market/src/worker.ts"
+ ],
+ [
+  "@deepseek-ai/dsh-plugin-market/remote",
+  "./src/vendor/plugin-market/generated/remote.js"
  ],
  [
   "@deepseek-ai/dsh-session/tool-history",
@@ -1785,6 +1977,10 @@ export const dshVendorAlias: Array<[string, string]> = [
   "./src/vendor/user-questions/src/types.ts"
  ],
  [
+  "@deepseek-ai/dsh-util-time/recurrence",
+  "./src/vendor/util-time/src/recurrence.ts"
+ ],
+ [
   "@deepseek-ai/dsh-agent/consumed-work",
   "./src/vendor/agent/src/consumed-work.ts"
  ],
@@ -1801,6 +1997,10 @@ export const dshVendorAlias: Array<[string, string]> = [
   "./src/vendor/api-workspace-files/src/index.ts"
  ],
  [
+  "@deepseek-ai/dsh-client-ui-file-drag",
+  "./src/vendor/client-ui-file-drag/src/index.ts"
+ ],
+ [
   "@deepseek-ai/dsh-client-ui-reference",
   "./src/vendor/client-ui-reference/src/index.ts"
  ],
@@ -1813,10 +2013,6 @@ export const dshVendorAlias: Array<[string, string]> = [
   "./src/vendor/llm/src/adapter-failure.ts"
  ],
  [
-  "@deepseek-ai/dsh-llm-retry/invariant",
-  "./src/vendor/llm-retry/src/invariant.ts"
- ],
- [
   "@deepseek-ai/dsh-office-to-pdf/queue",
   "./src/vendor/office-to-pdf/src/queue.ts"
  ],
@@ -1825,8 +2021,28 @@ export const dshVendorAlias: Array<[string, string]> = [
   "./src/vendor/office-to-pdf/src/types.ts"
  ],
  [
-  "@deepseek-ai/dsh-plan-mode/invariant",
-  "./src/vendor/plan-mode/src/invariant.ts"
+  "@deepseek-ai/dsh-plugin-detail/files",
+  "./src/vendor/plugin-detail/src/files.ts"
+ ],
+ [
+  "@deepseek-ai/dsh-plugin-detail/types",
+  "./src/vendor/plugin-detail/src/types.ts"
+ ],
+ [
+  "@deepseek-ai/dsh-plugin-market/parse",
+  "./src/vendor/plugin-market/src/parse.ts"
+ ],
+ [
+  "@deepseek-ai/dsh-plugin-market/tools",
+  "./src/vendor/plugin-market/src/tools.ts"
+ ],
+ [
+  "@deepseek-ai/dsh-plugin-market/types",
+  "./src/vendor/plugin-market/src/types.ts"
+ ],
+ [
+  "@deepseek-ai/dsh-plugin-market-index",
+  "./src/vendor/plugin-market-index/src/index.ts"
  ],
  [
   "@deepseek-ai/dsh-sandbox/diagnostics",
@@ -1865,6 +2081,10 @@ export const dshVendorAlias: Array<[string, string]> = [
   "./src/vendor/storage-domain/src/spec.ts"
  ],
  [
+  "@deepseek-ai/dsh-subagent/activation",
+  "./src/vendor/subagent/src/activation.ts"
+ ],
+ [
   "@deepseek-ai/dsh-subagent/descriptor",
   "./src/vendor/subagent/src/descriptor.ts"
  ],
@@ -1873,8 +2093,8 @@ export const dshVendorAlias: Array<[string, string]> = [
   "./src/vendor/subagent/src/projection.ts"
  ],
  [
-  "@deepseek-ai/dsh-tool-todo/invariant",
-  "./src/vendor/tool-todo/src/invariant.ts"
+  "@deepseek-ai/dsh-subagent/structured",
+  "./src/vendor/subagent/src/structured.ts"
  ],
  [
   "@deepseek-ai/dsh-tool-workflow/types",
@@ -1889,8 +2109,8 @@ export const dshVendorAlias: Array<[string, string]> = [
   "./src/vendor/util-workspace-path/src/index.ts"
  ],
  [
-  "@deepseek-ai/dsh-workspace/invariant",
-  "./src/vendor/workspace/src/invariant.ts"
+  "@deepseek-ai/dsh-api-gateway/access",
+  "./src/vendor/api-gateway/src/access.ts"
  ],
  [
   "@deepseek-ai/dsh-api-gateway/client",
@@ -1921,16 +2141,16 @@ export const dshVendorAlias: Array<[string, string]> = [
   "./src/vendor/client-ui-renderer/src/index.ts"
  ],
  [
+  "@deepseek-ai/dsh-client-ui-schedule",
+  "./src/vendor/client-ui-schedule/src/index.ts"
+ ],
+ [
   "@deepseek-ai/dsh-client-ui-settings",
   "./src/vendor/client-ui-settings/src/index.ts"
  ],
  [
   "@deepseek-ai/dsh-client-ui-subagent",
   "./src/vendor/client-ui-subagent/src/index.ts"
- ],
- [
-  "@deepseek-ai/dsh-commands/invariant",
-  "./src/vendor/commands/src/invariant.ts"
  ],
  [
   "@deepseek-ai/dsh-cordis-host-runner",
@@ -1953,10 +2173,6 @@ export const dshVendorAlias: Array<[string, string]> = [
   "./src/vendor/sandbox/src/escalation.ts"
  ],
  [
-  "@deepseek-ai/dsh-schedule/invariant",
-  "./src/vendor/schedule/src/invariant.ts"
- ],
- [
   "@deepseek-ai/dsh-session/seq-ranges",
   "./src/vendor/session/src/seq-ranges.ts"
  ],
@@ -1967,10 +2183,6 @@ export const dshVendorAlias: Array<[string, string]> = [
  [
   "@deepseek-ai/dsh-spill-policy/types",
   "./src/vendor/spill-policy/src/types.ts"
- ],
- [
-  "@deepseek-ai/dsh-subagent/invariant",
-  "./src/vendor/subagent/src/invariant.ts"
  ],
  [
   "@deepseek-ai/dsh-subagent/lifecycle",
@@ -1997,8 +2209,8 @@ export const dshVendorAlias: Array<[string, string]> = [
   "./src/vendor/util-code-language/src/index.ts"
  ],
  [
-  "@deepseek-ai/dsh-workflow/invariant",
-  "./src/vendor/workflow/src/invariant.ts"
+  "@deepseek-ai/dsh-util-time/duration",
+  "./src/vendor/util-time/src/duration.ts"
  ],
  [
   "@deepseek-ai/dsh-anonymous-user-id",
@@ -2007,6 +2219,10 @@ export const dshVendorAlias: Array<[string, string]> = [
  [
   "@deepseek-ai/dsh-api-gateway/types",
   "./src/vendor/api-gateway/src/types.ts"
+ ],
+ [
+  "@deepseek-ai/dsh-api-remote-access",
+  "./src/vendor/api-remote-access/src/index.ts"
  ],
  [
   "@deepseek-ai/dsh-api-remotes/types",
@@ -2037,16 +2253,8 @@ export const dshVendorAlias: Array<[string, string]> = [
   "./src/vendor/http-proxy/src/policy.ts"
  ],
  [
-  "@deepseek-ai/dsh-llm-retry/history",
-  "./src/vendor/llm-retry/src/history.ts"
- ],
- [
   "@deepseek-ai/dsh-ptc-runtime/types",
   "./src/vendor/ptc-runtime/src/types.ts"
- ],
- [
-  "@deepseek-ai/dsh-session/invariant",
-  "./src/vendor/session/src/invariant.ts"
  ],
  [
   "@deepseek-ai/dsh-session-reference",
@@ -2061,8 +2269,20 @@ export const dshVendorAlias: Array<[string, string]> = [
   "./src/vendor/token-meter/src/types.ts"
  ],
  [
+  "@deepseek-ai/dsh-tool-executor-ptc",
+  "./src/vendor/tool-executor-ptc/src/index.ts"
+ ],
+ [
   "@deepseek-ai/dsh-tools/json-schema",
   "./src/vendor/tools/src/json-schema.ts"
+ ],
+ [
+  "@deepseek-ai/dsh-util-time/instant",
+  "./src/vendor/util-time/src/instant.ts"
+ ],
+ [
+  "@deepseek-ai/dsh-working-directory",
+  "./src/vendor/working-directory/src/index.ts"
  ],
  [
   "@deepseek-ai/dsh-workspace-changes",
@@ -2109,6 +2329,10 @@ export const dshVendorAlias: Array<[string, string]> = [
   "./src/vendor/command-feedback/src/index.ts"
  ],
  [
+  "@deepseek-ai/dsh-commands/builtin",
+  "./src/vendor/commands/src/builtin.ts"
+ ],
+ [
   "@deepseek-ai/dsh-compaction/brand",
   "./src/vendor/compaction/src/brand.ts"
  ],
@@ -2121,6 +2345,10 @@ export const dshVendorAlias: Array<[string, string]> = [
   "./src/vendor/deepseek-account/src/index.ts"
  ],
  [
+  "@deepseek-ai/dsh-hmr/module-files",
+  "./src/vendor/hmr/src/module-files.ts"
+ ],
+ [
   "@deepseek-ai/dsh-hmr/watch-config",
   "./src/vendor/hmr/src/watch-config.ts"
  ],
@@ -2131,6 +2359,10 @@ export const dshVendorAlias: Array<[string, string]> = [
  [
   "@deepseek-ai/dsh-message-feedback",
   "./src/vendor/message-feedback/src/index.ts"
+ ],
+ [
+  "@deepseek-ai/dsh-official-bundles",
+  "./src/vendor/official-bundles/src/index.ts"
  ],
  [
   "@deepseek-ai/dsh-otel/session-log",
@@ -2169,6 +2401,10 @@ export const dshVendorAlias: Array<[string, string]> = [
   "./src/vendor/subagent/src/control.ts"
  ],
  [
+  "@deepseek-ai/dsh-subagent/manager",
+  "./src/vendor/subagent/src/manager.ts"
+ ],
+ [
   "@deepseek-ai/dsh-subprocess/types",
   "./src/vendor/subprocess/src/types.ts"
  ],
@@ -2179,10 +2415,6 @@ export const dshVendorAlias: Array<[string, string]> = [
  [
   "@deepseek-ai/dsh-workspace/entity",
   "./src/vendor/workspace/src/entity.ts"
- ],
- [
-  "@deepseek-ai/dsh-agent/invariant",
-  "./src/vendor/agent/src/invariant.ts"
  ],
  [
   "@deepseek-ai/dsh-client-ui-skill",
@@ -2221,6 +2453,10 @@ export const dshVendorAlias: Array<[string, string]> = [
   "./src/vendor/plan-mode/src/types.ts"
  ],
  [
+  "@deepseek-ai/dsh-sandbox/locales",
+  "./src/vendor/sandbox/src/locales.ts"
+ ],
+ [
   "@deepseek-ai/dsh-schedule/client",
   "./src/vendor/schedule/src/client.ts"
  ],
@@ -2235,10 +2471,6 @@ export const dshVendorAlias: Array<[string, string]> = [
  [
   "@deepseek-ai/dsh-schedule/remote",
   "./src/vendor/schedule/generated/remote.js"
- ],
- [
-  "@deepseek-ai/dsh-scope/invariant",
-  "./src/vendor/scope/src/invariant.ts"
  ],
  [
   "@deepseek-ai/dsh-session/surface",
@@ -2269,8 +2501,8 @@ export const dshVendorAlias: Array<[string, string]> = [
   "./src/vendor/tool-todo/src/types.ts"
  ],
  [
-  "@deepseek-ai/dsh-tools/invariant",
-  "./src/vendor/tools/src/invariant.ts"
+  "@deepseek-ai/dsh-tools/contracts",
+  "./src/vendor/tools/src/contracts.ts"
  ],
  [
   "@deepseek-ai/dsh-typert-protocol",
@@ -2279,6 +2511,10 @@ export const dshVendorAlias: Array<[string, string]> = [
  [
   "@deepseek-ai/dsh-typert-registry",
   "./src/vendor/typert-registry/src/index.ts"
+ ],
+ [
+  "@deepseek-ai/dsh-util-time/rrule",
+  "./src/vendor/util-time/src/rrule.ts"
  ],
  [
   "@deepseek-ai/dsh-workspace/paths",
@@ -2329,16 +2565,20 @@ export const dshVendorAlias: Array<[string, string]> = [
   "./src/vendor/file-reference/src/index.ts"
  ],
  [
-  "@deepseek-ai/dsh-goal/invariant",
-  "./src/vendor/goal/src/invariant.ts"
+  "@deepseek-ai/dsh-fs-patch/apply",
+  "./src/vendor/fs-patch/src/apply.ts"
+ ],
+ [
+  "@deepseek-ai/dsh-fs-patch/parse",
+  "./src/vendor/fs-patch/src/parse.ts"
+ ],
+ [
+  "@deepseek-ai/dsh-fs-patch/types",
+  "./src/vendor/fs-patch/src/types.ts"
  ],
  [
   "@deepseek-ai/dsh-host-webserver",
   "./src/vendor/host-webserver/src/index.ts"
- ],
- [
-  "@deepseek-ai/dsh-jobs/invariant",
-  "./src/vendor/jobs/src/invariant.ts"
  ],
  [
   "@deepseek-ai/dsh-native-command",
@@ -2359,10 +2599,6 @@ export const dshVendorAlias: Array<[string, string]> = [
  [
   "@deepseek-ai/dsh-sandbox-policy",
   "./src/vendor/sandbox-policy/src/index.ts"
- ],
- [
-  "@deepseek-ai/dsh-schedule/tools",
-  "./src/vendor/schedule/src/tools.ts"
  ],
  [
   "@deepseek-ai/dsh-schedule/types",
@@ -2393,24 +2629,28 @@ export const dshVendorAlias: Array<[string, string]> = [
   "./src/vendor/subagent/src/error.ts"
  ],
  [
-  "@deepseek-ai/dsh-subagent/inbox",
-  "./src/vendor/subagent/src/inbox.ts"
- ],
- [
   "@deepseek-ai/dsh-subagent/types",
   "./src/vendor/subagent/src/types.ts"
  ],
  [
-  "@deepseek-ai/dsh-tools/py-types",
-  "./src/vendor/tools/src/py-types.ts"
+  "@deepseek-ai/dsh-tools/executor",
+  "./src/vendor/tools/src/executor.ts"
  ],
  [
-  "@deepseek-ai/dsh-tools/ts-types",
-  "./src/vendor/tools/src/ts-types.ts"
+  "@deepseek-ai/dsh-tools/pipeline",
+  "./src/vendor/tools/src/pipeline.ts"
  ],
  [
   "@deepseek-ai/dsh-user-questions",
   "./src/vendor/user-questions/src/index.ts"
+ ],
+ [
+  "@deepseek-ai/dsh-util-file-drag",
+  "./src/vendor/util-file-drag/src/index.ts"
+ ],
+ [
+  "@deepseek-ai/dsh-util-time/cron",
+  "./src/vendor/util-time/src/cron.ts"
  ],
  [
   "@deepseek-ai/dsh-workflow/types",
@@ -2433,12 +2673,16 @@ export const dshVendorAlias: Array<[string, string]> = [
   "./src/vendor/llm/src/assembler.ts"
  ],
  [
-  "@deepseek-ai/dsh-llm/invariant",
-  "./src/vendor/llm/src/invariant.ts"
- ],
- [
   "@deepseek-ai/dsh-office-to-pdf",
   "./src/vendor/office-to-pdf/src/index.ts"
+ ],
+ [
+  "@deepseek-ai/dsh-plugin-detail",
+  "./src/vendor/plugin-detail/src/index.ts"
+ ],
+ [
+  "@deepseek-ai/dsh-plugin-market",
+  "./src/vendor/plugin-market/src/index.ts"
  ],
  [
   "@deepseek-ai/dsh-sandbox/roots",
@@ -2473,10 +2717,6 @@ export const dshVendorAlias: Array<[string, string]> = [
   "./src/vendor/tool-workflow/src/index.ts"
  ],
  [
-  "@deepseek-ai/dsh-tools/testing",
-  "./src/vendor/tools/src/testing.ts"
- ],
- [
   "@deepseek-ai/dsh-user-approval",
   "./src/vendor/user-approval/src/index.ts"
  ],
@@ -2491,10 +2731,6 @@ export const dshVendorAlias: Array<[string, string]> = [
  [
   "@deepseek-ai/dsh-client-store",
   "./src/vendor/client-store/src/index.ts"
- ],
- [
-  "@deepseek-ai/dsh-fs/invariant",
-  "./src/vendor/fs/src/invariant.ts"
  ],
  [
   "@deepseek-ai/dsh-goal/runtime",
@@ -2519,6 +2755,10 @@ export const dshVendorAlias: Array<[string, string]> = [
  [
   "@deepseek-ai/dsh-tool-present",
   "./src/vendor/tool-present/src/index.ts"
+ ],
+ [
+  "@deepseek-ai/dsh-tools/events",
+  "./src/vendor/tools/src/events.ts"
  ],
  [
   "@deepseek-ai/dsh-tools/schema",
@@ -2585,8 +2825,8 @@ export const dshVendorAlias: Array<[string, string]> = [
   "./src/vendor/token-meter/src/index.ts"
  ],
  [
-  "@deepseek-ai/dsh-tools/types",
-  "./src/vendor/tools/src/types.ts"
+  "@deepseek-ai/dsh-tools/batch",
+  "./src/vendor/tools/src/batch.ts"
  ],
  [
   "@deepseek-ai/dsh-util-crypto",
@@ -2615,10 +2855,6 @@ export const dshVendorAlias: Array<[string, string]> = [
  [
   "@deepseek-ai/dsh-http-proxy",
   "./src/vendor/http-proxy/src/index.ts"
- ],
- [
-  "@deepseek-ai/dsh-invariants",
-  "./src/vendor/invariants/src/index.ts"
  ],
  [
   "@deepseek-ai/dsh-jobs/brand",
@@ -2673,10 +2909,6 @@ export const dshVendorAlias: Array<[string, string]> = [
   "./src/vendor/tool-todo/src/index.ts"
  ],
  [
-  "@deepseek-ai/dsh-tools/ptc",
-  "./src/vendor/tools/src/ptc.ts"
- ],
- [
   "@deepseek-ai/dsh-util-time",
   "./src/vendor/util-time/src/index.ts"
  ],
@@ -2695,6 +2927,10 @@ export const dshVendorAlias: Array<[string, string]> = [
  [
   "@deepseek-ai/dsh-fs/types",
   "./src/vendor/fs/src/types.ts"
+ ],
+ [
+  "@deepseek-ai/dsh-fs-patch",
+  "./src/vendor/fs-patch/src/index.ts"
  ],
  [
   "@deepseek-ai/dsh-schedule",

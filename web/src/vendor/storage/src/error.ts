@@ -12,6 +12,7 @@ export type StorageErrorCode =
   | 'duplicate-mount'
   | 'version-mismatch'
   | 'malformed-medium'
+  | 'unknown-state'
   | 'closed'
 
 /**

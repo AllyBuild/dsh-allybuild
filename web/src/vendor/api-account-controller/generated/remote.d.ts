@@ -2,7 +2,8 @@
 import type {
   RemoteResult,
   RemoteStreamHandle,
-  TypertRemoteContribution,
+  TypertRemoteInfo,
+  TypertRemoteMethod,
 } from '@deepseek-ai/dsh-typert-protocol'
 import type { AccountBonusBatch, AccountBonusOrderId, AccountClientMetadata, AccountDetails, AccountUserId, AccountView, SignInAttemptId } from '@deepseek-ai/dsh-deepseek-account/types'
 
@@ -38,6 +39,18 @@ declare module '@deepseek-ai/dsh-typert-protocol' {
   }
 }
 
-export declare const TYPERT_REMOTE: TypertRemoteContribution
+export declare const TYPERT_REMOTE: TypertRemoteInfo<{
+  readonly 'account/ackBonusNotified': TypertRemoteMethod<{ readonly 'accountId': AccountUserId; readonly 'orderId': AccountBonusOrderId; readonly 'client': AccountClientMetadata }, boolean>
+  readonly 'account/cancelSignIn': TypertRemoteMethod<{ readonly 'attemptId': SignInAttemptId }, AccountView>
+  readonly 'account/getBalance': TypertRemoteMethod<{ readonly 'client': AccountClientMetadata }, AccountDetails['balance'] | null>
+  readonly 'account/getProfile': TypertRemoteMethod<{ readonly 'client': AccountClientMetadata }, AccountDetails['profile'] | null>
+  readonly 'account/getState': TypertRemoteMethod<{  }, AccountView>
+  readonly 'account/getUnnotifiedBonuses': TypertRemoteMethod<{ readonly 'client': AccountClientMetadata }, AccountBonusBatch | null>
+  readonly 'account/hasRunningAccountTasks': TypertRemoteMethod<{  }, boolean>
+  readonly 'account/signOut': TypertRemoteMethod<{ readonly 'client': AccountClientMetadata }, AccountView>
+  readonly 'account/startSignIn': TypertRemoteMethod<{ readonly 'client': AccountClientMetadata; readonly 'callbackOrigin': string; readonly 'loginSource': 'web' | 'desktop' }, AccountView>
+  readonly 'account/watch': TypertRemoteMethod<{  }, AccountView, 'stream'>
+  readonly 'account/watchExpiry': TypertRemoteMethod<{  }, 'session-expired', 'stream'>
+}>
 export default TYPERT_REMOTE
 //# sourceMappingURL=typert.remote-client.d.ts.map

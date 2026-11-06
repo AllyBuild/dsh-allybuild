@@ -2,7 +2,8 @@
 import type {
   RemoteResult,
   RemoteStreamHandle,
-  TypertRemoteContribution,
+  TypertRemoteInfo,
+  TypertRemoteMethod,
 } from '@deepseek-ai/dsh-typert-protocol'
 import type { ToolCallId } from '@deepseek-ai/dsh-llm/brand'
 import type { SessionId } from '@deepseek-ai/dsh-session/types'
@@ -26,6 +27,9 @@ declare module '@deepseek-ai/dsh-typert-protocol' {
   }
 }
 
-export declare const TYPERT_REMOTE: TypertRemoteContribution
+export declare const TYPERT_REMOTE: TypertRemoteInfo<{
+  readonly 'userQuestions/answer': TypertRemoteMethod<{ readonly 'agentId': SessionId; readonly 'callId': ToolCallId; readonly 'answer': AskUserQuestionAnswer }, boolean>
+  readonly 'userQuestions/attachWait': TypertRemoteMethod<{ readonly 'agentId': SessionId; readonly 'callId': ToolCallId }, { remainingMs: number; }, 'stream'>
+}>
 export default TYPERT_REMOTE
 //# sourceMappingURL=typert.remote-client.d.ts.map

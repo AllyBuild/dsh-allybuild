@@ -1,5 +1,6 @@
 // @ts-nocheck
 /** Conversation view and session-local presentation state. */
+import type { DraftInput } from './draft-editor.ts'
 
 /**
  * One conversation view tab, projected from a 'conversation.view' slot
@@ -18,7 +19,7 @@ export interface ConversationViewRequest {
 /** Per-session state owned by the target-neutral Conversation shell. */
 export interface ConversationStoreState {
   /** Composer draft (persisted; survives session switches and reloads). */
-  draft: string
+  draft: DraftInput
   /** Preferred `conversation.view` entry id; null resolves to Chat when registered. */
   view: string | null
   /** Focus request consumed and acknowledged by the addressed View. */

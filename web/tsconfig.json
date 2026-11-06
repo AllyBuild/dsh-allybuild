@@ -29,9 +29,6 @@
       "@deepseek-ai/dsh-agent/dispatch": [
         "./src/vendor/agent/src/dispatch.ts"
       ],
-      "@deepseek-ai/dsh-agent/invariant": [
-        "./src/vendor/agent/src/invariant.ts"
-      ],
       "@deepseek-ai/dsh-agent/model-selection": [
         "./src/vendor/agent/src/model-selection.ts"
       ],
@@ -58,9 +55,6 @@
       ],
       "@deepseek-ai/dsh-agent-preset-registry/display": [
         "./src/vendor/agent-preset-registry/src/display.ts"
-      ],
-      "@deepseek-ai/dsh-agent-preset-registry/invariant": [
-        "./src/vendor/agent-preset-registry/src/invariant.ts"
       ],
       "@deepseek-ai/dsh-agent-preset-registry/mount": [
         "./src/vendor/agent-preset-registry/src/mount.ts"
@@ -91,6 +85,9 @@
       ],
       "@deepseek-ai/dsh-api-gateway": [
         "./src/vendor/api-gateway/src/index.ts"
+      ],
+      "@deepseek-ai/dsh-api-gateway/access": [
+        "./src/vendor/api-gateway/src/access.ts"
       ],
       "@deepseek-ai/dsh-api-gateway/client": [
         "./src/vendor/api-gateway/src/client/index.ts"
@@ -127,6 +124,21 @@
       ],
       "@deepseek-ai/dsh-api-job-controller/remote": [
         "./src/vendor/api-job-controller/generated/remote.js"
+      ],
+      "@deepseek-ai/dsh-api-remote-access": [
+        "./src/vendor/api-remote-access/src/index.ts"
+      ],
+      "@deepseek-ai/dsh-api-remote-access/client": [
+        "./src/vendor/api-remote-access/src/client/index.ts"
+      ],
+      "@deepseek-ai/dsh-api-remote-access/snapshot": [
+        "./src/vendor/api-remote-access/src/snapshot.ts"
+      ],
+      "@deepseek-ai/dsh-api-remote-access/types": [
+        "./src/vendor/api-remote-access/src/types.ts"
+      ],
+      "@deepseek-ai/dsh-api-remote-access/remote": [
+        "./src/vendor/api-remote-access/generated/remote.js"
       ],
       "@deepseek-ai/dsh-api-remotes": [
         "./src/vendor/api-remotes/src/index.ts"
@@ -175,9 +187,6 @@
       ],
       "@deepseek-ai/dsh-api-session-controller/media-references": [
         "./src/vendor/api-session-controller/src/media-references.ts"
-      ],
-      "@deepseek-ai/dsh-api-session-controller/model-selection-projection": [
-        "./src/vendor/api-session-controller/src/model-selection-projection.ts"
       ],
       "@deepseek-ai/dsh-api-session-controller/remote-events": [
         "./src/vendor/api-session-controller/src/remote-events.ts"
@@ -272,6 +281,9 @@
       "@deepseek-ai/dsh-app-boot": [
         "./src/vendor/app-boot/src/index.ts"
       ],
+      "@deepseek-ai/dsh-app-boot/bundle-platform": [
+        "./src/vendor/app-boot/src/bundle-platform.ts"
+      ],
       "@deepseek-ai/dsh-app-boot/compatibility-preflight": [
         "./src/vendor/app-boot/src/compatibility-preflight.ts"
       ],
@@ -298,6 +310,9 @@
       ],
       "@deepseek-ai/dsh-app-boot/profile": [
         "./src/vendor/app-boot/src/profile.ts"
+      ],
+      "@deepseek-ai/dsh-app-boot/startup-diagnostics": [
+        "./src/vendor/app-boot/src/startup-diagnostics.ts"
       ],
       "@deepseek-ai/dsh-atomic-write": [
         "./src/vendor/atomic-write/src/index.ts"
@@ -341,14 +356,17 @@
       "@deepseek-ai/dsh-client-connection/client": [
         "./src/vendor/client-connection/src/client/index.ts"
       ],
+      "@deepseek-ai/dsh-client-connection/connect-protocol": [
+        "./src/vendor/client-connection/src/connect-protocol.ts"
+      ],
       "@deepseek-ai/dsh-client-connection/http-bridge": [
         "./src/vendor/client-connection/src/http-bridge.ts"
       ],
       "@deepseek-ai/dsh-client-connection/loopback-hostname": [
         "./src/vendor/client-connection/src/loopback-hostname.ts"
       ],
-      "@deepseek-ai/dsh-client-connection/operator-peer": [
-        "./src/vendor/client-connection/src/operator-peer.ts"
+      "@deepseek-ai/dsh-client-connection/peer": [
+        "./src/vendor/client-connection/src/peer.ts"
       ],
       "@deepseek-ai/dsh-client-connection/recovery-config": [
         "./src/vendor/client-connection/src/recovery-config.ts"
@@ -398,17 +416,23 @@
       "@deepseek-ai/dsh-client-modules": [
         "./src/vendor/client-modules/src/index.ts"
       ],
+      "@deepseek-ai/dsh-client-modules/assets": [
+        "./src/vendor/client-modules/src/assets.ts"
+      ],
       "@deepseek-ai/dsh-client-modules/client": [
         "./src/vendor/client-modules/src/client/index.ts"
-      ],
-      "@deepseek-ai/dsh-client-modules/invariant": [
-        "./src/vendor/client-modules/src/invariant.ts"
       ],
       "@deepseek-ai/dsh-client-product-analytics": [
         "./src/vendor/client-product-analytics/src/index.ts"
       ],
       "@deepseek-ai/dsh-client-product-analytics/client": [
         "./src/vendor/client-product-analytics/src/client/index.ts"
+      ],
+      "@deepseek-ai/dsh-client-product-analytics/environment-query": [
+        "./src/vendor/client-product-analytics/src/environment-query.ts"
+      ],
+      "@deepseek-ai/dsh-client-product-analytics/environment": [
+        "./src/vendor/client-product-analytics/src/environment.ts"
       ],
       "@deepseek-ai/dsh-client-product-analytics/events": [
         "./src/vendor/client-product-analytics/src/events.ts"
@@ -506,6 +530,12 @@
       "@deepseek-ai/dsh-client-ui-commands/css-modules.d": [
         "./src/vendor/client-ui-commands/src/css-modules.d.ts"
       ],
+      "@deepseek-ai/dsh-client-ui-context-menu": [
+        "./src/vendor/client-ui-context-menu/src/index.ts"
+      ],
+      "@deepseek-ai/dsh-client-ui-context-menu/client": [
+        "./src/vendor/client-ui-context-menu/src/client/index.ts"
+      ],
       "@deepseek-ai/dsh-client-ui-conversation": [
         "./src/vendor/client-ui-conversation/src/index.ts"
       ],
@@ -559,6 +589,30 @@
       ],
       "@deepseek-ai/dsh-client-ui-dockkit/css-modules.d": [
         "./src/vendor/client-ui-dockkit/src/css-modules.d.ts"
+      ],
+      "@deepseek-ai/dsh-client-ui-entry-customization": [
+        "./src/vendor/client-ui-entry-customization/src/index.ts"
+      ],
+      "@deepseek-ai/dsh-client-ui-entry-customization/client": [
+        "./src/vendor/client-ui-entry-customization/src/client/index.ts"
+      ],
+      "@deepseek-ai/dsh-client-ui-entry-customization/css-modules.d": [
+        "./src/vendor/client-ui-entry-customization/src/css-modules.d.ts"
+      ],
+      "@deepseek-ai/dsh-client-ui-file-actions": [
+        "./src/vendor/client-ui-file-actions/src/index.ts"
+      ],
+      "@deepseek-ai/dsh-client-ui-file-actions/client": [
+        "./src/vendor/client-ui-file-actions/src/client/index.ts"
+      ],
+      "@deepseek-ai/dsh-client-ui-file-actions/types": [
+        "./src/vendor/client-ui-file-actions/src/types.ts"
+      ],
+      "@deepseek-ai/dsh-client-ui-file-drag": [
+        "./src/vendor/client-ui-file-drag/src/index.ts"
+      ],
+      "@deepseek-ai/dsh-client-ui-file-drag/client": [
+        "./src/vendor/client-ui-file-drag/src/client/index.ts"
       ],
       "@deepseek-ai/dsh-client-ui-goal": [
         "./src/vendor/client-ui-goal/src/index.ts"
@@ -671,6 +725,12 @@
       "@deepseek-ai/dsh-client-ui-primitives/darwin-desktop": [
         "./src/vendor/client-ui-primitives/src/darwin-desktop.ts"
       ],
+      "@deepseek-ai/dsh-client-ui-primitives/document-zoom": [
+        "./src/vendor/client-ui-primitives/src/document-zoom.ts"
+      ],
+      "@deepseek-ai/dsh-client-ui-primitives/file-drag-actions": [
+        "./src/vendor/client-ui-primitives/src/file-drag-actions.ts"
+      ],
       "@deepseek-ai/dsh-client-ui-primitives/file-size": [
         "./src/vendor/client-ui-primitives/src/file-size.ts"
       ],
@@ -679,6 +739,9 @@
       ],
       "@deepseek-ai/dsh-client-ui-primitives/head-tail-cap": [
         "./src/vendor/client-ui-primitives/src/head-tail-cap.ts"
+      ],
+      "@deepseek-ai/dsh-client-ui-primitives/image-drag": [
+        "./src/vendor/client-ui-primitives/src/image-drag.ts"
       ],
       "@deepseek-ai/dsh-client-ui-primitives/input-modality": [
         "./src/vendor/client-ui-primitives/src/input-modality.ts"
@@ -698,8 +761,11 @@
       "@deepseek-ai/dsh-client-ui-primitives/relative-time": [
         "./src/vendor/client-ui-primitives/src/relative-time.ts"
       ],
-      "@deepseek-ai/dsh-client-ui-primitives/use-copy-feedback": [
-        "./src/vendor/client-ui-primitives/src/use-copy-feedback.ts"
+      "@deepseek-ai/dsh-client-ui-primitives/tooltip-placement": [
+        "./src/vendor/client-ui-primitives/src/tooltip-placement.ts"
+      ],
+      "@deepseek-ai/dsh-client-ui-primitives/use-clipboard-copy": [
+        "./src/vendor/client-ui-primitives/src/use-clipboard-copy.ts"
       ],
       "@deepseek-ai/dsh-client-ui-primitives/useAnchoredMaxHeight": [
         "./src/vendor/client-ui-primitives/src/useAnchoredMaxHeight.ts"
@@ -713,6 +779,9 @@
       "@deepseek-ai/dsh-client-ui-primitives/useModalLayer": [
         "./src/vendor/client-ui-primitives/src/useModalLayer.ts"
       ],
+      "@deepseek-ai/dsh-client-ui-primitives/useRowDragPreview": [
+        "./src/vendor/client-ui-primitives/src/useRowDragPreview.ts"
+      ],
       "@deepseek-ai/dsh-client-ui-reference": [
         "./src/vendor/client-ui-reference/src/index.ts"
       ],
@@ -725,8 +794,23 @@
       "@deepseek-ai/dsh-client-ui-renderer/client": [
         "./src/vendor/client-ui-renderer/src/client/index.ts"
       ],
-      "@deepseek-ai/dsh-client-ui-renderer/invariant": [
-        "./src/vendor/client-ui-renderer/src/invariant.ts"
+      "@deepseek-ai/dsh-client-ui-schedule": [
+        "./src/vendor/client-ui-schedule/src/index.ts"
+      ],
+      "@deepseek-ai/dsh-client-ui-schedule/client": [
+        "./src/vendor/client-ui-schedule/src/client/index.ts"
+      ],
+      "@deepseek-ai/dsh-client-ui-schedule/css-modules.d": [
+        "./src/vendor/client-ui-schedule/src/css-modules.d.ts"
+      ],
+      "@deepseek-ai/dsh-client-ui-secret-mask": [
+        "./src/vendor/client-ui-secret-mask/src/index.ts"
+      ],
+      "@deepseek-ai/dsh-client-ui-secret-mask/client": [
+        "./src/vendor/client-ui-secret-mask/src/client/index.ts"
+      ],
+      "@deepseek-ai/dsh-client-ui-secret-mask/css-modules.d": [
+        "./src/vendor/client-ui-secret-mask/src/css-modules.d.ts"
       ],
       "@deepseek-ai/dsh-client-ui-session": [
         "./src/vendor/client-ui-session/src/index.ts"
@@ -773,15 +857,6 @@
       "@deepseek-ai/dsh-client-ui-settings-models/onboarding-copy": [
         "./src/vendor/client-ui-settings-models/src/onboarding-copy.ts"
       ],
-      "@deepseek-ai/dsh-client-ui-settings-plugin-inventory": [
-        "./src/vendor/client-ui-settings-plugin-inventory/src/index.ts"
-      ],
-      "@deepseek-ai/dsh-client-ui-settings-plugin-inventory/client": [
-        "./src/vendor/client-ui-settings-plugin-inventory/src/client/index.ts"
-      ],
-      "@deepseek-ai/dsh-client-ui-settings-plugin-inventory/css-modules.d": [
-        "./src/vendor/client-ui-settings-plugin-inventory/src/css-modules.d.ts"
-      ],
       "@deepseek-ai/dsh-client-ui-settings-plugins": [
         "./src/vendor/client-ui-settings-plugins/src/index.ts"
       ],
@@ -823,6 +898,15 @@
       ],
       "@deepseek-ai/dsh-client-ui-sidebar-documentpreview/css-modules.d": [
         "./src/vendor/client-ui-sidebar-documentpreview/src/css-modules.d.ts"
+      ],
+      "@deepseek-ai/dsh-client-ui-sidebar-files": [
+        "./src/vendor/client-ui-sidebar-files/src/index.ts"
+      ],
+      "@deepseek-ai/dsh-client-ui-sidebar-files/client": [
+        "./src/vendor/client-ui-sidebar-files/src/client/index.ts"
+      ],
+      "@deepseek-ai/dsh-client-ui-sidebar-files/css-modules.d": [
+        "./src/vendor/client-ui-sidebar-files/src/css-modules.d.ts"
       ],
       "@deepseek-ai/dsh-client-ui-sidebar-right": [
         "./src/vendor/client-ui-sidebar-right/src/index.ts"
@@ -893,6 +977,12 @@
       "@deepseek-ai/dsh-client-ui-trajectory/css-modules.d": [
         "./src/vendor/client-ui-trajectory/src/css-modules.d.ts"
       ],
+      "@deepseek-ai/dsh-client-ui-trajectory/types": [
+        "./src/vendor/client-ui-trajectory/src/types.ts"
+      ],
+      "@deepseek-ai/dsh-client-ui-trajectory/remote": [
+        "./src/vendor/client-ui-trajectory/generated/remote.js"
+      ],
       "@deepseek-ai/dsh-client-ui-user-questions": [
         "./src/vendor/client-ui-user-questions/src/index.ts"
       ],
@@ -938,8 +1028,8 @@
       "@deepseek-ai/dsh-commands/brand": [
         "./src/vendor/commands/src/brand.ts"
       ],
-      "@deepseek-ai/dsh-commands/invariant": [
-        "./src/vendor/commands/src/invariant.ts"
+      "@deepseek-ai/dsh-commands/builtin": [
+        "./src/vendor/commands/src/builtin.ts"
       ],
       "@deepseek-ai/dsh-commands/types": [
         "./src/vendor/commands/src/types.ts"
@@ -955,9 +1045,6 @@
       ],
       "@deepseek-ai/dsh-compaction/checkpoint": [
         "./src/vendor/compaction/src/checkpoint.ts"
-      ],
-      "@deepseek-ai/dsh-compaction/invariant": [
-        "./src/vendor/compaction/src/invariant.ts"
       ],
       "@deepseek-ai/dsh-compaction/tool-pairing": [
         "./src/vendor/compaction/src/tool-pairing.ts"
@@ -1013,9 +1100,6 @@
       "@deepseek-ai/dsh-credentials": [
         "./src/vendor/credentials/src/index.ts"
       ],
-      "@deepseek-ai/dsh-credentials/invariant": [
-        "./src/vendor/credentials/src/invariant.ts"
-      ],
       "@deepseek-ai/dsh-credentials/types": [
         "./src/vendor/credentials/src/types.ts"
       ],
@@ -1043,11 +1127,20 @@
       "@deepseek-ai/dsh-fs": [
         "./src/vendor/fs/src/index.ts"
       ],
-      "@deepseek-ai/dsh-fs/invariant": [
-        "./src/vendor/fs/src/invariant.ts"
-      ],
       "@deepseek-ai/dsh-fs/types": [
         "./src/vendor/fs/src/types.ts"
+      ],
+      "@deepseek-ai/dsh-fs-patch": [
+        "./src/vendor/fs-patch/src/index.ts"
+      ],
+      "@deepseek-ai/dsh-fs-patch/apply": [
+        "./src/vendor/fs-patch/src/apply.ts"
+      ],
+      "@deepseek-ai/dsh-fs-patch/parse": [
+        "./src/vendor/fs-patch/src/parse.ts"
+      ],
+      "@deepseek-ai/dsh-fs-patch/types": [
+        "./src/vendor/fs-patch/src/types.ts"
       ],
       "@deepseek-ai/dsh-goal": [
         "./src/vendor/goal/src/index.ts"
@@ -1060,9 +1153,6 @@
       ],
       "@deepseek-ai/dsh-goal/fold": [
         "./src/vendor/goal/src/fold.ts"
-      ],
-      "@deepseek-ai/dsh-goal/invariant": [
-        "./src/vendor/goal/src/invariant.ts"
       ],
       "@deepseek-ai/dsh-goal/runtime": [
         "./src/vendor/goal/src/runtime.ts"
@@ -1078,6 +1168,12 @@
       ],
       "@deepseek-ai/dsh-hmr/error": [
         "./src/vendor/hmr/src/error.ts"
+      ],
+      "@deepseek-ai/dsh-hmr/module-files": [
+        "./src/vendor/hmr/src/module-files.ts"
+      ],
+      "@deepseek-ai/dsh-hmr/package-manifest": [
+        "./src/vendor/hmr/src/package-manifest.ts"
       ],
       "@deepseek-ai/dsh-hmr/watch-config": [
         "./src/vendor/hmr/src/watch-config.ts"
@@ -1118,9 +1214,6 @@
       "@deepseek-ai/dsh-http-proxy/policy": [
         "./src/vendor/http-proxy/src/policy.ts"
       ],
-      "@deepseek-ai/dsh-invariants": [
-        "./src/vendor/invariants/src/index.ts"
-      ],
       "@deepseek-ai/dsh-jobs": [
         "./src/vendor/jobs/src/index.ts"
       ],
@@ -1129,9 +1222,6 @@
       ],
       "@deepseek-ai/dsh-jobs/brand": [
         "./src/vendor/jobs/src/brand.ts"
-      ],
-      "@deepseek-ai/dsh-jobs/invariant": [
-        "./src/vendor/jobs/src/invariant.ts"
       ],
       "@deepseek-ai/dsh-jobs/types": [
         "./src/vendor/jobs/src/types.ts"
@@ -1175,9 +1265,6 @@
       "@deepseek-ai/dsh-llm/error": [
         "./src/vendor/llm/src/error.ts"
       ],
-      "@deepseek-ai/dsh-llm/invariant": [
-        "./src/vendor/llm/src/invariant.ts"
-      ],
       "@deepseek-ai/dsh-llm/message": [
         "./src/vendor/llm/src/message.ts"
       ],
@@ -1195,12 +1282,6 @@
       ],
       "@deepseek-ai/dsh-llm-retry/brand": [
         "./src/vendor/llm-retry/src/brand.ts"
-      ],
-      "@deepseek-ai/dsh-llm-retry/history": [
-        "./src/vendor/llm-retry/src/history.ts"
-      ],
-      "@deepseek-ai/dsh-llm-retry/invariant": [
-        "./src/vendor/llm-retry/src/invariant.ts"
       ],
       "@deepseek-ai/dsh-llm-retry/types": [
         "./src/vendor/llm-retry/src/types.ts"
@@ -1259,6 +1340,18 @@
       "@deepseek-ai/dsh-office-to-pdf/remote": [
         "./src/vendor/office-to-pdf/generated/remote.js"
       ],
+      "@deepseek-ai/dsh-official-bundles": [
+        "./src/vendor/official-bundles/src/index.ts"
+      ],
+      "@deepseek-ai/dsh-official-bundles/bundles": [
+        "./src/vendor/official-bundles/src/bundles.ts"
+      ],
+      "@deepseek-ai/dsh-official-bundles/catalog.generated": [
+        "./src/vendor/official-bundles/src/catalog.generated.ts"
+      ],
+      "@deepseek-ai/dsh-official-bundles/plugin-manager": [
+        "./src/vendor/official-bundles/src/plugin-manager.ts"
+      ],
       "@deepseek-ai/dsh-otel": [
         "./src/vendor/otel/src/index.ts"
       ],
@@ -1289,9 +1382,6 @@
       "@deepseek-ai/dsh-permission-presets/client": [
         "./src/vendor/permission-presets/src/client.ts"
       ],
-      "@deepseek-ai/dsh-permission-presets/invariant": [
-        "./src/vendor/permission-presets/src/invariant.ts"
-      ],
       "@deepseek-ai/dsh-permission-presets/types": [
         "./src/vendor/permission-presets/src/types.ts"
       ],
@@ -1304,11 +1394,23 @@
       "@deepseek-ai/dsh-plan-mode/client": [
         "./src/vendor/plan-mode/src/client.ts"
       ],
-      "@deepseek-ai/dsh-plan-mode/invariant": [
-        "./src/vendor/plan-mode/src/invariant.ts"
-      ],
       "@deepseek-ai/dsh-plan-mode/types": [
         "./src/vendor/plan-mode/src/types.ts"
+      ],
+      "@deepseek-ai/dsh-plugin-detail": [
+        "./src/vendor/plugin-detail/src/index.ts"
+      ],
+      "@deepseek-ai/dsh-plugin-detail/document": [
+        "./src/vendor/plugin-detail/src/document.ts"
+      ],
+      "@deepseek-ai/dsh-plugin-detail/files": [
+        "./src/vendor/plugin-detail/src/files.ts"
+      ],
+      "@deepseek-ai/dsh-plugin-detail/response": [
+        "./src/vendor/plugin-detail/src/response.ts"
+      ],
+      "@deepseek-ai/dsh-plugin-detail/types": [
+        "./src/vendor/plugin-detail/src/types.ts"
       ],
       "@deepseek-ai/dsh-plugin-manager": [
         "./src/vendor/plugin-manager/src/index.ts"
@@ -1316,8 +1418,17 @@
       "@deepseek-ai/dsh-plugin-manager/build-approval": [
         "./src/vendor/plugin-manager/src/build-approval.ts"
       ],
+      "@deepseek-ai/dsh-plugin-manager/bundle-detail": [
+        "./src/vendor/plugin-manager/src/bundle-detail.ts"
+      ],
+      "@deepseek-ai/dsh-plugin-manager/diagnostic": [
+        "./src/vendor/plugin-manager/src/diagnostic.ts"
+      ],
       "@deepseek-ai/dsh-plugin-manager/failure": [
         "./src/vendor/plugin-manager/src/failure.ts"
+      ],
+      "@deepseek-ai/dsh-plugin-manager/git-transport": [
+        "./src/vendor/plugin-manager/src/git-transport.ts"
       ],
       "@deepseek-ai/dsh-plugin-manager/github-connection": [
         "./src/vendor/plugin-manager/src/github-connection.ts"
@@ -1327,6 +1438,9 @@
       ],
       "@deepseek-ai/dsh-plugin-manager/install-spec": [
         "./src/vendor/plugin-manager/src/install-spec.ts"
+      ],
+      "@deepseek-ai/dsh-plugin-manager/official-install-target": [
+        "./src/vendor/plugin-manager/src/official-install-target.ts"
       ],
       "@deepseek-ai/dsh-plugin-manager/operations": [
         "./src/vendor/plugin-manager/src/operations.ts"
@@ -1346,8 +1460,53 @@
       "@deepseek-ai/dsh-plugin-manager/types": [
         "./src/vendor/plugin-manager/src/types.ts"
       ],
+      "@deepseek-ai/dsh-plugin-manager/versions": [
+        "./src/vendor/plugin-manager/src/versions.ts"
+      ],
       "@deepseek-ai/dsh-plugin-manager/remote": [
         "./src/vendor/plugin-manager/generated/remote.js"
+      ],
+      "@deepseek-ai/dsh-plugin-market": [
+        "./src/vendor/plugin-market/src/index.ts"
+      ],
+      "@deepseek-ai/dsh-plugin-market/detail-files": [
+        "./src/vendor/plugin-market/src/detail-files.ts"
+      ],
+      "@deepseek-ai/dsh-plugin-market/detail": [
+        "./src/vendor/plugin-market/src/detail.ts"
+      ],
+      "@deepseek-ai/dsh-plugin-market/index-url": [
+        "./src/vendor/plugin-market/src/index-url.ts"
+      ],
+      "@deepseek-ai/dsh-plugin-market/parse-thread": [
+        "./src/vendor/plugin-market/src/parse-thread.ts"
+      ],
+      "@deepseek-ai/dsh-plugin-market/parse": [
+        "./src/vendor/plugin-market/src/parse.ts"
+      ],
+      "@deepseek-ai/dsh-plugin-market/repository-cache": [
+        "./src/vendor/plugin-market/src/repository-cache.ts"
+      ],
+      "@deepseek-ai/dsh-plugin-market/search": [
+        "./src/vendor/plugin-market/src/search.ts"
+      ],
+      "@deepseek-ai/dsh-plugin-market/tools": [
+        "./src/vendor/plugin-market/src/tools.ts"
+      ],
+      "@deepseek-ai/dsh-plugin-market/types": [
+        "./src/vendor/plugin-market/src/types.ts"
+      ],
+      "@deepseek-ai/dsh-plugin-market/worker": [
+        "./src/vendor/plugin-market/src/worker.ts"
+      ],
+      "@deepseek-ai/dsh-plugin-market/remote": [
+        "./src/vendor/plugin-market/generated/remote.js"
+      ],
+      "@deepseek-ai/dsh-plugin-market-index": [
+        "./src/vendor/plugin-market-index/src/index.ts"
+      ],
+      "@deepseek-ai/dsh-plugin-market-index/types": [
+        "./src/vendor/plugin-market-index/src/types.ts"
       ],
       "@deepseek-ai/dsh-ptc-runtime": [
         "./src/vendor/ptc-runtime/src/index.ts"
@@ -1364,14 +1523,14 @@
       "@deepseek-ai/dsh-sandbox/escalation": [
         "./src/vendor/sandbox/src/escalation.ts"
       ],
+      "@deepseek-ai/dsh-sandbox/locales": [
+        "./src/vendor/sandbox/src/locales.ts"
+      ],
       "@deepseek-ai/dsh-sandbox/roots": [
         "./src/vendor/sandbox/src/roots.ts"
       ],
       "@deepseek-ai/dsh-sandbox-policy": [
         "./src/vendor/sandbox-policy/src/index.ts"
-      ],
-      "@deepseek-ai/dsh-sandbox-policy/invariant": [
-        "./src/vendor/sandbox-policy/src/invariant.ts"
       ],
       "@deepseek-ai/dsh-sandbox-policy/session-mode": [
         "./src/vendor/sandbox-policy/src/session-mode.ts"
@@ -1388,17 +1547,11 @@
       "@deepseek-ai/dsh-schedule/domain": [
         "./src/vendor/schedule/src/domain.ts"
       ],
-      "@deepseek-ai/dsh-schedule/invariant": [
-        "./src/vendor/schedule/src/invariant.ts"
-      ],
       "@deepseek-ai/dsh-schedule/runtime": [
         "./src/vendor/schedule/src/runtime.ts"
       ],
       "@deepseek-ai/dsh-schedule/storage": [
         "./src/vendor/schedule/src/storage.ts"
-      ],
-      "@deepseek-ai/dsh-schedule/tools": [
-        "./src/vendor/schedule/src/tools.ts"
       ],
       "@deepseek-ai/dsh-schedule/types": [
         "./src/vendor/schedule/src/types.ts"
@@ -1412,12 +1565,6 @@
       "@deepseek-ai/dsh-scope": [
         "./src/vendor/scope/src/index.ts"
       ],
-      "@deepseek-ai/dsh-scope/invariant": [
-        "./src/vendor/scope/src/invariant.ts"
-      ],
-      "@deepseek-ai/dsh-scope/scoped-events.generated": [
-        "./src/vendor/scope/src/scoped-events.generated.ts"
-      ],
       "@deepseek-ai/dsh-scope/store": [
         "./src/vendor/scope/src/store.ts"
       ],
@@ -1426,9 +1573,6 @@
       ],
       "@deepseek-ai/dsh-session/fork": [
         "./src/vendor/session/src/fork.ts"
-      ],
-      "@deepseek-ai/dsh-session/invariant": [
-        "./src/vendor/session/src/invariant.ts"
       ],
       "@deepseek-ai/dsh-session/known-event-types": [
         "./src/vendor/session/src/known-event-types.ts"
@@ -1706,9 +1850,6 @@
       "@deepseek-ai/dsh-session-title/client": [
         "./src/vendor/session-title/src/client.ts"
       ],
-      "@deepseek-ai/dsh-session-title/invariant": [
-        "./src/vendor/session-title/src/invariant.ts"
-      ],
       "@deepseek-ai/dsh-session-title/normalize": [
         "./src/vendor/session-title/src/normalize.ts"
       ],
@@ -1793,14 +1934,14 @@
       "@deepseek-ai/dsh-storage-domain/events": [
         "./src/vendor/storage-domain/src/events.ts"
       ],
-      "@deepseek-ai/dsh-storage-domain/invariant": [
-        "./src/vendor/storage-domain/src/invariant.ts"
-      ],
       "@deepseek-ai/dsh-storage-domain/spec": [
         "./src/vendor/storage-domain/src/spec.ts"
       ],
       "@deepseek-ai/dsh-subagent": [
         "./src/vendor/subagent/src/index.ts"
+      ],
+      "@deepseek-ai/dsh-subagent/activation": [
+        "./src/vendor/subagent/src/activation.ts"
       ],
       "@deepseek-ai/dsh-subagent/archive-admission": [
         "./src/vendor/subagent/src/archive-admission.ts"
@@ -1817,14 +1958,8 @@
       "@deepseek-ai/dsh-subagent/client": [
         "./src/vendor/subagent/src/client.ts"
       ],
-      "@deepseek-ai/dsh-subagent/continuation-activation": [
-        "./src/vendor/subagent/src/continuation-activation.ts"
-      ],
       "@deepseek-ai/dsh-subagent/continuation-messages": [
         "./src/vendor/subagent/src/continuation-messages.ts"
-      ],
-      "@deepseek-ai/dsh-subagent/continuation": [
-        "./src/vendor/subagent/src/continuation.ts"
       ],
       "@deepseek-ai/dsh-subagent/control-types": [
         "./src/vendor/subagent/src/control-types.ts"
@@ -1841,20 +1976,17 @@
       "@deepseek-ai/dsh-subagent/error": [
         "./src/vendor/subagent/src/error.ts"
       ],
-      "@deepseek-ai/dsh-subagent/inbox": [
-        "./src/vendor/subagent/src/inbox.ts"
-      ],
       "@deepseek-ai/dsh-subagent/internal": [
         "./src/vendor/subagent/src/internal.ts"
-      ],
-      "@deepseek-ai/dsh-subagent/invariant": [
-        "./src/vendor/subagent/src/invariant.ts"
       ],
       "@deepseek-ai/dsh-subagent/lifecycle": [
         "./src/vendor/subagent/src/lifecycle.ts"
       ],
       "@deepseek-ai/dsh-subagent/list-children": [
         "./src/vendor/subagent/src/list-children.ts"
+      ],
+      "@deepseek-ai/dsh-subagent/manager": [
+        "./src/vendor/subagent/src/manager.ts"
       ],
       "@deepseek-ai/dsh-subagent/out-of-process": [
         "./src/vendor/subagent/src/out-of-process.ts"
@@ -1865,8 +1997,8 @@
       "@deepseek-ai/dsh-subagent/projection": [
         "./src/vendor/subagent/src/projection.ts"
       ],
-      "@deepseek-ai/dsh-subagent/run-settlement": [
-        "./src/vendor/subagent/src/run-settlement.ts"
+      "@deepseek-ai/dsh-subagent/structured": [
+        "./src/vendor/subagent/src/structured.ts"
       ],
       "@deepseek-ai/dsh-subagent/types": [
         "./src/vendor/subagent/src/types.ts"
@@ -1886,9 +2018,6 @@
       "@deepseek-ai/dsh-system-prompt": [
         "./src/vendor/system-prompt/src/index.ts"
       ],
-      "@deepseek-ai/dsh-system-prompt/invariant": [
-        "./src/vendor/system-prompt/src/invariant.ts"
-      ],
       "@deepseek-ai/dsh-timeout": [
         "./src/vendor/timeout/src/index.ts"
       ],
@@ -1903,6 +2032,9 @@
       ],
       "@deepseek-ai/dsh-token-meter/estimate": [
         "./src/vendor/token-meter/src/estimate.ts"
+      ],
+      "@deepseek-ai/dsh-token-meter/measurement-projection": [
+        "./src/vendor/token-meter/src/measurement-projection.ts"
       ],
       "@deepseek-ai/dsh-token-meter/projection": [
         "./src/vendor/token-meter/src/projection.ts"
@@ -1925,6 +2057,36 @@
       "@deepseek-ai/dsh-token-meter/usage-projection": [
         "./src/vendor/token-meter/src/usage-projection.ts"
       ],
+      "@deepseek-ai/dsh-tool-executor-ptc": [
+        "./src/vendor/tool-executor-ptc/src/index.ts"
+      ],
+      "@deepseek-ai/dsh-tool-executor-ptc/client": [
+        "./src/vendor/tool-executor-ptc/src/client.ts"
+      ],
+      "@deepseek-ai/dsh-tool-executor-ptc/config": [
+        "./src/vendor/tool-executor-ptc/src/config.ts"
+      ],
+      "@deepseek-ai/dsh-tool-executor-ptc/errors": [
+        "./src/vendor/tool-executor-ptc/src/errors.ts"
+      ],
+      "@deepseek-ai/dsh-tool-executor-ptc/ptc-calls": [
+        "./src/vendor/tool-executor-ptc/src/ptc-calls.ts"
+      ],
+      "@deepseek-ai/dsh-tool-executor-ptc/ptc": [
+        "./src/vendor/tool-executor-ptc/src/ptc.ts"
+      ],
+      "@deepseek-ai/dsh-tool-executor-ptc/py-types": [
+        "./src/vendor/tool-executor-ptc/src/py-types.ts"
+      ],
+      "@deepseek-ai/dsh-tool-executor-ptc/runtime-types": [
+        "./src/vendor/tool-executor-ptc/src/runtime-types.ts"
+      ],
+      "@deepseek-ai/dsh-tool-executor-ptc/ts-types": [
+        "./src/vendor/tool-executor-ptc/src/ts-types.ts"
+      ],
+      "@deepseek-ai/dsh-tool-executor-ptc/types": [
+        "./src/vendor/tool-executor-ptc/src/types.ts"
+      ],
       "@deepseek-ai/dsh-tool-present": [
         "./src/vendor/tool-present/src/index.ts"
       ],
@@ -1937,17 +2099,11 @@
       "@deepseek-ai/dsh-tool-todo/client": [
         "./src/vendor/tool-todo/src/client.ts"
       ],
-      "@deepseek-ai/dsh-tool-todo/invariant": [
-        "./src/vendor/tool-todo/src/invariant.ts"
-      ],
       "@deepseek-ai/dsh-tool-todo/types": [
         "./src/vendor/tool-todo/src/types.ts"
       ],
       "@deepseek-ai/dsh-tool-workflow": [
         "./src/vendor/tool-workflow/src/index.ts"
-      ],
-      "@deepseek-ai/dsh-tool-workflow/invariant": [
-        "./src/vendor/tool-workflow/src/invariant.ts"
       ],
       "@deepseek-ai/dsh-tool-workflow/record": [
         "./src/vendor/tool-workflow/src/record.ts"
@@ -1958,32 +2114,29 @@
       "@deepseek-ai/dsh-tools": [
         "./src/vendor/tools/src/index.ts"
       ],
-      "@deepseek-ai/dsh-tools/invariant": [
-        "./src/vendor/tools/src/invariant.ts"
+      "@deepseek-ai/dsh-tools/batch": [
+        "./src/vendor/tools/src/batch.ts"
+      ],
+      "@deepseek-ai/dsh-tools/contracts": [
+        "./src/vendor/tools/src/contracts.ts"
+      ],
+      "@deepseek-ai/dsh-tools/events": [
+        "./src/vendor/tools/src/events.ts"
+      ],
+      "@deepseek-ai/dsh-tools/executor": [
+        "./src/vendor/tools/src/executor.ts"
       ],
       "@deepseek-ai/dsh-tools/json-schema": [
         "./src/vendor/tools/src/json-schema.ts"
       ],
+      "@deepseek-ai/dsh-tools/pipeline": [
+        "./src/vendor/tools/src/pipeline.ts"
+      ],
       "@deepseek-ai/dsh-tools/presentation": [
         "./src/vendor/tools/src/presentation.ts"
       ],
-      "@deepseek-ai/dsh-tools/ptc": [
-        "./src/vendor/tools/src/ptc.ts"
-      ],
-      "@deepseek-ai/dsh-tools/py-types": [
-        "./src/vendor/tools/src/py-types.ts"
-      ],
       "@deepseek-ai/dsh-tools/schema": [
         "./src/vendor/tools/src/schema.ts"
-      ],
-      "@deepseek-ai/dsh-tools/testing": [
-        "./src/vendor/tools/src/testing.ts"
-      ],
-      "@deepseek-ai/dsh-tools/ts-types": [
-        "./src/vendor/tools/src/ts-types.ts"
-      ],
-      "@deepseek-ai/dsh-tools/types": [
-        "./src/vendor/tools/src/types.ts"
       ],
       "@deepseek-ai/dsh-typert-protocol": [
         "./src/vendor/typert-protocol/src/index.ts"
@@ -1994,8 +2147,17 @@
       "@deepseek-ai/dsh-typert-protocol/owned-value": [
         "./src/vendor/typert-protocol/src/owned-value.ts"
       ],
+      "@deepseek-ai/dsh-typert-protocol/principal": [
+        "./src/vendor/typert-protocol/src/principal.ts"
+      ],
+      "@deepseek-ai/dsh-typert-protocol/remote-access": [
+        "./src/vendor/typert-protocol/src/remote-access.ts"
+      ],
       "@deepseek-ai/dsh-typert-protocol/remote-error": [
         "./src/vendor/typert-protocol/src/remote-error.ts"
+      ],
+      "@deepseek-ai/dsh-typert-protocol/remote-info": [
+        "./src/vendor/typert-protocol/src/remote-info.ts"
       ],
       "@deepseek-ai/dsh-typert-protocol/types": [
         "./src/vendor/typert-protocol/src/types.ts"
@@ -2014,9 +2176,6 @@
       ],
       "@deepseek-ai/dsh-user-approval": [
         "./src/vendor/user-approval/src/index.ts"
-      ],
-      "@deepseek-ai/dsh-user-approval/invariant": [
-        "./src/vendor/user-approval/src/invariant.ts"
       ],
       "@deepseek-ai/dsh-user-approval/types": [
         "./src/vendor/user-approval/src/types.ts"
@@ -2042,11 +2201,32 @@
       "@deepseek-ai/dsh-util-crypto": [
         "./src/vendor/util-crypto/src/index.ts"
       ],
+      "@deepseek-ai/dsh-util-file-drag": [
+        "./src/vendor/util-file-drag/src/index.ts"
+      ],
       "@deepseek-ai/dsh-util-time": [
         "./src/vendor/util-time/src/index.ts"
       ],
+      "@deepseek-ai/dsh-util-time/cron": [
+        "./src/vendor/util-time/src/cron.ts"
+      ],
+      "@deepseek-ai/dsh-util-time/duration": [
+        "./src/vendor/util-time/src/duration.ts"
+      ],
+      "@deepseek-ai/dsh-util-time/instant": [
+        "./src/vendor/util-time/src/instant.ts"
+      ],
+      "@deepseek-ai/dsh-util-time/recurrence": [
+        "./src/vendor/util-time/src/recurrence.ts"
+      ],
+      "@deepseek-ai/dsh-util-time/rrule": [
+        "./src/vendor/util-time/src/rrule.ts"
+      ],
       "@deepseek-ai/dsh-util-values": [
         "./src/vendor/util-values/src/index.ts"
+      ],
+      "@deepseek-ai/dsh-util-values/partial-json": [
+        "./src/vendor/util-values/src/partial-json.ts"
       ],
       "@deepseek-ai/dsh-util-workspace-path": [
         "./src/vendor/util-workspace-path/src/index.ts"
@@ -2057,23 +2237,20 @@
       "@deepseek-ai/dsh-workflow": [
         "./src/vendor/workflow/src/index.ts"
       ],
-      "@deepseek-ai/dsh-workflow/invariant": [
-        "./src/vendor/workflow/src/invariant.ts"
-      ],
       "@deepseek-ai/dsh-workflow/runtime-types": [
         "./src/vendor/workflow/src/runtime-types.ts"
       ],
       "@deepseek-ai/dsh-workflow/types": [
         "./src/vendor/workflow/src/types.ts"
       ],
+      "@deepseek-ai/dsh-working-directory": [
+        "./src/vendor/working-directory/src/index.ts"
+      ],
       "@deepseek-ai/dsh-workspace": [
         "./src/vendor/workspace/src/index.ts"
       ],
       "@deepseek-ai/dsh-workspace/entity": [
         "./src/vendor/workspace/src/entity.ts"
-      ],
-      "@deepseek-ai/dsh-workspace/invariant": [
-        "./src/vendor/workspace/src/invariant.ts"
       ],
       "@deepseek-ai/dsh-workspace/paths": [
         "./src/vendor/workspace/src/paths.ts"

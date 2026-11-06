@@ -2,7 +2,8 @@
 import type {
   RemoteResult,
   RemoteStreamHandle,
-  TypertRemoteContribution,
+  TypertRemoteInfo,
+  TypertRemoteMethod,
 } from '@deepseek-ai/dsh-typert-protocol'
 import type { JobFollowFrame, JobFollowRequest, JobKillRequest, JobKillValue, JobListFrame, JobListRequest } from '@deepseek-ai/dsh-api-job-controller/types'
 
@@ -22,6 +23,10 @@ declare module '@deepseek-ai/dsh-typert-protocol' {
   }
 }
 
-export declare const TYPERT_REMOTE: TypertRemoteContribution
+export declare const TYPERT_REMOTE: TypertRemoteInfo<{
+  readonly 'job/follow': TypertRemoteMethod<{ readonly 'request': JobFollowRequest }, JobFollowFrame, 'stream'>
+  readonly 'job/kill': TypertRemoteMethod<{ readonly 'request': JobKillRequest }, JobKillValue>
+  readonly 'job/list': TypertRemoteMethod<{ readonly 'request': JobListRequest }, JobListFrame, 'stream'>
+}>
 export default TYPERT_REMOTE
 //# sourceMappingURL=typert.remote-client.d.ts.map

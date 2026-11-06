@@ -5,7 +5,7 @@
 // the Tool-owned `tool.call.images` slot inside the collapsed-by-default expanded
 // body — the same unified interaction every other card row has. The attachment
 // presentation plugin fills that slot; the tool layer only ever supplies the
-// references and the session-authorized loader it received from the chat node.
+// references and the Gateway-authorized loader it received from the chat node.
 //
 // Claiming the `read_image` key suppresses the generic fallback for EVERY
 // read_image result, so this component must cover all of the tool's shapes, not
@@ -18,6 +18,7 @@
 // content until `execute` returns, so a running read_image shows the summary row
 // alone.
 
+import { toolFileInject } from '../file-menu.ts'
 import type { Context } from '@deepseek-ai/cordis'
 import { imageCardModel } from '../models/image-card-model.ts'
 import { readFamilyRow, type ReadImageRowProps } from './read-family-row.tsx'
@@ -29,12 +30,13 @@ import { CONVERSATION_NS as NS } from '../../locale.ts'
  * slot this entry declares.
  */
 export function ReadImageRow(props: ReadImageRowProps) {
-  const { block, cwd, home, renderSlot, loadImage } = props
+  const { block, renderSlot, loadImage } = props
+  const { getTriggerProps } = props.useContextMenu()
   return readFamilyRow(props, {
-    image: imageCardModel(block, cwd, home),
+    image: imageCardModel(block),
     renderSlot,
     loadImage,
-  })
+  }, getTriggerProps)
 }
 
 /**
@@ -45,7 +47,7 @@ export function ReadImageRow(props: ReadImageRowProps) {
  */
 export const readImageToolview = {
   name: 'read-image-toolview',
-  inject: ['slots'],
+  inject: ['slots', 'sessions'],
   /**
    * Register the read_image row into the Tool-owned keyed view slot.
    * @param ctx - registrant context (disposal rides ctx.effect inside slots.register).
@@ -56,6 +58,7 @@ export const readImageToolview = {
         name: 'tool.call.toolview',
         key: 'read_image',
         locale: NS,
+        inject: toolFileInject(ctx),
         children: { 'tool.call.images': { kind: 'single', scope: 'session' } },
       }, ReadImageRow))
   },

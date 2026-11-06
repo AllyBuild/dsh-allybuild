@@ -19,6 +19,7 @@ export interface MirrorSeed {
 
 const { installConnection } = pkg('@deepseek-ai/dsh-client-connection') as {
   installConnection: (ctx: Context, options: {
+    interactions?: 'answer' | 'none'
     transport: { rpc: unknown }
   }) => void
 }
@@ -66,6 +67,9 @@ export function mountMirror(container: HTMLElement, seed: MirrorSeed): MirrorHan
         }
         const ctx = new Context()
         installConnection(ctx, {
+          // 种子会话的 journal 事件经 fixture 转发：声明 answer 交互，
+          // $on 才可用（ui-settings 等插件启动即订阅事件）。
+          interactions: 'answer',
           transport: { rpc: createFixtureConnectionRpc({ mirror: [seed] }) },
         })
         // dsh 的 React root 与宿主 React 树分容器：宿主 StrictMode 双挂载会清空

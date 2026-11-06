@@ -2,7 +2,8 @@
 import type {
   RemoteResult,
   RemoteStreamHandle,
-  TypertRemoteContribution,
+  TypertRemoteInfo,
+  TypertRemoteMethod,
 } from '@deepseek-ai/dsh-typert-protocol'
 import type { ProductEvent } from '@deepseek-ai/dsh-client-product-analytics/types'
 
@@ -22,6 +23,10 @@ declare module '@deepseek-ai/dsh-typert-protocol' {
   }
 }
 
-export declare const TYPERT_REMOTE: TypertRemoteContribution
+export declare const TYPERT_REMOTE: TypertRemoteInfo<{
+  readonly 'productAnalytics/enabled': TypertRemoteMethod<{  }, boolean>
+  readonly 'productAnalytics/report': TypertRemoteMethod<{ readonly 'event': ProductEvent }, void>
+  readonly 'productAnalytics/watchPolicy': TypertRemoteMethod<{  }, boolean, 'stream'>
+}>
 export default TYPERT_REMOTE
 //# sourceMappingURL=typert.remote-client.d.ts.map

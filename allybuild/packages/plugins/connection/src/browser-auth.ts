@@ -4,6 +4,8 @@
  * the only route to this server. Same exported shape as upstream so the
  * plugin, composition, and tests compile unchanged; every check admits. */
 
+import type { PeerId } from '@deepseek-ai/dsh-typert-protocol'
+import type { ConnectionInteractions } from './connect-protocol.ts'
 import type {
   ConnectionIndexRequest,
   ConnectionIndexResponse,
@@ -37,12 +39,39 @@ export class BrowserAuth {
   }
 
   /** Admit the index (and its token-exchange query, which nothing consumes). */
-  authorizeIndex(_req: ConnectionIndexRequest, _res: ConnectionIndexResponse): boolean {
+  authorizeIndex(_req: ConnectionIndexRequest, _res: ConnectionIndexResponse, _secure = false): boolean {
     return true
   }
 
+  /** Publish the API operator and redirect, minus the cookie minting —
+   * the operator rides the sandbox-level auth like every other request. */
+  authorizeConnect(
+    req: ConnectionIndexRequest,
+    res: ConnectionIndexResponse,
+    _secure: boolean,
+    publish: (interactions: ConnectionInteractions) => PeerId,
+  ): void {
+    const url = new URL(req.url ?? '/', 'http://dsh.invalid')
+    const declarations = url.searchParams.getAll('interactions')
+    const interactions = declarations[0] ?? 'none'
+    if (declarations.length > 1 || (interactions !== 'answer' && interactions !== 'none')) {
+      res.writeHead(400, { 'cache-control': 'no-store', 'content-type': 'text/plain; charset=utf-8' })
+      res.end('interactions must be declared once as answer or none\n')
+      return
+    }
+    publish(interactions)
+    res.writeHead(302, { 'cache-control': 'no-store', 'location': './api/remote.mux' })
+    res.end()
+  }
+
   /** Every request that passed the Host/Origin fence is authenticated. */
-  isAuthenticated(_req: ConnectionTrustRequest): boolean {
+  isAuthenticated(_req: ConnectionTrustRequest, _secure = false): boolean {
     return true
+  }
+
+  /** Unreachable behind the always-admitting browser check; the API
+   * operator path carries no cookie to verify. */
+  authenticateApi(_req: ConnectionTrustRequest, _secure = false): PeerId | undefined {
+    return undefined
   }
 }

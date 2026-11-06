@@ -32,6 +32,7 @@ export interface LiveHandle {
 
 const { installConnection } = pkg('@deepseek-ai/dsh-client-connection') as {
   installConnection: (ctx: Context, options: {
+    interactions?: 'answer' | 'none'
     transport: {
       fetch?: (input: string | URL, init: RequestInit) => Promise<Response>
       rpc?: unknown
@@ -97,6 +98,9 @@ export function mountLive(container: HTMLElement, options: LiveMountOptions): Li
         }
         try {
           installConnection(ctx, {
+            // 会话事件（journal 转发）驱动 live 对话更新：网关连接按
+            // 0.2.2 契约声明 answer 交互，$on/$stream 才可用。
+            interactions: 'answer',
             transport: {
               // 会话目录本地应答：目录已在平台侧维护（抽屉传入），省去
               // shell 启动时对网关的 session/list 往返；其余 endpoint 由

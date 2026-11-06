@@ -40,6 +40,12 @@ export type SubagentCatalogRow =
       readonly label?: string
     }
     | {
+      /** An external execution without a local child Session. */
+      readonly mode: 'external'
+      /** Optional durable creation label from the parent catalog. */
+      readonly label?: string
+    }
+    | {
       /** A resumable conversation. */
       readonly mode: 'continuable'
       /** Durable creation label from the parent catalog. */
@@ -81,6 +87,9 @@ export type SubagentAddress =
     | { readonly mode: 'continuable' }
     | { readonly mode: 'unknown' }
   )
+
+/** One Agent inbox destination, as the prompt request selects it. */
+export type SubagentDelivery = SubagentPromptRequest['delivery']
 
 /** One human message addressed to a continuable direct child. */
 export interface SubagentPromptRequest {
