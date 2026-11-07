@@ -5,7 +5,7 @@
  * plugin, composition, and tests compile unchanged; every check admits. */
 
 import type { PeerId } from '@deepseek-ai/dsh-typert-protocol'
-import type { ConnectionInteractions } from './connect-protocol.ts'
+import { CONNECT_PATH, type ConnectionInteractions } from './connect-protocol.ts'
 import type {
   ConnectionIndexRequest,
   ConnectionIndexResponse,
@@ -44,7 +44,8 @@ export class BrowserAuth {
   }
 
   /** Publish the API operator and redirect, minus the cookie minting —
-   * the operator rides the sandbox-level auth like every other request. */
+   * the operator rides the sandbox-level auth like every other request.
+   * Non-GET or off-path requests stay refused, matching upstream. */
   authorizeConnect(
     req: ConnectionIndexRequest,
     res: ConnectionIndexResponse,
@@ -57,6 +58,11 @@ export class BrowserAuth {
     if (declarations.length > 1 || (interactions !== 'answer' && interactions !== 'none')) {
       res.writeHead(400, { 'cache-control': 'no-store', 'content-type': 'text/plain; charset=utf-8' })
       res.end('interactions must be declared once as answer or none\n')
+      return
+    }
+    if (req.method !== 'GET' || url.pathname !== CONNECT_PATH) {
+      res.writeHead(401, { 'cache-control': 'no-store', 'content-type': 'text/plain; charset=utf-8' })
+      res.end('dsh web authentication required; reopen the URL printed by dsh web.\n')
       return
     }
     publish(interactions)
