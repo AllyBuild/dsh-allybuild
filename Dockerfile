@@ -21,7 +21,11 @@ RUN sed -i 's|deb.debian.org|mirrors.tuna.tsinghua.edu.cn|g; s|security.debian.o
   && rm -rf /var/lib/apt/lists/*
 
 # Pinned upstream: the tag matches the npm release line the deployment tracks.
-RUN git clone --depth 1 --branch "${DSH_SOURCE_REF}" \
+# HTTP/1.1 for the clone: 弱网/代理路径上 HTTP/2 的 framing/stream 错误
+# （curl 16 / stream not closed cleanly）反复打死 clone——与 apt 走清华
+# 镜像同一性质的弱网加固。
+RUN git config --global http.version HTTP/1.1 \
+    && git clone --depth 1 --branch "${DSH_SOURCE_REF}" \
     https://github.com/deepseek-ai/deepseek-harness /src
 
 # Stamp the AllyBuild-local packages over the pinned checkout (build.sh's
