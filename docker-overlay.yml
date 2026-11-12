@@ -1,26 +1,14 @@
 # Container composition overlays: the webserver bind rows plus the AllyBuild
 # integration rows, injected together by the entrypoint for the web profile.
 #
-# The webserver rows switch the bind to the all-interfaces literal — docker -p
-# cannot reach a loopback bind and the web profile refuses 0.0.0.0 as a flag —
-# and restate every webserver config key, keeping the --port flag wiring from
-# the web startup provider (a patch replaces the targeted row's whole config).
-#
-# The AllyBuild rows are three private Service plugins that push session
-# metadata / task progress to the AllyBuild platform and answer ask_user
-# questions from its task drawer. Inert until the ALLYBUILD_* environment
-# configures them — every constructor returns early on an empty url. The
-# values arrive at patch-eval time from the process environment; a deployment
-# baking static values would write them here verbatim instead.
-
-# packages/client/connection is additionally overlay-replaced at build time
-# (authored under packages/plugins/connection, stamped onto the upstream
-# package path by the Dockerfile): the Host/Origin fence stays, the per-process
-# browser auth is removed — the deployment sits behind the sandbox-level
-# Daytona auth.
+# dsh 0.2.2 起 webserver 配置校验拒绝通配绑定（RCE 防护——错误信息点名
+# "bind one concrete IPv4 or IPv6 address"），而 docker -p 与 Daytona 预览
+# 代理又到不了 loopback 绑定：宿主侧由 entrypoint 推导主网卡 IP 经
+# DSH_BIND_HOST 注入（!!js 在 dsh 补丁求值时读进程 env）。缺省回落
+# loopback——外部不可达但不误暴露，fail-safe。
 - id: webserver
   config:
-    host: '0.0.0.0'
+    host: !!js process.env.DSH_BIND_HOST || '127.0.0.1'
     port: !!js ctx.webStartup.port ?? 3080
     compression: gzip
     compressionLevel: 1
@@ -32,6 +20,11 @@
   config:
     documentsDirectory: !!js process.env.DSH_DOCUMENTS_DIR ?? '/workspace/Documents'
 
+# AllyBuild 三服务插件：session 元素同步/任务进度上报/抽屉答问。值为空
+# 时构造器直接早退（惰性）——数值在 dsh 补丁求值时从进程 env 取。
+# packages/client/connection 另在构建期被 plugins/connection 覆盖替换
+# （Dockerfile stamp）：Host/Origin 栅栏保留，逐进程浏览器鉴权移除——
+# 部署整体位于沙箱级 Daytona 鉴权之后。
 - insert:
     - id: allybuild-session-sync
       name: '@deepseek-ai/dsh-allybuild-session-sync'

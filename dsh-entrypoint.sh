@@ -18,6 +18,23 @@ set -u
 
 overlay=/usr/local/share/dsh/docker-overlay.yml
 
+# dsh 0.2.2 起 webserver 拒绝通配绑定（overlay 亦然），而 docker -p 与
+# Daytona 预览代理到不了 loopback：推导主路由源 IP（UDP connect 无发包）
+# 注入 DSH_BIND_HOST，docker-overlay.yml 的 webserver 行在补丁求值时读取。
+# 推导失败回落 loopback——web 外部不可达但不误暴露，fail-safe。容器内
+# python3 由镜像保证（merge-overlay/mcp-overlay 同依赖）。
+DSH_BIND_HOST="${DSH_BIND_HOST:-$(python3 -c "import socket
+s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+try:
+    s.connect(('10.255.255.255', 1))
+    print(s.getsockname()[0])
+except Exception:
+    print('127.0.0.1')
+finally:
+    s.close()" 2>/dev/null)}"
+[ -n "$DSH_BIND_HOST" ] || DSH_BIND_HOST=127.0.0.1
+export DSH_BIND_HOST
+
 # Runtimes that clear the image CMD (daytona sandboxes) still boot the web
 # profile, the deployment this image exists for.
 if [ "$#" -eq 0 ]; then
