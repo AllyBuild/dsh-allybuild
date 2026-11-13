@@ -124,11 +124,14 @@
 
     # Owns both ends of the web transport: node half binds the gateway to the
     # webserver under /api; browser half is the fetch/SSE client.
+    # 0.2.2 契约：web-app 插件不再提供 webRuntime 服务（只提供 webApp），
+    # 行级注入与信任域读取改走 webStartup——与上游全量 bundle 的 connection
+    # 行同构（inject: [webStartup]，trustedHosts: ctx.webStartup.trustedHosts）
     - id: connection
       name: '@deepseek-ai/dsh-client-connection'
-      inject: [webRuntime]
+      inject: [webStartup]
       config:
-        trustedHosts: !!js ctx.webRuntime.trustedHosts
+        trustedHosts: !!js ctx.webStartup.trustedHosts
 
     - id: api-remotes
       name: '@deepseek-ai/dsh-api-remotes'
