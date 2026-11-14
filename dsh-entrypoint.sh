@@ -22,7 +22,6 @@ overlay=/usr/local/share/dsh/docker-overlay.yml
 # Daytona 预览代理到不了 loopback：推导主路由源 IP（UDP connect 无发包）
 # 注入 DSH_BIND_HOST，docker-overlay.yml 的 webserver 行在补丁求值时读取。
 # 推导失败回落 loopback——web 外部不可达但不误暴露，fail-safe。容器内
-# python3 由镜像保证（merge-overlay/mcp-overlay 同依赖）。
 DSH_BIND_HOST="${DSH_BIND_HOST:-$(python3 -c "import socket
 s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 try:
@@ -78,51 +77,24 @@ if [ -n "${DSH_TRUSTED_HOSTS:-}" ]; then
   done
 fi
 
-# Per-agent overlay channel: the patch dsh boots with is always the container
-# base rows (docker-overlay.yml — the all-interfaces webserver bind) followed
-# by the baked agent overlay rows (agent-overlay.yml, the AllyBuild
-# gateway-routing layer; row concatenation IS the merge — see merge-overlay.py).
-# When DSH_AGENT_OVERLAY_PATH additionally points at a mounted per-agent patch
-# file, its rows append last, so the agent side wins same-id rows wholesale.
-# The platform no longer uploads per-agent copies: empty or missing
-# DSH_AGENT_OVERLAY_PATH keeps base + baked agent rows. A failed merge falls
-# back to whatever composed so far (base alone, or base + baked) rather than
-# failing the boot.
+# Boot metadata bootstrap: the platform pre-writes overlay.yml (docker rows +
+# agent rows + MCP insert rows, composed by backend-ts) and env.list (dotenv
+# single-quoted) into a metadata dir — DSH_META_DIR points at it (persistent
+# sandbox: meta volume subpath; transient: sandbox-local /tmp/dsh-meta). One
+# input boots the agent with zero platform runtime dependency. Falls back to
+# the container base overlay when unset (platform-less direct run).
 patch_arg=$overlay
-if [ -f /usr/local/share/dsh/agent-overlay.yml ]; then
-  if python3 /usr/local/share/dsh/merge-overlay.py \
-      "$overlay" /usr/local/share/dsh/agent-overlay.yml /tmp/baked-overlay.yml; then
-    patch_arg=/tmp/baked-overlay.yml
-  else
-    echo "dsh-entrypoint: baked agent overlay merge failed; booting on the container base rows" >&2
+if [ -n "${DSH_META_DIR:-}" ] && [ -f "$DSH_META_DIR/overlay.yml" ]; then
+  if [ -f "$DSH_META_DIR/env.list" ]; then
+    set -a
+    . "$DSH_META_DIR/env.list"
+    set +a
   fi
-fi
-if [ -n "${DSH_AGENT_OVERLAY_PATH:-}" ] && [ -f "$DSH_AGENT_OVERLAY_PATH" ]; then
-  if python3 /usr/local/share/dsh/merge-overlay.py \
-      "$patch_arg" "$DSH_AGENT_OVERLAY_PATH" /tmp/merged-overlay.yml; then
-    patch_arg=/tmp/merged-overlay.yml
-  else
-    echo "dsh-entrypoint: agent overlay merge failed ($DSH_AGENT_OVERLAY_PATH)" >&2
-  fi
+  patch_arg="$DSH_META_DIR/overlay.yml"
+else
+  echo "dsh-entrypoint: DSH_META_DIR unset or incomplete; booting on the container base overlay" >&2
 fi
 
-# MCP servers ride a second --patch layer rendered from the environment at
-# boot (dsh --patch is repeatable): dsh-mcp-client takes one server per
-# composition entry, so the per-agent row count is dynamic and cannot be a
-# static overlay row. Empty env means no layer at all; a failed render aborts
-# like the merge above. --patch is a LAUNCHER flag and launcher flags end at
-# the first app argument (--no-open), so these join the rewrite below next to
-# the overlay --patch, not appended after "$@" like the app-side trusted-host
-# flags.
-mcp_flags=""
-if [ -n "${DSH_MCP_SERVERS:-}" ]; then
-  if python3 /usr/local/share/dsh/mcp-overlay.py /tmp/mcp-patch.yml; then
-    mcp_flags="--patch /tmp/mcp-patch.yml"
-  else
-    echo "dsh-entrypoint: mcp overlay render failed (bad DSH_MCP_SERVERS json?)" >&2
-    exit 1
-  fi
-fi
 
 # Supervise flag stripping must precede active-profile detection: with
 # --supervise first the bare case below would classify the invocation as
@@ -142,15 +114,15 @@ esac
 if [ "${1-}" = "web" ]; then
   shift
   # shellcheck disable=SC2086
-  set -- web --patch "$patch_arg" $mcp_flags "$@"
+  set -- web --patch "$patch_arg" "$@"
 elif [ "${1-}" = "--profile" ] && [ "${2-}" = "web" ]; then
   shift 2
   # shellcheck disable=SC2086
-  set -- --profile web --patch "$patch_arg" $mcp_flags "$@"
+  set -- --profile web --patch "$patch_arg" "$@"
 elif [ "${1-}" = "--profile=web" ]; then
   shift
   # shellcheck disable=SC2086
-  set -- --profile=web --patch "$patch_arg" $mcp_flags "$@"
+  set -- --profile=web --patch "$patch_arg" "$@"
 elif [ "${1-}" = "--profile" ] && [ "${2-}" != "" ] && [ "${2-}" != "web" ]; then
   # Per-agent profile (platform single-port process): the merged overlay's
   # all-interfaces webserver bind and the integration rows apply to every
@@ -159,7 +131,7 @@ elif [ "${1-}" = "--profile" ] && [ "${2-}" != "" ] && [ "${2-}" != "web" ]; the
   profile="$2"
   shift 2
   # shellcheck disable=SC2086
-  set -- --profile "$profile" --patch "$patch_arg" $mcp_flags "$@"
+  set -- --profile "$profile" --patch "$patch_arg" "$@"
 fi
 if [ -n "$trusted_flags" ]; then
   # Word splitting is the point: the value is a flag list this script built.

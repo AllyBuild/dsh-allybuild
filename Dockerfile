@@ -159,7 +159,7 @@ VOLUME /data
 RUN mkdir -p /workspace && chown node:node /workspace
 
 COPY --chmod=0755 runtime/dsh-entrypoint.sh /usr/local/bin/dsh-entrypoint
-COPY runtime/docker-overlay.yml runtime/merge-overlay.py runtime/mcp-overlay.py runtime/agent-overlay.yml /usr/local/share/dsh/
+COPY runtime/docker-overlay.yml /usr/local/share/dsh/
 
 EXPOSE 3080
 
