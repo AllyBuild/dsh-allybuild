@@ -1,10 +1,13 @@
 #!/bin/sh
-# dsh-server entrypoint: run dsh with the container bind overlay that switches
-# the webserver to the all-interfaces literal (docker -p cannot reach a
-# loopback bind, and the web profile refuses 0.0.0.0 as a flag). The process
-# writes its output to /tmp/dsh.log and this script streams the file to
-# stdout, so both `docker logs` and `daytona exec -- cat /tmp/dsh.log` see the
-# printed authenticated URL; TERM/INT forward to dsh for a graceful stop.
+# dsh-server entrypoint: boot dsh from the platform-prepared metadata dir —
+# DSH_META_DIR carries overlay.yml (composition patch rows, composed by the
+# platform backend) plus env.list (dotenv single-quoted); the entrypoint
+# sources the env and passes the overlay as the single --patch argument.
+# Without a complete metadata dir the invocation boots bare: a platform-less
+# direct run must bring its own --patch. The process writes its output to
+# /tmp/dsh.log and this script streams the file to stdout, so both
+# `docker logs` and `daytona exec -- cat /tmp/dsh.log` see the printed
+# authenticated URL; TERM/INT forward to dsh for a graceful stop.
 # Any invocation that already carries --patch, or boots another profile, runs
 # verbatim.
 #
@@ -16,11 +19,9 @@
 # same way.
 set -u
 
-overlay=/usr/local/share/dsh/docker-overlay.yml
-
 # dsh 0.2.2 起 webserver 拒绝通配绑定（overlay 亦然），而 docker -p 与
 # Daytona 预览代理到不了 loopback：推导主路由源 IP（UDP connect 无发包）
-# 注入 DSH_BIND_HOST，docker-overlay.yml 的 webserver 行在补丁求值时读取。
+# 注入 DSH_BIND_HOST，元数据 overlay 的 webserver 行在补丁求值时读取。
 # 推导失败回落 loopback——web 外部不可达但不误暴露，fail-safe。容器内
 DSH_BIND_HOST="${DSH_BIND_HOST:-$(python3 -c "import socket
 s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
@@ -81,9 +82,10 @@ fi
 # agent rows + MCP insert rows, composed by backend-ts) and env.list (dotenv
 # single-quoted) into a metadata dir — DSH_META_DIR points at it (persistent
 # sandbox: meta volume subpath; transient: sandbox-local /tmp/dsh-meta). One
-# input boots the agent with zero platform runtime dependency. Falls back to
-# the container base overlay when unset (platform-less direct run).
-patch_arg=$overlay
+# input boots the agent with zero platform runtime dependency. Without a
+# complete metadata dir the invocation boots bare (no --patch): a platform-less
+# direct run must bring its own --patch.
+patch_arg=""
 if [ -n "${DSH_META_DIR:-}" ] && [ -f "$DSH_META_DIR/overlay.yml" ]; then
   if [ -f "$DSH_META_DIR/env.list" ]; then
     set -a
@@ -92,8 +94,12 @@ if [ -n "${DSH_META_DIR:-}" ] && [ -f "$DSH_META_DIR/overlay.yml" ]; then
   fi
   patch_arg="$DSH_META_DIR/overlay.yml"
 else
-  echo "dsh-entrypoint: DSH_META_DIR unset or incomplete; booting on the container base overlay" >&2
+  echo "dsh-entrypoint: DSH_META_DIR unset or incomplete; booting without a patch overlay" >&2
 fi
+# Word splitting is the point: an empty patch_arg means no --patch at all.
+# shellcheck disable=SC2086
+patch_flags=""
+[ -n "$patch_arg" ] && patch_flags="--patch $patch_arg"
 
 
 # Supervise flag stripping must precede active-profile detection: with
@@ -114,24 +120,24 @@ esac
 if [ "${1-}" = "web" ]; then
   shift
   # shellcheck disable=SC2086
-  set -- web --patch "$patch_arg" "$@"
+  set -- web $patch_flags "$@"
 elif [ "${1-}" = "--profile" ] && [ "${2-}" = "web" ]; then
   shift 2
   # shellcheck disable=SC2086
-  set -- --profile web --patch "$patch_arg" "$@"
+  set -- --profile web $patch_flags "$@"
 elif [ "${1-}" = "--profile=web" ]; then
   shift
   # shellcheck disable=SC2086
-  set -- --profile=web --patch "$patch_arg" "$@"
+  set -- --profile=web $patch_flags "$@"
 elif [ "${1-}" = "--profile" ] && [ "${2-}" != "" ] && [ "${2-}" != "web" ]; then
-  # Per-agent profile (platform single-port process): the merged overlay's
+  # Per-agent profile (platform single-port process): the metadata overlay's
   # all-interfaces webserver bind and the integration rows apply to every
   # profile — without it the process binds loopback inside the container and
   # the preview proxy (the only traffic path) cannot reach it.
   profile="$2"
   shift 2
   # shellcheck disable=SC2086
-  set -- --profile "$profile" --patch "$patch_arg" "$@"
+  set -- --profile "$profile" $patch_flags "$@"
 fi
 if [ -n "$trusted_flags" ]; then
   # Word splitting is the point: the value is a flag list this script built.

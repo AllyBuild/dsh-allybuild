@@ -1,168 +1,100 @@
 #!/usr/bin/env sh
-# Merge-channel smoke: fabricate base+agent overlays in the production shape
-# (top-level patch rows, !!js env expressions), run the image's merge-overlay.py,
-# and assert row ordering, same-id deep override, insert passthrough, and !!
-# js-expression passthrough. Runs on the host with python3+pyyaml, or inside
-# the image.
+# DSH_META_DIR bootstrap smoke: run dsh-entrypoint.sh against a stub dsh and
+# assert the boot contract —
+#   1. complete metadata dir (overlay.yml + env.list): env.list is sourced
+#      (single-quote escaping holds, meta env wins over the derived
+#      DSH_BIND_HOST) and exactly one --patch follows, pointing inside the dir;
+#   2. DSH_META_DIR unset, or set without overlay.yml: bare boot, no --patch;
+#   3. an invocation already carrying --patch runs verbatim.
+# Runs on the host with sh (python3 only softens the bind-host derivation;
+# /tmp/dsh.log is the entrypoint's fixed log path and gets clobbered).
 set -eu
 
 script_dir=$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)
-merge_py=""
-for candidate in "$script_dir/../merge-overlay.py" /usr/local/share/dsh/merge-overlay.py; do
-  if [ -f "$candidate" ]; then
-    merge_py=$candidate
-    break
-  fi
-done
-if [ -z "$merge_py" ]; then
-  echo "smoke-entrypoint: merge-overlay.py not found" >&2
-  exit 1
-fi
-mcp_py=$(dirname -- "$merge_py")/mcp-overlay.py
-if [ ! -f "$mcp_py" ]; then
-  echo "smoke-entrypoint: mcp-overlay.py not found" >&2
-  exit 1
-fi
+entrypoint=$script_dir/../dsh-entrypoint.sh
 
 tmp=$(mktemp -d)
 trap 'rm -rf "$tmp"' EXIT
+stub_bin=$tmp/bin
+capture=$tmp/args
+capture_env=$tmp/env
+mkdir -p "$stub_bin"
 
-cat > "$tmp/base.yml" <<'EOF'
+cat > "$stub_bin/dsh" <<STUB
+#!/bin/sh
+printf 'ARG:%s\n' "\$@" > "$capture"
+env > "$capture_env"
+exit 0
+STUB
+chmod +x "$stub_bin/dsh"
+
+meta=$tmp/meta
+mkdir -p "$meta"
+cat > "$meta/overlay.yml" <<'EOF'
 - id: webserver
   config:
-    host: '0.0.0.0'
-    port: !!js ctx.webStartup.port ?? 3080
-- insert:
-    - id: allybuild-answerer
-      name: '@deepseek-ai/dsh-allybuild-answerer'
-      config:
-        url: !!js process.env.ALLYBUILD_ANSWER_URL ?? ''
+    host: !!js process.env.DSH_BIND_HOST || '127.0.0.1'
+EOF
+cat > "$meta/env.list" <<'EOF'
+DSH_SYSTEM_PROMPT='You are "#1"; it'\''s a $test \ here'
+DSH_TEST_EMPTY=''
+DSH_BIND_HOST='10.1.2.3'
 EOF
 
-cat > "$tmp/agent.yml" <<'EOF'
-- id: webserver
-  config:
-    port: 9999
-- id: system-prompt
-  config:
-    persona: !!js process.env.DSH_SYSTEM_PROMPT ?? ''
-- id: skill-filesystem
-  disabled: false
-  config:
-    customSkillDirs: !!js (process.env.DSH_SKILL_DIRS ?? '').split(',').filter(Boolean)
-- id: llm-deepseek
-  config:
-    maxTokens: 32768
-- id: agent-default-model
-  config:
-    provider: deepseek-official
-    model: !!js process.env.DSH_MODEL ?? 'deepseek-v4-flash'
-EOF
+fail() { echo "smoke-entrypoint: $1" >&2; exit 1; }
 
-python3 "$merge_py" "$tmp/base.yml" "$tmp/agent.yml" "$tmp/merged.yml"
+# run_boot ENV_ARGS... — exec the entrypoint (web profile, fixed tail args)
+# through env(1) and require the stub dsh to have run.
+run_boot() {
+  rm -f "$capture" "$capture_env"
+  if ! env "$@" "$entrypoint" --profile web --no-open; then
+    fail "entrypoint exited nonzero (env: $*)"
+  fi
+  [ -s "$capture" ] || fail "stub dsh was not invoked"
+}
 
-python3 - "$merge_py" "$tmp/merged.yml" <<'PY'
-import importlib.util
-import sys
+arg_after_patch() {
+  awk -v marker="ARG:--patch" '$0 == marker { getline; print; exit }' "$capture"
+}
 
-spec = importlib.util.spec_from_file_location("merge_overlay", sys.argv[1])
-mod = importlib.util.module_from_spec(spec)
-spec.loader.exec_module(mod)
+# ── 1. complete metadata dir ─────────────────────────────────────────────────
+run_boot DSH_META_DIR="$meta" PATH="$stub_bin:$PATH" DSH_HOME="$tmp/dsh-home"
 
-with open(sys.argv[2]) as f:
-    merged = mod.yaml.load(f, Loader=mod.OverlayLoader)
+count=$(grep -cFx -- 'ARG:--patch' "$capture" || true)
+[ "$count" = "1" ] || fail "expected exactly one --patch arg, got $count"
+[ "$(arg_after_patch)" = "ARG:$meta/overlay.yml" ] ||
+  fail "--patch must point at \$DSH_META_DIR/overlay.yml, got: $(arg_after_patch)"
+grep -Fxq -- 'ARG:--profile' "$capture" || fail "profile flag lost"
+grep -Fxq -- 'ARG:--no-open' "$capture" || fail "caller args lost"
 
-ids = [row.get("id", "insert") for row in merged]
-assert ids == [
-    "webserver",
-    "insert",
-    "webserver",
-    "system-prompt",
-    "skill-filesystem",
-    "llm-deepseek",
-    "agent-default-model",
-], ids
+grep -Fxq -- "DSH_SYSTEM_PROMPT=You are \"#1\"; it's a \$test \\ here" "$capture_env" ||
+  fail "env.list single-quote escaping broke DSH_SYSTEM_PROMPT"
+grep -Fxq -- 'DSH_TEST_EMPTY=' "$capture_env" || fail "empty env.list value broke"
+grep -Fxq -- 'DSH_BIND_HOST=10.1.2.3' "$capture_env" ||
+  fail "env.list must win over the derived DSH_BIND_HOST"
+echo "meta-dir boot ok: --patch $meta/overlay.yml, env.list sourced"
 
-assert merged[0]["config"]["host"] == "0.0.0.0", merged[0]["config"]
-assert merged[2]["config"] == {"port": 9999}, merged[2]["config"]
+# ── 2a. DSH_META_DIR unset → bare boot ──────────────────────────────────────
+run_boot -u DSH_META_DIR PATH="$stub_bin:$PATH" DSH_HOME="$tmp/dsh-home"
+! grep -Fxq -- 'ARG:--patch' "$capture" ||
+  fail "unset DSH_META_DIR must boot bare (no --patch), got: $(cat "$capture")"
+echo "bare boot ok (unset DSH_META_DIR)"
 
-persona = merged[3]["config"]["persona"]
-assert isinstance(persona, mod.TaggedScalar), repr(persona)
-assert persona.tag == "tag:yaml.org,2002:js", persona.tag
-assert persona.value == "process.env.DSH_SYSTEM_PROMPT ?? ''", persona.value
+# ── 2b. incomplete metadata dir (overlay.yml missing) → bare boot ───────────
+run_boot DSH_META_DIR="$tmp/no-such-dir" PATH="$stub_bin:$PATH" DSH_HOME="$tmp/dsh-home"
+! grep -Fxq -- 'ARG:--patch' "$capture" ||
+  fail "incomplete DSH_META_DIR must boot bare (no --patch), got: $(cat "$capture")"
+echo "bare boot ok (incomplete DSH_META_DIR)"
 
-model = merged[6]["config"]["model"]
-assert isinstance(model, mod.TaggedScalar), repr(model)
-assert model.value == "process.env.DSH_MODEL ?? 'deepseek-v4-flash'", model.value
-assert merged[6]["config"]["provider"] == "deepseek-official"
-assert merged[5]["config"]["maxTokens"] == 32768
-assert merged[4]["disabled"] is False
-
-print("merge smoke ok:", ids)
-PY
-
-# ── MCP layer render ─────────────────────────────────────────────────────────
-# Rows must match legacy _render_cordis blocks: same entry dicts, same key
-# order (safe_dump sort_keys), url-less entries skipped. Empty env renders an
-# empty patch list; malformed JSON must fail loud.
-
-DSH_MCP_SERVERS='[{"name":"allybuild","url":"https://api.example.test/projects/1/mcp","headers":{"Authorization":"Bearer tok"}},{"name":"no-url"},{"name":"search","url":"https://mcp.example.test/s"}]' \
-  python3 "$mcp_py" "$tmp/mcp.yml"
-
-python3 - "$tmp/mcp.yml" <<'PY'
-import sys
-import yaml
-
-with open(sys.argv[1]) as f:
-    rows = yaml.safe_load(f)
-
-assert rows == [
-    {"insert": [{
-        "id": "mcp-allybuild",
-        "name": "@deepseek-ai/dsh-mcp-client",
-        "config": {
-            "headers": {"Authorization": "Bearer tok"},
-            "serverName": "allybuild",
-            "transport": "streamable-http",
-            "url": "https://api.example.test/projects/1/mcp",
-        },
-    }]},
-    {"insert": [{
-        "id": "mcp-search",
-        "name": "@deepseek-ai/dsh-mcp-client",
-        "config": {
-            "serverName": "search",
-            "transport": "streamable-http",
-            "url": "https://mcp.example.test/s",
-        },
-    }]},
-], rows
-
-with open(sys.argv[1]) as f:
-    text = f.read()
-assert text.startswith("- insert:\n  - config:\n"), text[:60]
-assert "name: '@deepseek-ai/dsh-mcp-client'\n" in text, text
-
-print("mcp rows ok:", [e["id"] for row in rows for e in row["insert"]])
-PY
-
-env -u DSH_MCP_SERVERS python3 "$mcp_py" "$tmp/mcp-empty.yml"
-grep -qx '\[\]' "$tmp/mcp-empty.yml" || { echo "smoke-entrypoint: empty env must render []" >&2; exit 1; }
-
-DSH_MCP_SERVERS='' python3 "$mcp_py" "$tmp/mcp-blank.yml"
-grep -qx '\[\]' "$tmp/mcp-blank.yml" || { echo "smoke-entrypoint: blank env must render []" >&2; exit 1; }
-
-if DSH_MCP_SERVERS='{"name":"not-a-list"}' python3 "$mcp_py" "$tmp/mcp-bad.yml" 2>/dev/null; then
-  echo "smoke-entrypoint: non-array DSH_MCP_SERVERS must fail" >&2
-  exit 1
+# ── 3. caller-carried --patch runs verbatim ─────────────────────────────────
+rm -f "$capture" "$capture_env"
+if ! env PATH="$stub_bin:$PATH" DSH_HOME="$tmp/dsh-home" \
+  "$entrypoint" --patch "$tmp/own.yml" --profile web; then
+  fail "entrypoint exited nonzero (verbatim)"
 fi
-if DSH_MCP_SERVERS='[{"url":"u"}]' python3 "$mcp_py" "$tmp/mcp-bad2.yml" 2>/dev/null; then
-  echo "smoke-entrypoint: url without name must fail" >&2
-  exit 1
-fi
-if DSH_MCP_SERVERS='{nope' python3 "$mcp_py" "$tmp/mcp-bad3.yml" 2>/dev/null; then
-  echo "smoke-entrypoint: malformed json must fail" >&2
-  exit 1
-fi
+printf 'ARG:%s\n' --patch "$tmp/own.yml" --profile web > "$tmp/expected"
+cmp -s "$tmp/expected" "$capture" ||
+  fail "verbatim invocation rewritten, got: $(cat "$capture")"
+echo "verbatim --patch ok"
 
-echo "mcp empty/failure cases ok"
+echo "smoke-entrypoint: all scenarios ok"

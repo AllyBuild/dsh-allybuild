@@ -19,6 +19,7 @@ import argparse
 import json
 import os
 import re
+import shlex
 import shutil
 import subprocess
 import sys
@@ -37,15 +38,24 @@ DEFAULT_REPO_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspa
 DOCKERFILE_CONTEXT = [
     "runtime/Dockerfile",
     "runtime/dsh-entrypoint.sh",
-    "runtime/docker-overlay.yml",
-    "runtime/merge-overlay.py",
-    "runtime/mcp-overlay.py",
-    "runtime/agent-overlay.yml",
     "runtime/allybuild",
     "runtime/web",
     "sdk/python",
     "sdk/ts",
 ]
+
+# 独立部署的最小启动元数据：镜像不再携带任何 overlay，无 DSH_META_DIR 时
+# 裸起（webserver 绑 loopback，预览代理不可达）。部署脚本在持久化的 /data
+# 下写入仅含 webserver 绑定行的 overlay（entrypoint 推导 DSH_BIND_HOST 注
+# 入），重启后 entrypoint 单输入消费。平台沙箱经 meta volume 携带完整合成
+# overlay，不走这条路径。
+STANDALONE_META_DIR = "/data/dsh-meta"
+STANDALONE_OVERLAY_LINES = (
+    "- id: webserver",
+    "  config:",
+    "    host: !!js process.env.DSH_BIND_HOST || '127.0.0.1'",
+    "    port: {port}",
+)
 
 
 def log(message: str) -> None:
@@ -232,6 +242,25 @@ def ensure_sandbox(name: str, snapshot: str, force: bool, env: dict[str, str]) -
     log("sandbox started")
 
 
+def ensure_standalone_meta(name: str, port: int) -> None:
+    """Write the standalone bind-only metadata when absent, and restart the
+    sandbox so the entrypoint boots on it (its earlier boot ran bare)."""
+    try:
+        exec_in(name, "test", "-f", f"{STANDALONE_META_DIR}/overlay.yml")
+        return
+    except RuntimeError:
+        pass
+    log("writing standalone dsh metadata (bind-only overlay)")
+    exec_in(name, "mkdir", "-p", STANDALONE_META_DIR)
+    lines = [line.format(port=port) for line in STANDALONE_OVERLAY_LINES]
+    exec_in(name, "sh", "-c",
+            "printf '%s\\n' " + " ".join(shlex.quote(line) for line in lines) +
+            f" > {STANDALONE_META_DIR}/overlay.yml")
+    log("restarting sandbox to boot on the metadata dir")
+    cli("stop", name, timeout=300)
+    cli("start", name, timeout=600)
+
+
 ALLYBUILD_ENV_KEYS = (
     "ALLYBUILD_SESSION_URL",
     "ALLYBUILD_PROGRESS_URL",
@@ -306,7 +335,9 @@ def main() -> None:
         delete_sandbox(args.name)
     ensure_snapshot(args.snapshot, args.source, image, args.repo_dir,
                     args.refresh_snapshot)
-    ensure_sandbox(args.name, args.snapshot, False, allybuild_env())
+    env = allybuild_env() | {"DSH_META_DIR": STANDALONE_META_DIR}
+    ensure_sandbox(args.name, args.snapshot, False, env)
+    ensure_standalone_meta(args.name, args.port)
 
     log("waiting for dsh to boot")
     boot_url, token = wait_for_boot(args.name, args.wait_timeout)

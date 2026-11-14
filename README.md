@@ -14,19 +14,37 @@ ask_user 应答器）。上游源码见
 入口命令为 `dsh --profile web --no-open`：启动 web profile（`/api` 网关 +
 浏览器 UI 静态资源），不打开浏览器，只打印带认证 token 的 URL。
 
+启动走 **`DSH_META_DIR` 单输入自举**：平台后端把 `overlay.yml`（webserver
+绑定行 + AllyBuild 集成行 + per-agent 人格/技能目录/LLM 网关路由/MCP insert
+行）与 `env.list`（dotenv 单引号格式）合成进一个元数据目录——常驻沙箱为
+meta volume 的 `projects/{pid}/runtime/{aid}/`，tmp 沙箱为 `/tmp/dsh-meta/{aid}/`。
+组装逻辑全部在平台后端
+（`app/backend-ts/src/sandbox/dsh-bootstrap.ts`），本仓镜像不携带任何
+overlay 文件；`DSH_META_DIR` 缺省或不完整时裸起（不叠加 `--patch`），
+平台外直跑需自带元数据目录或显式 `--patch`：
+
 ```sh
 docker build -t dsh-server .
 
+mkdir -p meta
+cat > meta/overlay.yml <<'EOF'
+- id: webserver
+  config:
+    host: !!js process.env.DSH_BIND_HOST || '127.0.0.1'
+    port: 3080
+EOF
 docker run -d --name dsh -p 3080:3080 -v dsh-data:/data \
+  -v "$PWD/meta:/meta:ro" -e DSH_META_DIR=/meta \
   -e DEEPSEEK_API_KEY=sk-... \
   dsh-server
 ```
 
-- 端口映射：容器内由内置 overlay 把 webserver 切到全接口绑定（`0.0.0.0`，
-  配置层支持的部署形态；CLI 的 `--host` 旗标出于裸机安全考虑拒绝它）。浏览器访问
+- 端口映射：webserver 绑定地址由 overlay 的 webserver 行决定（dsh 0.2.2 起
+  拒绝通配绑定；entrypoint 自动推导容器主网卡 IP 注入 `DSH_BIND_HOST`，
+  推导失败回落 loopback——外部不可达但不误暴露，fail-safe）。浏览器访问
   `http://localhost:3080`，其 Host 头被服务端信任栅栏视为 loopback，无需额外配置。
 - `docker run` 追加的参数会透传给 dsh，例如 `--port 8080`；自带 `--patch`
-  或非 web profile 的调用不会叠加 overlay。
+  的调用原样直跑，不经元数据链。
 - `/data` 是 `DSH_HOME`：profile、会话记录与浏览器认证凭据都持久化在这里，
   换卷即重置。
 - 启动日志里打印的 URL 含 `?token=...`，从宿主机访问时把其中的 host 换成
@@ -64,7 +82,7 @@ docker logs dsh | grep -o 'token=[A-Za-z0-9_-]*'
 上传 SDK，slot 里也不再有版本协商。当前烘焙版本 `@allybuild/sdk@1.0.0` /
 `allybuild-sdk==1.0.0`，与镜像内 dsh 版本共同构成 tag 的版本面。
 
-`/workspace` 是平台挂载根（任务 slot 与 agent overlay/DSH_HOME 落在
+`/workspace` 是平台挂载根（任务 slot 与 agent `DSH_HOME` 落在
 `/workspace/.allybuild/` 下），镜像预建并 chown 给 node——镜像内无 sudo，
 平台脚本否则无法自建目录。
 
@@ -77,18 +95,19 @@ tsconfig 的 `paths` 映射（`TSX_TSCONFIG_PATH`）兜底。两套机制各覆�
 
 语言面与双语 SDK 的首发镜像以 `-tf1` 后缀 tag 发布：在 `v*` tag ref 上经
 `workflow_dispatch` 以 `tag_suffix=-tf1` 触发（机制见「发布」），产出如
-`ghcr.io/allybuild/dsh-server:0.1.5-rc.2-tf1`。每个 agent 实例另可通过
-`DSH_AGENT_OVERLAY_PATH` 挂载 per-agent overlay 补丁，entrypoint 把它合并
-进容器 overlay（同 id 行整体由 agent 侧覆盖，合并失败即中止启动），实现
-per-agent 人格定制；agent 的 MCP 服务器经 `DSH_MCP_SERVERS` 注入——
-`dsh-mcp-client` 每行只承载一个服务器，行数随 agent 动态，entrypoint 在
-启动时把该 env 渲染成追加的 `--patch` 层（`mcp-overlay.py`），空/缺省 env
-不注入任何行，坏 JSON 中止启动。
+`ghcr.io/allybuild/dsh-server:0.1.5-rc.2-tf1`。per-agent 人格
+（`DSH_SYSTEM_PROMPT`）、技能目录（`DSH_SKILL_DIRS`）、模型路由
+（`DSH_MODEL`）与 MCP 服务器（`DSH_MCP_SERVERS`）不再有镜像内的合并/
+渲染链——平台后端把全部行合成进 `DSH_META_DIR/overlay.yml`，entrypoint
+单输入消费（见「镜像」）。
 
 ## Daytona 部署
 
 一键脚本（Daytona 侧用组织配置的 ghcr 凭据拉取私有镜像，无需公开仓库；
-Daytona 拒绝 `latest` tag，脚本自动从 npm 解析当前 dsh 版本作为镜像 tag）：
+Daytona 拒绝 `latest` tag，脚本自动从 npm 解析当前 dsh 版本作为镜像 tag）。
+镜像不带 overlay，脚本创建沙盒时以 `DSH_META_DIR=/data/dsh-meta` 注入，
+并在首次部署时写入仅含 webserver 绑定行的最小 overlay 后重启生效（平台
+沙箱经 meta volume 携带完整合成 overlay，不走这条路径）：
 
 ```sh
 export DAYTONA_API_KEY=dtn_...
@@ -118,9 +137,9 @@ daytona exec dsh-server -- cat /tmp/dsh.log      # dsh web: http://127.0.0.1:308
 
 ### AllyBuild 集成
 
-`allybuild/` 携带三个私有插件，在 web profile 中以独立 overlay 行挂载
-（`docker-overlay.yml` 内的 AllyBuild 行），配置经环境变量在启动时注入，全部为空时插件
-惰性不生效：
+`allybuild/` 携带三个私有插件，以 overlay 行挂载（平台合成的
+`DSH_META_DIR/overlay.yml` 内的 AllyBuild 行），配置经环境变量在启动时
+注入，全部为空时插件惰性不生效（独立部署的最小 overlay 不含这些行）：
 
 | 环境变量 | 作用 |
 | --- | --- |

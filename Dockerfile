@@ -154,19 +154,18 @@ ENV DSH_HOME=/data
 RUN mkdir -p /data && chown node:node /data
 VOLUME /data
 
-# TaskFlow 平台面挂载根：任务 slot 与 agent overlay/DSH_HOME 都落在
+# TaskFlow 平台面挂载根：任务 slot 与 agent DSH_HOME 都落在
 # /workspace/.allybuild 下，镜像预建并交给 node（镜像无 sudo，平台脚本无法自建）。
 RUN mkdir -p /workspace && chown node:node /workspace
 
 COPY --chmod=0755 runtime/dsh-entrypoint.sh /usr/local/bin/dsh-entrypoint
-COPY runtime/docker-overlay.yml /usr/local/share/dsh/
 
 EXPOSE 3080
 
 USER node
 
-# The entrypoint injects the all-interfaces bind overlay plus the AllyBuild
-# plugin rows (inert until ALLYBUILD_* env configures them) for the web
-# profile. Arguments appended to `docker run` pass through to dsh.
+# The entrypoint boots dsh from the platform-prepared DSH_META_DIR (overlay
+# patch rows + env.list, composed by the platform backend); without it the
+# invocation runs bare. Arguments appended to `docker run` pass through to dsh.
 ENTRYPOINT ["dsh-entrypoint"]
 CMD ["--profile", "web", "--no-open"]
