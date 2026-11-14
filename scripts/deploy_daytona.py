@@ -242,14 +242,31 @@ def ensure_sandbox(name: str, snapshot: str, force: bool, env: dict[str, str]) -
     log("sandbox started")
 
 
+def sandbox_env_value(name: str, key: str) -> str:
+    """Read one sandbox-level env var via exec (always exit 0, so a CLI
+    failure stays a transport error rather than a false reading)."""
+    return exec_in(name, "sh", "-c",
+                   f"printf '%s' \"${{{key}:-}}\"").strip()
+
+
+def sandbox_file_exists(name: str, path: str) -> bool:
+    out = exec_in(name, "sh", "-c",
+                  f"[ -f {shlex.quote(path)} ] && echo yes || echo no")
+    return out.strip().endswith("yes")
+
+
 def ensure_standalone_meta(name: str, port: int) -> None:
     """Write the standalone bind-only metadata when absent, and restart the
     sandbox so the entrypoint boots on it (its earlier boot ran bare)."""
-    try:
-        exec_in(name, "test", "-f", f"{STANDALONE_META_DIR}/overlay.yml")
+    current = sandbox_env_value(name, "DSH_META_DIR")
+    if current != STANDALONE_META_DIR:
+        raise SystemExit(
+            "[deploy] sandbox lacks DSH_META_DIR="
+            f"{STANDALONE_META_DIR} (has {current or 'nothing'}); it predates "
+            "metadata booting — rerun with --force-recreate"
+        )
+    if sandbox_file_exists(name, f"{STANDALONE_META_DIR}/overlay.yml"):
         return
-    except RuntimeError:
-        pass
     log("writing standalone dsh metadata (bind-only overlay)")
     exec_in(name, "mkdir", "-p", STANDALONE_META_DIR)
     lines = [line.format(port=port) for line in STANDALONE_OVERLAY_LINES]

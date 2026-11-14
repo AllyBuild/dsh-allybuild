@@ -96,10 +96,6 @@ if [ -n "${DSH_META_DIR:-}" ] && [ -f "$DSH_META_DIR/overlay.yml" ]; then
 else
   echo "dsh-entrypoint: DSH_META_DIR unset or incomplete; booting without a patch overlay" >&2
 fi
-# Word splitting is the point: an empty patch_arg means no --patch at all.
-# shellcheck disable=SC2086
-patch_flags=""
-[ -n "$patch_arg" ] && patch_flags="--patch $patch_arg"
 
 
 # Supervise flag stripping must precede active-profile detection: with
@@ -119,16 +115,13 @@ esac
 
 if [ "${1-}" = "web" ]; then
   shift
-  # shellcheck disable=SC2086
-  set -- web $patch_flags "$@"
+  set -- web "$@"
 elif [ "${1-}" = "--profile" ] && [ "${2-}" = "web" ]; then
   shift 2
-  # shellcheck disable=SC2086
-  set -- --profile web $patch_flags "$@"
+  set -- --profile web "$@"
 elif [ "${1-}" = "--profile=web" ]; then
   shift
-  # shellcheck disable=SC2086
-  set -- --profile=web $patch_flags "$@"
+  set -- --profile=web "$@"
 elif [ "${1-}" = "--profile" ] && [ "${2-}" != "" ] && [ "${2-}" != "web" ]; then
   # Per-agent profile (platform single-port process): the metadata overlay's
   # all-interfaces webserver bind and the integration rows apply to every
@@ -136,8 +129,10 @@ elif [ "${1-}" = "--profile" ] && [ "${2-}" != "" ] && [ "${2-}" != "web" ]; the
   # the preview proxy (the only traffic path) cannot reach it.
   profile="$2"
   shift 2
-  # shellcheck disable=SC2086
-  set -- --profile "$profile" $patch_flags "$@"
+  set -- --profile "$profile" "$@"
+fi
+if [ -n "$patch_arg" ]; then
+  set -- "$@" --patch "$patch_arg"
 fi
 if [ -n "$trusted_flags" ]; then
   # Word splitting is the point: the value is a flag list this script built.

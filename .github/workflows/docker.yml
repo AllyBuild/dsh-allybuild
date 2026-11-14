@@ -50,7 +50,7 @@ jobs:
         id: dsh-version
         # 从 Dockerfile 钉定的 DSH_SOURCE_REF 取版本：npm latest 可能领先于
         # 钉定版本（tag 与镜像内 dsh 版本必须严格一致，README 契约）。
-        # 追加短 commitid 区分同版本 overlay 变更的重构建（前端 .env 按
+        # 追加短 commitid 区分同版本镜像内容变更的重构建（前端 .env 按
         # 此 tag 精确拉取，避免旧 tag 缓存/覆盖歧义）。
         run: |
           VERSION=$(sed -n 's/^ARG DSH_SOURCE_REF=dsh-v//p' runtime/Dockerfile)
@@ -83,7 +83,7 @@ jobs:
 
       # CI 镜像 = released SDK 通道（prepare-ci-sdk.sh 从 npm/PyPI 物化）；
       # 本地/开发镜像 = source SDK 通道（主仓根构建）。两者 SDK 内容可能
-      # 短暂不同步，dsh 与 overlay 部分始终一致（同一 Dockerfile）。
+      # 短暂不同步，dsh 与镜像内容始终一致（同一 Dockerfile）。
       - uses: docker/build-push-action@v6
         with:
           context: .

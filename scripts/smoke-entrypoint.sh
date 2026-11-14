@@ -86,6 +86,45 @@ run_boot DSH_META_DIR="$tmp/no-such-dir" PATH="$stub_bin:$PATH" DSH_HOME="$tmp/d
   fail "incomplete DSH_META_DIR must boot bare (no --patch), got: $(cat "$capture")"
 echo "bare boot ok (incomplete DSH_META_DIR)"
 
+# ── 2c. env.list without overlay.yml must NOT be sourced ────────────────────
+mkdir -p "$tmp/env-only"
+cp "$meta/env.list" "$tmp/env-only/env.list"
+run_boot DSH_META_DIR="$tmp/env-only" PATH="$stub_bin:$PATH" DSH_HOME="$tmp/dsh-home"
+! grep -Fxq -- 'ARG:--patch' "$capture" ||
+  fail "env-only DSH_META_DIR must boot bare, got: $(cat "$capture")"
+! grep -q '^DSH_SYSTEM_PROMPT=' "$capture_env" ||
+  fail "env.list must not be sourced when overlay.yml is missing"
+echo "env-only dir ok (env.list not sourced)"
+
+# ── 1b. per-agent profile branch (the platform boot path) ───────────────────
+run_with() {
+  rm -f "$capture" "$capture_env"
+  if ! env "$@" "$entrypoint" --profile "$agent_profile" --port 4123; then
+    fail "entrypoint exited nonzero (env: $*)"
+  fi
+  [ -s "$capture" ] || fail "stub dsh was not invoked"
+}
+agent_profile=agent-3f
+run_with DSH_META_DIR="$meta" PATH="$stub_bin:$PATH" DSH_HOME="$tmp/dsh-home"
+[ "$(arg_after_patch)" = "ARG:$meta/overlay.yml" ] ||
+  fail "per-agent profile must patch from the metadata dir, got: $(arg_after_patch)"
+grep -Fxq -- "ARG:--profile" "$capture" || fail "profile flag lost"
+grep -Fxq -- "ARG:$agent_profile" "$capture" || fail "agent profile argument lost"
+grep -Fxq -- 'ARG:--port' "$capture" || fail "port flag lost"
+echo "per-agent profile boot ok: --patch $meta/overlay.yml"
+
+# ── 1c. metadata path with a space survives argument assembly ───────────────
+space_meta="$tmp/meta dir"
+mkdir -p "$space_meta"
+cp "$meta/overlay.yml" "$space_meta/overlay.yml"
+cp "$meta/env.list" "$space_meta/env.list"
+run_boot DSH_META_DIR="$space_meta" PATH="$stub_bin:$PATH" DSH_HOME="$tmp/dsh-home"
+count=$(grep -cFx -- 'ARG:--patch' "$capture" || true)
+[ "$count" = "1" ] || fail "spaced path: expected one --patch, got $count"
+[ "$(arg_after_patch)" = "ARG:$space_meta/overlay.yml" ] ||
+  fail "spaced path must stay one argument, got: $(cat "$capture")"
+echo "spaced metadata path ok"
+
 # ── 3. caller-carried --patch runs verbatim ─────────────────────────────────
 rm -f "$capture" "$capture_env"
 if ! env PATH="$stub_bin:$PATH" DSH_HOME="$tmp/dsh-home" \
