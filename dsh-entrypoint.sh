@@ -132,7 +132,10 @@ elif [ "${1-}" = "--profile" ] && [ "${2-}" != "" ] && [ "${2-}" != "web" ]; the
   set -- --profile "$profile" "$@"
 fi
 if [ -n "$patch_arg" ]; then
-  set -- "$@" --patch "$patch_arg"
+  # --patch must precede the profile positional: dsh hands options after the
+  # profile name to the booted app (commander passthrough), where --patch is
+  # unknown — appending it after "$@" died as "unknown option '--patch'".
+  set -- --patch "$patch_arg" "$@"
 fi
 if [ -n "$trusted_flags" ]; then
   # Word splitting is the point: the value is a flag list this script built.
