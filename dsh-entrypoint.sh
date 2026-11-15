@@ -19,11 +19,17 @@
 # same way.
 set -u
 
-# dsh 0.2.2 起 webserver 拒绝通配绑定（overlay 亦然），而 docker -p 与
-# Daytona 预览代理到不了 loopback：推导主路由源 IP（UDP connect 无发包）
+# dsh 0.2.2 起 webserver 拒绝通配绑定（overlay 亦然）。绑定目标按运行时：
+# Daytona（uuid 形 hostname）预览代理经 sandbox 内 loopback 转发——实测绑
+# 主路由 IP 时代理恒 502 proxy upstream error，故绑 127.0.0.1；其余运行时
+# （docker -p 等）到不了 loopback，推导主路由源 IP（UDP connect 无发包）
 # 注入 DSH_BIND_HOST，元数据 overlay 的 webserver 行在补丁求值时读取。
-# 推导失败回落 loopback——web 外部不可达但不误暴露，fail-safe。容器内
-DSH_BIND_HOST="${DSH_BIND_HOST:-$(python3 -c "import socket
+# 推导失败回落 loopback——web 外部不可达但不误暴露，fail-safe。
+case $(hostname) in
+  [0-9a-f]*-[0-9a-f]*-[0-9a-f]*-[0-9a-f]*-[0-9a-f]*)
+    DSH_BIND_HOST="${DSH_BIND_HOST:-127.0.0.1}" ;;
+  *)
+    DSH_BIND_HOST="${DSH_BIND_HOST:-$(python3 -c "import socket
 s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 try:
     s.connect(('10.255.255.255', 1))
@@ -31,7 +37,8 @@ try:
 except Exception:
     print('127.0.0.1')
 finally:
-    s.close()" 2>/dev/null)}"
+    s.close()" 2>/dev/null)}" ;;
+esac
 [ -n "$DSH_BIND_HOST" ] || DSH_BIND_HOST=127.0.0.1
 export DSH_BIND_HOST
 
