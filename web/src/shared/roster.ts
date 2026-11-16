@@ -16,6 +16,7 @@ export const ROSTER: ReadonlyArray<readonly [string, unknown]> = [
   ['api-workspace-controller', pkg('@deepseek-ai/dsh-api-workspace-controller')],
   ['file-upload', pkg('@deepseek-ai/dsh-client-file-upload')],
   ['api-remotes', pkg('@deepseek-ai/dsh-api-remotes')],
+  ['api-remote-access', pkg('@deepseek-ai/dsh-api-remote-access')],
   ['cordis-client-runner', pkg('@deepseek-ai/dsh-cordis-client-runner')],
   ['locale', pkg('@deepseek-ai/dsh-client-locale')],
   ['shortcuts', pkg('@deepseek-ai/dsh-client-shortcuts')],
@@ -35,6 +36,7 @@ export const ROSTER: ReadonlyArray<readonly [string, unknown]> = [
   ['ui-settings', pkg('@deepseek-ai/dsh-client-ui-settings')],
   ['ui-sidebar-right', pkg('@deepseek-ai/dsh-client-ui-sidebar-right')],
   ['ui-input-trigger', pkg('@deepseek-ai/dsh-client-ui-input-trigger')],
+  ['ui-context-menu', pkg('@deepseek-ai/dsh-client-ui-context-menu')],
   ['ui-commands', pkg('@deepseek-ai/dsh-client-ui-commands')],
   ['ui-reference', pkg('@deepseek-ai/dsh-client-ui-reference')],
 ] as const

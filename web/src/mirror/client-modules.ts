@@ -13,6 +13,7 @@ import * as ApiGateway from '@deepseek-ai/dsh-api-gateway/client'
 import * as ApiSessionController from '@deepseek-ai/dsh-api-session-controller/client'
 import * as ApiWorkspaceController from '@deepseek-ai/dsh-api-workspace-controller/client'
 import * as ApiRemotes from '@deepseek-ai/dsh-api-remotes/client'
+import * as ApiRemoteAccess from '@deepseek-ai/dsh-api-remote-access/client'
 import * as CordisClientRunner from '@deepseek-ai/dsh-cordis-client-runner/client'
 import * as ClientLocale from '@deepseek-ai/dsh-client-locale/client'
 import * as ClientShortcuts from '@deepseek-ai/dsh-client-shortcuts/client'
@@ -33,6 +34,7 @@ import * as ClientUiTool from '@deepseek-ai/dsh-client-ui-tool/client'
 import * as ClientUiTrajectory from '@deepseek-ai/dsh-client-ui-trajectory/client'
 import * as ClientUiUserQuestions from '@deepseek-ai/dsh-client-ui-user-questions/client'
 import * as ClientUiInputTrigger from '@deepseek-ai/dsh-client-ui-input-trigger/client'
+import * as ClientUiContextMenu from '@deepseek-ai/dsh-client-ui-context-menu/client'
 import * as ClientUiCommands from '@deepseek-ai/dsh-client-ui-commands/client'
 import * as ClientUiReference from '@deepseek-ai/dsh-client-ui-reference/client'
 
@@ -43,6 +45,7 @@ registerModules([
   ['@deepseek-ai/dsh-api-session-controller', ApiSessionController],
   ['@deepseek-ai/dsh-api-workspace-controller', ApiWorkspaceController],
   ['@deepseek-ai/dsh-api-remotes', ApiRemotes],
+  ['@deepseek-ai/dsh-api-remote-access', ApiRemoteAccess],
   ['@deepseek-ai/dsh-cordis-client-runner', CordisClientRunner],
   ['@deepseek-ai/dsh-client-locale', ClientLocale],
   ['@deepseek-ai/dsh-client-shortcuts', ClientShortcuts],
@@ -63,6 +66,7 @@ registerModules([
   ['@deepseek-ai/dsh-client-ui-trajectory', ClientUiTrajectory],
   ['@deepseek-ai/dsh-client-ui-user-questions', ClientUiUserQuestions],
   ['@deepseek-ai/dsh-client-ui-input-trigger', ClientUiInputTrigger],
+  ['@deepseek-ai/dsh-client-ui-context-menu', ClientUiContextMenu],
   ['@deepseek-ai/dsh-client-ui-commands', ClientUiCommands],
   ['@deepseek-ai/dsh-client-ui-reference', ClientUiReference],
 ])
